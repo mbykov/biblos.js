@@ -1,0 +1,61 @@
+{
+  "name": "electron-boilerplate",
+  "productName": "Electron Boilerplate",
+  "description": "Starter for your Electron application",
+  "version": "1.0.0",
+  "private": true,
+  "author": "Mr. Gumby <mr.gumby@example.com>",
+  "copyright": "© 2017, Gumby inc.",
+  "homepage": "http://example.com",
+  "main": "app/background.js",
+  "build": {
+    "appId": "com.example.electron-boilerplate",
+    "files": [
+      "app/**/*",
+      "node_modules/**/*",
+      "package.json"
+    ],
+    "directories": {
+      "buildResources": "resources"
+    },
+    "publish": null
+  },
+  "scripts": {
+    "postinstall_": "electron-builder install-app-deps",
+    "preunit": "webpack --config=build/webpack.unit.config.js --env=test --display=none",
+    "unit": "electron-mocha temp/specs.js --renderer --require source-map-support/register",
+    "pree2e": "webpack --config=build/webpack.app.config.js --env=test --display=none && webpack --config=build/webpack.e2e.config.js --env=test --display=none",
+    "e2e": "mocha temp/e2e.js --require source-map-support/register",
+    "test": "npm run unit && npm run e2e",
+    "start": "node build/start.js",
+    "release": "npm test && webpack --config=build/webpack.app.config.js --env=production && electron-builder"
+  },
+  "dependencies": {
+    "electron-clipboard-extended": "^1.1.1",
+    "electron-settings": "^3.2.0",
+    "file-loader": "^3.0.1",
+    "fs-extra": "^7.0.1",
+    "mousetrap": "^1.6.3",
+    "speckled-band": "^2.0.0",
+    "split.js": "^1.5.10"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.4.0",
+    "@babel/preset-env": "^7.4.2",
+    "babel-loader": "^8.0.5",
+    "babel-plugin-transform-object-rest-spread": "^6.26.0",
+    "chai": "^4.2.0",
+    "css-loader": "^2.1.1",
+    "electron": "4.1.1",
+    "electron-builder": "^20.39.0",
+    "electron-mocha": "^6.0.4",
+    "friendly-errors-webpack-plugin": "^1.7.0",
+    "mocha": "^5.2.0",
+    "source-map-support": "^0.5.9",
+    "spectron": "^5.0.0",
+    "style-loader": "^0.23.1",
+    "webpack": "^4.29.6",
+    "webpack-merge": "^4.2.1",
+    "webpack-node-externals": "^1.7.2"
+  }
+}

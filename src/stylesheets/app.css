@@ -1,0 +1,102 @@
+@font-face {
+  font-family: 'Source Code Pro';
+  font-style: normal;
+  font-weight: 400;
+  src: local('YagpoUni'), local('SourceCodePro'), url(fonts/YagpoUni.ttf) format('truetype');
+}
+
+html,
+body {
+  height: 100%;
+  padding-left: 10px;
+  margin: 0;
+  line-height: 1.5;
+  background: none repeat scroll 0 0 #ffffee;
+  font-family: 'Source Sans Pro', sans-serif;
+}
+
+#container {
+  margin: 0;
+  height: 100%;
+  overflow-y: hidden;
+  overflow-x: hidden;
+}
+
+h2 {
+    color: maroon;
+}
+
+b {
+    color: maroon;
+}
+
+#bookImg {
+    float: left;
+    padding: 25px;
+}
+
+ul {
+  list-style: none;
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  padding-inline-start: 0;
+}
+
+p {
+  margin-block-start: 0;
+  margin-block-end: 0;
+  margin-inline-start: 0;
+  margin-inline-end: 0;
+  padding-inline-start: 0;
+}
+
+p.tibpar {
+  font-family: 'YagpoUni';
+  font-size: 1.5em;
+}
+
+ul.about li:before {
+    content:  "—";
+    position: relative;
+    left:     -5px;
+}
+
+.external {
+    color: maroon;
+    cursor: pointer;
+}
+
+a {
+  color: maroon;
+  cursor: pointer;
+}
+
+
+.message {
+    position: absolute;
+    left: 0;
+    right: 0;
+    padding-left: 10px;
+    cursor: pointer;
+}
+
+#arrows {
+    position: absolute;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100px; /* Need a specific value to work */
+}
+
+.arrow {
+    width: 35px;
+    cursor: pointer;
+}
+
+.progress {
+    width: 100px;
+    padding-bottom: 10px
+}
