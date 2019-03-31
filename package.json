@@ -35,6 +35,8 @@
     "electron-settings": "^3.2.0",
     "file-loader": "^3.0.1",
     "fs-extra": "^7.0.1",
+    "i18next": "^15.0.8",
+    "i18next-node-fs-backend": "^2.1.2",
     "mousetrap": "^1.6.3",
     "speckled-band": "^2.0.0",
     "split.js": "^1.5.10"

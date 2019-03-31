@@ -72,12 +72,16 @@ Mousetrap.bind(['esc'], function(ev) {
 // })
 
 Mousetrap.bind(['ctrl+d'], function(ev) {
-  let state = {section: 'help'}
+  let state = settings.get('state')
+  state.sec = 'help'
+  settings.set('state', state)
   navigate(state)
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
-  let state = {section: 'home'}
+  let state = settings.get('state')
+  state.sec = 'home'
+  settings.set('state', state)
   navigate(state)
 })
 
@@ -115,16 +119,7 @@ function goRight() {
 }
 
 export function navigate(state) {
-  // state = {section: 'home'}
-  try {
-    state = JSON.parse(JSON.stringify(state))
-  } catch (err) {
-    log('NAV-state ERR', err)
-    state = {}
-  }
-  let section = state.section || 'home'
-  if (!section) state.section = 'home'
-  showSection(state.section)
+  showSection(state)
 
   if (!state.old) {
     state.old = false
@@ -143,13 +138,15 @@ export function navigate(state) {
   settings.set('state', state)
 }
 
-function showSection(section) {
+function showSection(state) {
   const sections = qs('.section')
-  Array.prototype.forEach.call(sections, (section) => {
-    section.classList.add('is-hidden')
+  Array.prototype.forEach.call(sections, (osection) => {
+    osection.classList.add('is-hidden')
   })
-  let ilang = settings.get('ilang')
-  const sectionId = ['#', section, '_', ilang].join('')
+  const sectionId = ['#', state.sec, '_', state.lang].join('')
+  log('S', state)
+  log('S_', sectionId)
+
   q(sectionId).classList.remove('is-hidden')
   hidePopups ()
 }

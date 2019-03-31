@@ -5,7 +5,7 @@ export const devMenuTemplate = {
   submenu: [
     {
       label: "Reload",
-      accelerator: "CmdOrCtrl+R",
+      accelerator: "Shift+CmdOrCtrl+R",
       click: () => {
         BrowserWindow.getFocusedWindow().webContents.reloadIgnoringCache();
       }

@@ -5,21 +5,27 @@
 
 import path from "path";
 import url from "url";
-import { app, BrowserWindow, Menu } from "electron";
-import { devMenuTemplate } from "./menu/dev_menu_template";
-import { editMenuTemplate } from "./menu/edit_menu_template";
+import { app, BrowserWindow, ipcMain, Menu } from "electron";
+// import { devMenuTemplate } from "./menu/dev_menu_template";
+// import { editMenuTemplate } from "./menu/edit_menu_template";
+// import { langMenuTemplate } from "./menu/lang_menu_template";
+import { MenuFactory } from "./lib/menuFactory";
+const log = console.log
+
+const config = require('./configs/app.config');
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
 import env from "env";
 
-const setApplicationMenu = () => {
-  const menus = [editMenuTemplate];
-  if (env.name !== "production") {
-    menus.push(devMenuTemplate);
-  }
-  Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
-};
+// const setApplicationMenu = () => {
+//   const menus = [editMenuTemplate];
+//   if (env.name !== "production") {
+//     menus.push(devMenuTemplate);
+//   }
+//   menus.push(langMenuTemplate);
+//   Menu.setApplicationMenu(Menu.buildFromTemplate(menus));
+// };
 
 // Save userData in separate folders for each environment.
 // Thanks to this you can use production and development versions of the app
@@ -30,12 +36,12 @@ if (env.name !== "production") {
 }
 
 app.on("ready", () => {
-  setApplicationMenu();
+  // setApplicationMenu();
+  MenuFactory()
 
   let opts = {webPreferences: {
     nodeIntegration: true
   }}
-
 
   const win = new BrowserWindow(opts)
 
@@ -50,6 +56,11 @@ app.on("ready", () => {
   if (env.name === "development") {
     win.openDevTools();
   }
+
+  ipcMain.on('lang', (event, lang) => {
+    log('LANG', lang)
+  })
+
 });
 
 app.on("window-all-closed", () => {
