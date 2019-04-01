@@ -21,10 +21,11 @@ state = {sec: 'home', lang: 'en'}, settings.set('state', state)
 navigate(state)
 
 ipcRenderer.on('lang', function (event, lang) {
-  let state = settings.get('state')
-  state.lang = lang
-  settings.set('state', state)
-  log('LANG', lang)
+  // let state = settings.get('state')
+  // state.lang = lang
+  settings.set('lang', lang)
+  ipcRenderer.send('lang', lang)
+  log('LANG:', lang)
 })
 
 clipboard

@@ -1,12 +1,12 @@
 {
-  "name": "electron-boilerplate",
+  "name": "a-template",
   "productName": "Electron Boilerplate",
-  "description": "Starter for your Electron application",
+  "description": "Starter for my Electron application",
   "version": "1.0.0",
   "private": true,
-  "author": "Mr. Gumby <mr.gumby@example.com>",
-  "copyright": "© 2017, Gumby inc.",
-  "homepage": "http://example.com",
+  "author": "M. Bykov <m.bykov@gmail.com>",
+  "copyright": "© 2017- 2019, M.Bykov",
+  "homepage": "http://diglossa.org",
   "main": "app/background.js",
   "build": {
     "appId": "com.example.electron-boilerplate",
