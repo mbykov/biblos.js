@@ -17,7 +17,7 @@
   "Morpheus": "морфей",
   "Diglossa": "диглосса",
   "dictionaries": "словари",
-  "Home": "начало",
+  "home": "начало",
   "install": "установка",
   "cleanup": "очистить",
   "hot keys": "горячие клавиши",

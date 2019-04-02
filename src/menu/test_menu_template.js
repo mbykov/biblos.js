@@ -9,35 +9,36 @@ const settings = require('electron-settings')
 // let t = i18m.t
 
 export function testMenuTemplate(lang) {
-  log('TM start', lang)
-  if (!lang) lang = 'en'
-  let lang2 = settings.get('lang')
-  log('TM start2', lang2)
-  log('HELLO-EDIT:', t('Edit'))
+  // log('TM start', lang)
+  // if (!lang) lang = 'en'
+  // let lang2 = settings.get('lang')
+  // log('TM start2', lang2)
+  // log('HELLO-EDIT:', t('Edit'))
   let menu =  {
-    label: t('Edit'),
+    // label: t('Edit'),
+    label: 'Edit',
     submenu: [
         {
           // label: t('Copy'),
           label: "COPY",
           click: () => {
-            BrowserWindow.getFocusedWindow().webContents.send('lang', 'en')
+            BrowserWindow.getFocusedWindow().webContents.send('lang', 'eng')
           }
         },
         {
           label: "DE",
           click: () => {
-            BrowserWindow.getFocusedWindow().webContents.send('lang', 'de')
+            BrowserWindow.getFocusedWindow().webContents.send('lang', 'deu')
           }
         },
         {
           label: "RU",
           click: () => {
-            BrowserWindow.getFocusedWindow().webContents.send('lang', 'ru')
+            BrowserWindow.getFocusedWindow().webContents.send('lang', 'rus')
           }
         }
-      ]
-    }
+    ]
+  }
   // console.log('TEST MENU:', menu)
   return menu
 }

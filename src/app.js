@@ -6,7 +6,8 @@ import sband from "speckled-band"
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
-import { pageList, langList } from './lib/consts'
+// import { pageList, langList } from './lib/consts'
+import { config } from './configs/app.config'
 
 const log = console.log
 const app = remote.app;
@@ -14,10 +15,14 @@ const clipboard = require('electron-clipboard-extended')
 const settings = require('electron').remote.require('electron-settings')
 let code = 'grc'
 
-loadSections(langList, pageList)
+loadSections(config)
+
+settings.set('lang', 'eng')
 
 let state = settings.get('state')
-state = {sec: 'home', lang: 'en'}, settings.set('state', state)
+state = {sec: 'home'}
+settings.set('state', state)
+
 navigate(state)
 
 ipcRenderer.on('lang', function (event, lang) {

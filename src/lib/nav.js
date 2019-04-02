@@ -139,11 +139,12 @@ export function navigate(state) {
 }
 
 function showSection(state) {
+  let lang = settings.get('lang')
   const sections = qs('.section')
   Array.prototype.forEach.call(sections, (osection) => {
     osection.classList.add('is-hidden')
   })
-  const sectionId = ['#', state.sec, '_', state.lang].join('')
+  const sectionId = ['#', state.sec, '_', lang].join('')
   log('S', state)
   log('S_', sectionId)
 

@@ -6,20 +6,19 @@ export const langMenuTemplate = {
     {
       label: "EN",
       click: () => {
-        // BrowserWindow.getFocusedWindow().webContents.send('lang', 'en')
-        ipcRenderer.send('lang', 'en')
+        BrowserWindow.getFocusedWindow().webContents.send('lang', 'eng')
       }
     },
     {
       label: "DE",
       click: () => {
-        BrowserWindow.getFocusedWindow().webContents.send('lang', 'de')
+        BrowserWindow.getFocusedWindow().webContents.send('lang', 'deu')
       }
     },
     {
       label: "RU",
       click: () => {
-        BrowserWindow.getFocusedWindow().webContents.send('lang', 'ru')
+        BrowserWindow.getFocusedWindow().webContents.send('lang', 'rus')
       }
     }
   ]

@@ -58,7 +58,7 @@ app.on("ready", () => {
   }
 
   ipcMain.on('lang', (event, lang) => {
-    log('_____ BACKGRAUND: LANG', lang)
+    log('_____ BACK-LANG-CHANGE', lang)
     MenuFactory(lang)
   })
 
