@@ -145,9 +145,10 @@ function showSection(state) {
   Array.prototype.forEach.call(sections, (osection) => {
     osection.classList.add('is-hidden')
   })
-  const sectionId = ['#', state.sec, '_', lang].join('')
+  let sectionId = ['#', state.sec, '_', lang].join('')
   log('S', state)
   log('S_', sectionId)
+  if (!q(sectionId)) sectionId = ['#', state.sec, '_', 'eng'].join('')
 
   q(sectionId).classList.remove('is-hidden')
   hidePopups ()

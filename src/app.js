@@ -18,13 +18,19 @@ let code = 'grc'
 
 loadSections(config)
 
-settings.set('lang', 'eng')
+if (!settings.set('lang')) settings.set('lang', 'eng')
 
 let state = settings.get('state')
-state = {sec: 'home'}
-settings.set('state', state)
-
+if (!state) {
+  state = {sec: 'home'}
+  settings.set('state', state)
+}
 navigate(state)
+
+ipcRenderer.on('section', function (event, section) {
+  navigate({sec: section})
+})
+
 
 ipcRenderer.on('lang', function (event, lang) {
   // let state = settings.get('state')
