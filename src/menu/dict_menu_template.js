@@ -1,13 +1,18 @@
 import { app, BrowserWindow } from "electron";
+import { i18n as t } from "../locales/i18n";
 
-export const dictMenuTemplate = {
-  label: "Dict",
-  submenu: [
-    { label: "Clone dicts from server", click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'remotedicts') } },
-    { label: "Import form CSV", click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'csv') } },
-    { label: "Arrange local dicts", click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'activedicts') } },
-    { label: "Create CSV from texts", click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'localdict') } },
-    { label: "Publish new dictionary (disabled)", click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'publish') } },
-    { label: "Cleanup DBs completely", click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'cleanup') } }
-  ]
-};
+export function dictMenuTemplate() {
+  let menu =  {
+    label: t("dictionary"),
+    submenu: [
+      { label: t("Arrange local dicts"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'activedicts') } },
+      { label: t("Clone from server"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'remotedicts') } },
+      { label: t("Import form CSV"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'csv') } },
+      { label: t("Create CSV from texts"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'localdict') } },
+      { label: t("Publish dictionary"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'publish') } },
+      { label: t("Reread the source"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('action', 'reread-dict') } },
+      { label: t("Cleanup DBs completely"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'cleanup') } }
+    ]
+  }
+  return menu
+}

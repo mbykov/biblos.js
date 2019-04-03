@@ -3,13 +3,7 @@ import { app, BrowserWindow } from "electron";
 export const devMenuTemplate = {
   label: "Development",
   submenu: [
-    {
-      label: "Reload",
-      accelerator: "Shift+CmdOrCtrl+R",
-      click: () => {
-        BrowserWindow.getFocusedWindow().webContents.reloadIgnoringCache();
-      }
-    },
+    { label: "Reload", accelerator: "Shift+CmdOrCtrl+R", click: () => { BrowserWindow.getFocusedWindow().webContents.reloadIgnoringCache(); }  },
     {
       label: "Toggle DevTools",
       accelerator: "Alt+CmdOrCtrl+I",

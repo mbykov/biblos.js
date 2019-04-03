@@ -121,6 +121,7 @@ function goRight() {
 export function navigate(state) {
   showSection(state)
 
+  // бред?
   if (!state.old) {
     state.old = false
     delete state.old

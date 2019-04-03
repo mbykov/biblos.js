@@ -8,6 +8,7 @@ import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 // import { pageList, langList } from './lib/consts'
 import { config } from './configs/app.config'
+import "./locales/context-menu.js";
 
 const log = console.log
 const app = remote.app;
@@ -42,7 +43,6 @@ clipboard
     // navigate(state)
     // let state = {sec: 'help'}
     // navigate(state)
-    log('CLP', txt)
   })
   .startWatching()
 

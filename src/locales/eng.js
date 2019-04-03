@@ -29,6 +29,7 @@
   "arrange local dicts": "arrange local dicts",
   "create CSV from texts": "create CSV from texts",
   "publish dictionary": "publish dictionary",
+  "book": "book",
   "publish book": "publish book",
   "cleanup DBs completely": "cleanup DBs completely",
   "what does this program do?": "what does this program do?",
@@ -48,5 +49,11 @@
   "how to create a book": "how to create a book",
   "how to create a dictionary": "how to create a dictionary",
   "Dharma-Reader": "Dharma-Reader",
+  "": "",
+  "options": "options",
+  "preferences": "preferences",
+  "": "",
+  "": "",
+  "": "",
   "screencast": "screencast"
 }
