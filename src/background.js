@@ -6,9 +6,7 @@
 import path from "path";
 import url from "url";
 import { app, BrowserWindow, ipcMain, Menu } from "electron";
-// import { devMenuTemplate } from "./menu/dev_menu_template";
-// import { editMenuTemplate } from "./menu/edit_menu_template";
-// import { langMenuTemplate } from "./menu/lang_menu_template";
+const settings = require('electron-settings')
 import { MenuFactory } from "./locales/menu-factory";
 const log = console.log
 
@@ -59,7 +57,7 @@ app.on("ready", () => {
 
   ipcMain.on('lang', (event, lang) => {
     log('_____ BACK-LANG-CHANGE', lang)
-    MenuFactory(lang)
+    MenuFactory()
   })
 
 });

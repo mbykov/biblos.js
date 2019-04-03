@@ -23,7 +23,7 @@ export function i18n(phrase) {
     contents[lang] = loadedLanguage
   }
   let dcased = uncap(phrase)
-  return capitalize(contents[lang][dcased]) || phrase
+  return capitalize(contents[lang][dcased]) || capitalize(phrase)
 }
 
 const capitalize = (s) => {

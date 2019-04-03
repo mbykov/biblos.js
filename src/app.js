@@ -18,7 +18,7 @@ let code = 'grc'
 
 loadSections(config)
 
-if (!settings.set('lang')) settings.set('lang', 'eng')
+if (!settings.get('lang')) settings.set('lang', 'eng')
 
 let state = settings.get('state')
 if (!state) {
@@ -33,11 +33,11 @@ ipcRenderer.on('section', function (event, section) {
 
 
 ipcRenderer.on('lang', function (event, lang) {
-  // let state = settings.get('state')
-  // state.lang = lang
   settings.set('lang', lang)
   ipcRenderer.send('lang', lang)
-  log('LANG:', lang)
+  log('LANG set:', lang)
+  // let lang2 = settings.get('lang')
+  // log('LANG2:', lang)
 })
 
 clipboard

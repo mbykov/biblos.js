@@ -15,7 +15,7 @@ const log = console.log
 // const menu = null;
 // const platform = process.platform;
 
-export function MenuFactory(lang) {
+export function MenuFactory() {
   // log('menu FACTORY')
   const menus = [fileMenuTemplate(), dictMenuTemplate(), bookMenuTemplate(), aboutMenuTemplate(), helpMenuTemplate()];
   // if (env.name !== "production") {

@@ -146,8 +146,9 @@ function showSection(state) {
     osection.classList.add('is-hidden')
   })
   let sectionId = ['#', state.sec, '_', lang].join('')
-  log('S', state)
-  log('S_', sectionId)
+  // log('S', state)
+  // log('L', lang)
+  // log('S_id', sectionId)
   if (!q(sectionId)) sectionId = ['#', state.sec, '_', 'eng'].join('')
 
   q(sectionId).classList.remove('is-hidden')
