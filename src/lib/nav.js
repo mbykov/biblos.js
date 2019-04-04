@@ -131,7 +131,6 @@ export function navigate(state) {
     hstate = history.length-1
   }
 
-  log('STATE SEC:', state)
   if (state.sec == 'main') twoPanes(state), showText(state)
   else if (state.sec == 'remotedicts') remoteDicts()
   else if (state.sec == 'db-info') remoteDBInfo(state)

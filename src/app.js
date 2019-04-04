@@ -13,6 +13,7 @@ const log = console.log
 const app = remote.app;
 const clipboard = require('electron-clipboard-extended')
 const settings = require('electron').remote.require('electron-settings')
+const axios = require('axios')
 
 loadSections(config)
 
@@ -69,3 +70,32 @@ document.addEventListener('click', (ev) => {
     log('CLONE', data.clone)
   }
 })
+
+ipcRenderer.on('version', function (event, oldver) {
+  axios.get('https://api.github.com/repos/mbykov/pecha.js/releases/latest')
+    .then(function (response) {
+      if (!response || !response.data) return
+      let newver = response.data.name
+      if (oldver && newver && newver > oldver) {
+        let over = q("#new-version")
+        let verTxt = ['new version available:', newver].join(' ')
+        over.textContent = verTxt
+        over.classList.remove('is-hidden')
+      }
+    })
+    .catch(function (error) {
+      console.log('API.GITHUB ERR')
+    })
+})
+
+document.addEventListener("wheel", function(ev) {
+  scrollPane(ev, state)
+}, false)
+
+function scrollPane(ev, state) {
+  if (ev.shiftKey == true) return;
+  let delta = (ev.deltaY > 0) ? 32 : -32
+  let opane = q('.section:not([is-hidden])')
+  if (!opane) return
+  opane.scrollTop += delta
+}

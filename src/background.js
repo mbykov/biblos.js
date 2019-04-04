@@ -57,6 +57,29 @@ app.on("ready", () => {
     win.openDevTools();
   }
 
+  win.webContents.on('did-finish-load', () => {
+    let pckg = require('../package.json')
+    let name = pckg.name
+    let version = pckg.version
+    win.webContents.send('version', version )
+    win.setTitle([name, 'v.', version].join(' '))
+  })
+
+  win.on('resize', function () {
+    win.webContents.send('reload')
+  })
+
+  win.on('close', () => {
+    settings.set('winBounds', win.getBounds())
+  })
+
+  const apath = app.getAppPath()
+  const upath = app.getPath("userData")
+  settings.set('apath', apath)
+  settings.set('upath', upath)
+
+  // ensureCfg(upath)
+
   ipcMain.on('lang', (event, lang) => {
     log('_____ BACK-LANG-CHANGE', lang)
     MenuFactory()
