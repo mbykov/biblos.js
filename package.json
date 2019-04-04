@@ -38,6 +38,7 @@
     "i18next": "^15.0.8",
     "i18next-node-fs-backend": "^2.1.2",
     "mousetrap": "^1.6.3",
+    "nano": "^8.0.1",
     "speckled-band": "^2.0.0",
     "split.js": "^1.5.10"
   },

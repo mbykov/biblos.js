@@ -96,6 +96,11 @@ h4 {
   color: maroon;
 }
 
+.dinfo {
+    cursor: pointer;
+    color: maroon;
+}
+
 .clause {
     background-color: #eee;
 }

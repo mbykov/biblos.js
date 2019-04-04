@@ -1,12 +1,11 @@
 import "./stylesheets/main.css";
 
-import { remote, ipcRenderer } from "electron";
+import { remote, ipcRenderer, shell } from "electron";
 import env from "env";
 import sband from "speckled-band"
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
-// import { pageList, langList } from './lib/consts'
 import { config } from './configs/app.config'
 import "./locales/context-menu.js";
 
@@ -14,7 +13,6 @@ const log = console.log
 const app = remote.app;
 const clipboard = require('electron-clipboard-extended')
 const settings = require('electron').remote.require('electron-settings')
-let code = 'grc'
 
 loadSections(config)
 
@@ -31,19 +29,16 @@ ipcRenderer.on('section', function (event, section) {
   navigate({sec: section})
 })
 
-
 ipcRenderer.on('lang', function (event, lang) {
   settings.set('lang', lang)
   ipcRenderer.send('lang', lang)
-  log('LANG set:', lang)
-  // let lang2 = settings.get('lang')
-  // log('LANG2:', lang)
+  remote.getCurrentWindow().reload()
 })
 
 clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
-    // let pars = sband(txt, code)
+    // let pars = sband(txt, config.code)
     // if (!pars || !pars.length) return
     // let state = {sec: 'main', pars: pars}
     // navigate(state)
@@ -57,3 +52,20 @@ let message = q('#message')
 
 // let home = q('#home_en')
 // home.classList.remove('is-hidden')
+
+document.addEventListener('click', (ev) => {
+  let data = ev.target.dataset
+  if (!data) return
+  let parent = ev.target.parentElement
+  if (ev.target.classList.contains('external')) {
+    // let href = ev.target.getAttribute('href') || ev.target.textContent
+    let href = ev.target.textContent
+    shell.openExternal(href)
+  } else if (data.section) {
+    navigate({section: data.section})
+  } else if (data.dinfo) {
+    navigate({sec: 'db-info', dname: data.dinfo})
+  } else if (data.clone) {
+    log('CLONE', data.clone)
+  }
+})

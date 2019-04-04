@@ -1,13 +1,13 @@
 //
 import _ from "lodash"
-import { ipcRenderer } from "electron";
+import { remote, ipcRenderer } from "electron";
+import { remoteDicts, remoteDBInfo } from '../dbs/remote'
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 // import { showText } from "./parsedata";
 // import { serverDicts, showActiveDicts } from "./dict";
 // import { signup } from "./auth";
 
-import { remote } from "electron";
 const app = remote.app;
 const apath = app.getAppPath()
 const upath = app.getPath("userData")
@@ -66,10 +66,9 @@ Mousetrap.bind(['esc'], function(ev) {
 //   ipcRenderer.send('scanDirectory', datapath)
 // })
 
-// Mousetrap.bind(['ctrl+j'], function(ev) {
-//   let jsonpath = '/home/michael/tibetan/utils/csv/csvdict.json'
-//   ipcRenderer.send('importCSV', jsonpath)
-// })
+Mousetrap.bind(['ctrl+j'], function(ev) {
+  listRemote()
+})
 
 Mousetrap.bind(['ctrl+d'], function(ev) {
   let state = settings.get('state')
@@ -129,8 +128,10 @@ export function navigate(state) {
     hstate = history.length-1
   }
 
-  // if (section == 'main') twoPanes(state), showText(state)
-  // else if (section == 'remotedicts') ipcRenderer.send('remoteDicts', '') // serverDicts()
+  log('STATE SEC:', state)
+  if (state.sec == 'main') twoPanes(state), showText(state)
+  else if (state.sec == 'remotedicts') remoteDicts()
+  else if (state.sec == 'db-info') remoteDBInfo(state)
   // else if (section == 'activedicts') showActiveDicts()
 
   let progress = q('#progress')
@@ -146,10 +147,11 @@ function showSection(state) {
     osection.classList.add('is-hidden')
   })
   let sectionId = ['#', state.sec, '_', lang].join('')
-  // log('S', state)
-  // log('L', lang)
+  // log('showsec: lang, state', lang, state)
   // log('S_id', sectionId)
   if (!q(sectionId)) sectionId = ['#', state.sec, '_', 'eng'].join('')
+  if (!q(sectionId)) return
+  // log('Sec____ is here', sectionId)
 
   q(sectionId).classList.remove('is-hidden')
   hidePopups ()

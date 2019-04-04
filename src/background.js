@@ -39,6 +39,8 @@ app.on("ready", () => {
 
   let opts = {webPreferences: {
     nodeIntegration: true
+    // nodeIntegration: false,
+    // nodeIntegrationInWorker: false
   }}
 
   const win = new BrowserWindow(opts)
