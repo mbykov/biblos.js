@@ -59,9 +59,12 @@ document.addEventListener('click', (ev) => {
   if (!data) return
   let parent = ev.target.parentElement
   if (ev.target.classList.contains('external')) {
-    // let href = ev.target.getAttribute('href') || ev.target.textContent
     let href = ev.target.textContent
     shell.openExternal(href)
+  } else if (data.href) {
+    let over = q("#new-version")
+    over.classList.add('is-hidden')
+    shell.openExternal(data.href)
   } else if (data.section) {
     navigate({section: data.section})
   } else if (data.dinfo) {
@@ -95,7 +98,7 @@ document.addEventListener("wheel", function(ev) {
 function scrollPane(ev, state) {
   if (ev.shiftKey == true) return;
   let delta = (ev.deltaY > 0) ? 32 : -32
-  let opane = q('.section:not([is-hidden])')
+  let opane = q('.section:not(.is-hidden)')
   if (!opane) return
   opane.scrollTop += delta
 }

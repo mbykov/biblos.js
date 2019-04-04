@@ -38,12 +38,12 @@ h4 {
 
 .section {
     margin: 15px;
-    margin-top: 50px;
+    margin-top: 15px;
     display: block;
     overflow-y: hidden;
     height: 100%;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
+    padding-bottom: 120px;
+    margin-bottom: 120px;
     font-family: "Helvetica Neue", Helvetica, Arial;
     font-size: 1em;
 }

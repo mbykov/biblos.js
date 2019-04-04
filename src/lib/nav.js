@@ -153,7 +153,7 @@ function showSection(state) {
   // log('S_id', sectionId)
   if (!q(sectionId)) sectionId = ['#', state.sec, '_', 'eng'].join('')
   if (!q(sectionId)) return
-  // log('Sec____ is here', sectionId)
+  log('Sec____ is here', sectionId)
 
   q(sectionId).classList.remove('is-hidden')
   hidePopups ()
