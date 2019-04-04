@@ -1,6 +1,6 @@
 //
 import _ from "lodash"
-import { remote, ipcRenderer } from "electron";
+import { remote, ipcRenderer, webFrame } from "electron";
 import { remoteDicts, remoteDBInfo } from '../dbs/remote'
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
@@ -88,18 +88,19 @@ Mousetrap.bind(['ctrl+f'], function(ev) {
 
 // TODO - здесь плохо
 Mousetrap.bind(['ctrl+='], function(ev) {
-  let osource = q('#source')
-  osource.style.fontSize = 'larger'
+  let zf = webFrame.getZoomFactor()
+  let newzf = zf + 0.1
+  webFrame.setZoomFactor(newzf)
 })
 
 Mousetrap.bind(['ctrl+-'], function(ev) {
-  let osource = q('#source')
-  osource.style.fontSize = 'smaller'
+  let zf = webFrame.getZoomFactor()
+  let newzf = zf - 0.1
+  webFrame.setZoomFactor(newzf)
 })
 
 Mousetrap.bind(['ctrl+0'], function(ev) {
-  let osource = q('#source')
-  osource.style.fontSize = 'medium'
+  webFrame.setZoomFactor(1)
 })
 
 
