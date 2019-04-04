@@ -37,12 +37,15 @@ h4 {
 }
 
 .section {
-    margin: 5px;
+    margin: 15px;
+    margin-top: 50px;
     display: block;
     overflow-y: hidden;
     height: 100%;
     padding-bottom: 20px;
     margin-bottom: 20px;
+    font-family: "Helvetica Neue", Helvetica, Arial;
+    font-size: 1em;
 }
 
 .split {

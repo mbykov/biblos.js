@@ -32,6 +32,7 @@ function showRemoteDicts(dbinfos) {
   let installed = _.uniq(locals)
 
   let obefore = q('#before-remote-table')
+  if (!obefore) return
   obefore.textContent = ''
   let otable = q('#table-remote')
   if (otable) empty(otable)

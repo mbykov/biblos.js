@@ -19,6 +19,7 @@ const Mousetrap = require('mousetrap')
 const path = require('path')
 // const slash = require('slash')
 const {getCurrentWindow} = require('electron').remote
+let markdown = require( "markdown" ).markdown;
 
 let history = []
 let hstate = 0
@@ -67,7 +68,8 @@ Mousetrap.bind(['esc'], function(ev) {
 // })
 
 Mousetrap.bind(['ctrl+j'], function(ev) {
-  listRemote()
+  let html = markdown.toHTML( "Hello *World*!" )
+  log('START  MD', html)
 })
 
 Mousetrap.bind(['ctrl+d'], function(ev) {

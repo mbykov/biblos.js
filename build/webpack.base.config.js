@@ -16,6 +16,7 @@ module.exports = env => {
       }
     },
     devtool: "source-map",
+    // devtool: 'cheap-module-source-map',
     module: {
       rules: [
         {

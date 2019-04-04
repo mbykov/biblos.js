@@ -30,6 +30,10 @@ b {
     color: maroon;
 }
 
+strong {
+    color: maroon;
+}
+
 #bookImg {
     float: left;
     padding: 25px;

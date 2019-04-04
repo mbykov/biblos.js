@@ -1,4 +1,15 @@
-//
+let md = require('markdown-it')({html: true});
+let markdownItAttrs = require('markdown-it-attrs');
+md.use(markdownItAttrs)
+
+// let md = require( "markdown" ).markdown;
+
+// let showdown  = require('showdown')
+// let md = new showdown.Converter()
+
+// md.setFlavor('github');
+// text      = '# hello, markdown!',
+// html      = converter.makeHtml(text);
 
 const log = console.log
 const fse = require('fs-extra')
@@ -9,15 +20,18 @@ export function loadSections (config) {
   let container = q('#container')
   config.langs.forEach(lang=> {
     config.pages.forEach(sname=> {
-      let spath = [sname, 'html'].join('.')
-      let html
+      let spath, txt, html
       try {
-        spath = path.resolve(__dirname, '../src/sections', lang, [sname, 'html'].join('.'))
-        html = fse.readFileSync(spath)
+        spath = path.resolve(__dirname, '../src/sections', lang, [sname, 'md'].join('.'))
+        txt = fse.readFileSync(spath).toString()
+        html = md.render(txt);
       } catch (err) {
-        spath = path.resolve(__dirname, '../src/sections', config.deflang, [sname, 'html'].join('.'))
-        html = fse.readFileSync(spath)
+        spath = path.resolve(__dirname, '../src/sections', config.deflang, [sname, 'md'].join('.'))
+        txt = fse.readFileSync(spath).toString()
+        html = md.render(txt);
       }
+      // log('SPATH', spath)
+      // log('HTML', html)
       let osec = create('div', 'section')
       osec.id = [sname, lang].join('_')
       osec.setAttribute('lang', lang)
