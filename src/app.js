@@ -1,8 +1,10 @@
 import "./stylesheets/main.css";
 
+import _ from "lodash"
 import { remote, ipcRenderer, shell } from "electron";
 import env from "env";
-import sband from "speckled-band"
+import sband from "../../../sband"
+// import sband from "speckled-band"
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
@@ -17,21 +19,21 @@ const axios = require('axios')
 
 loadSections(config)
 
-if (!settings.get('lang')) settings.set('lang', 'eng')
-
 let state = settings.get('state')
-if (!state) {
-  state = {sec: 'home'}
-  settings.set('state', state)
+if (!state || !state.lang) {
+  state = {sec: config.defstate, lang: config.deflang}
 }
 navigate(state)
 
 ipcRenderer.on('section', function (event, section) {
-  navigate({sec: section})
+  let state = settings.get('state')
+  state.sec = section
+  navigate(state)
 })
 
 ipcRenderer.on('lang', function (event, lang) {
-  settings.set('lang', lang)
+  state.lang = lang
+  settings.set('state', state)
   ipcRenderer.send('lang', lang)
   remote.getCurrentWindow().reload()
 })
@@ -39,12 +41,12 @@ ipcRenderer.on('lang', function (event, lang) {
 clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
-    // let pars = sband(txt, config.code)
-    // if (!pars || !pars.length) return
-    // let state = {sec: 'main', pars: pars}
-    // navigate(state)
-    // let state = {sec: 'help'}
-    // navigate(state)
+    let pars = sband(txt, config.code)
+    if (!pars) return
+    let state = settings.get('state')
+    state.sec = 'main'
+    state.pars = pars
+    navigate(state)
   })
   .startWatching()
 

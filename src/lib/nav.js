@@ -4,7 +4,8 @@ import { remote, ipcRenderer, webFrame } from "electron";
 import { remoteDicts, remoteDBInfo } from '../dbs/remote'
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
-// import { showText } from "./parsedata";
+import { config } from '../configs/app.config'
+import { showText } from "./parse-data";
 // import { serverDicts, showActiveDicts } from "./dict";
 // import { signup } from "./auth";
 
@@ -26,13 +27,8 @@ let hstate = 0
 let split
 
 function twoPanes(state) {
-
-  let sizes = settings.get('split-sizes') || [50, 50]
-  if (split && state.mono) split.collapse(1)
-  else if (split) split.setSizes(sizes)
-
   if (split) return
-  settings.set('split-sizes', sizes)
+  let sizes = settings.get('split-sizes') || config.splitSizes
 
   split = Split(['#source', '#result'], {
     sizes: sizes,
@@ -44,28 +40,28 @@ function twoPanes(state) {
       getCurrentWindow().reload()
     }
   })
-  if (state.mono) split.collapse(1)
+  if (state.mono) split.collapse(state.mono)
 }
+
+Mousetrap.bind(['ctrl+1', 'ctrl+2'], function(ev) {
+  // let mono
+  // if (ev.which == 49) mono = 1
+  // else if (ev.which == 50) mono = 2
+  // let state = settings.get('state')
+  // log('STATE', state)
+  // let smono = settings.get('state.mono')
+  // log('STATEM', smono)
+})
+
+Mousetrap.bind(['esc'], function(ev) {
+  hidePopups()
+})
 
 // arrows
 Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
   if (ev.which == 37) goLeft()
   else if (ev.which == 39) goRight()
 })
-
-// Mousetrap.bind(['alt+1', 'alt+2'], function(ev) {
-//   // if (ev.which == 49) log('----1')
-//   // else if (ev.which == 50) log('----2')
-// })
-
-Mousetrap.bind(['esc'], function(ev) {
-  hidePopups()
-})
-
-// Mousetrap.bind(['ctrl+s'], function(ev) {
-//   let datapath = '/home/michael/diglossa.texts/Tibetan'
-//   ipcRenderer.send('scanDirectory', datapath)
-// })
 
 Mousetrap.bind(['ctrl+j'], function(ev) {
   let html = markdown.toHTML( "Hello *World*!" )
@@ -75,14 +71,12 @@ Mousetrap.bind(['ctrl+j'], function(ev) {
 Mousetrap.bind(['ctrl+d'], function(ev) {
   let state = settings.get('state')
   state.sec = 'help'
-  settings.set('state', state)
   navigate(state)
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
   let state = settings.get('state')
   state.sec = 'home'
-  settings.set('state', state)
   navigate(state)
 })
 
@@ -132,7 +126,7 @@ export function navigate(state) {
   }
 
   if (state.sec == 'main') twoPanes(state), showText(state)
-  else if (state.sec == 'remotedicts') remoteDicts()
+  else if (state.sec == 'remote-dicts') remoteDicts()
   else if (state.sec == 'db-info') remoteDBInfo(state)
   // else if (section == 'activedicts') showActiveDicts()
 
@@ -143,17 +137,14 @@ export function navigate(state) {
 }
 
 function showSection(state) {
-  let lang = settings.get('lang')
   const sections = qs('.section')
   Array.prototype.forEach.call(sections, (osection) => {
     osection.classList.add('is-hidden')
   })
-  let sectionId = ['#', state.sec, '_', lang].join('')
-  // log('showsec: lang, state', lang, state)
-  // log('S_id', sectionId)
-  if (!q(sectionId)) sectionId = ['#', state.sec, '_', 'eng'].join('')
+  let sectionId = ['#', state.sec, '_', state.lang].join('')
+  if (!state.lang) throw new Error('NO LANG!')
+  if (!q(sectionId)) sectionId = ['#', state.sec, '_', config.deflang].join('')
   if (!q(sectionId)) return
-  log('Sec____ is here', sectionId)
 
   q(sectionId).classList.remove('is-hidden')
   hidePopups ()

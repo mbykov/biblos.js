@@ -17,7 +17,7 @@ export function i18n(phrase) {
 	  if (fse.pathExistsSync(localePath)) {
 		  loadedLanguage = fse.readJsonSync(localePath)
 	  } else {
-      let enPath = path.resolve(apath, 'src/locales/en.js')
+      let enPath = path.resolve(apath, 'src/locales/eng.js')
 		  loadedLanguage = fse.readJsonSync(enPath)
 	  }
     contents[lang] = loadedLanguage

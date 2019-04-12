@@ -4,7 +4,7 @@
 
  After first installation Biblos.js has no dictionaries.
 
-<a href="#" data-section="remotedicts">Replicate</a> dictionaries from server,
+<a href="#" data-section="remote-dicts">Replicate</a> dictionaries from server,
 or <a href="#" data-section="csv">import</a> dictionary from CSV file.
 
 <a href="#" data-section="activedicts">Arrage, activate, delete</a> them as you like.

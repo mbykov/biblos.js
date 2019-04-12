@@ -5,8 +5,8 @@ export function dictMenuTemplate() {
   let menu =  {
     label: t("dictionary"),
     submenu: [
-      { label: t("Arrange local dicts"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'activedicts') } },
-      { label: t("Clone from server"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'remotedicts') } },
+      { label: t("Arrange local dicts"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'arrange-dicts') } },
+      { label: t("Clone from server"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'remote-dicts') } },
       { label: t("Import form CSV"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'csv') } },
       { label: t("Create CSV from texts"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'localdict') } },
       { label: t("Publish dictionary"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'publish') } },

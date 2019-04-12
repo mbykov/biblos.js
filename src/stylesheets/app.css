@@ -56,8 +56,7 @@ p {
   padding-inline-start: 0;
 }
 
-p.tibpar {
-  font-family: 'YagpoUni';
+p.par {
   font-size: 1.5em;
 }
 

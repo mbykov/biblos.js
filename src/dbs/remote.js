@@ -2,27 +2,52 @@ import _ from "lodash"
 import { ipcRenderer } from "electron";
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, insertAfter } from '../lib//utils'
 const settings = require('electron').remote.require('electron-settings')
+import { config } from '../configs/app.config'
 
 const log = console.log
-const nano = require('nano')('http://guest:guest@diglossa.org:5984');
+// const nano = require('nano')('http://guest:guest@diglossa.org:5984');
+const nano = require('nano')('http://guest:guest@localhost:5984');
+
+
+let descr = {
+  "_id": "description",
+  "name": "И.Х.Дворецкий",
+  "lang": "grc, rus",
+  "source": "https://wiki.lingvoforum.net/wiki/index.php/Книги/Древнегреческо-русский_словарь_Дворецкого/0",
+  "email": "m.bykov#gmail.com"
+}
+
+let wkt = {
+  "_id": "description",
+  "name": "wkt",
+  "lang": "grc, rus",
+  "source": "https://en.wiktionary.org/wiki/Category:Ancient_Greek_lemmas",
+  "email": "m.bykov#gmail.com"
+}
+
 
 export function remoteDicts() {
   nano.db.list().then((dnlist) => {
-    let defaults = ['_users']
+    let defaults = ['_users', '_replicator']
     let dnames = _.difference(dnlist, defaults)
     Promise.all(dnames.map(function(dname) {
       return nano.db.get(dname).then((info) => {
         let db = nano.use(dname)
         return db.get('description').then((descr)=> {
-          return {dname: dname, size: info.doc_count, descr: descr}
+          let description = {dname: dname, size: info.doc_count}
+          if (descr) description.descr = descr
+          return description
+        }).catch(err=> {
+          return {dname: dname, size: info.doc_count}
         })
       })
     })).then(dbinfos=> {
+      dbinfos = _.compact(dbinfos)
+      dbinfos = _.filter(dbinfos, dbinfo=> { return dbinfo.descr && dbinfo.descr.langs && dbinfo.descr.langs.split(/,? /).includes(config.code) })
       settings.set('dbinfos', dbinfos)
       showRemoteDicts(dbinfos)
     })
   })
-
 }
 
 function showRemoteDicts(dbinfos) {
@@ -37,7 +62,7 @@ function showRemoteDicts(dbinfos) {
   let otable = q('#table-remote')
   if (otable) empty(otable)
   else {
-    let sec_id = ['#remotedicts', lang].join('_')
+    let sec_id = ['#remote-dicts', lang].join('_')
     let osection = q(sec_id)
     otable = createRemoteTable()
     osection.appendChild(otable)
@@ -132,4 +157,12 @@ function createInfoTable() {
   osync.textContent = 'synchronize!'
   oheader.appendChild(osync)
   return otable
+}
+
+export function localDicts() {
+  showLocalDicts()
+}
+
+function showLocalDicts() {
+  log('SHOW LOCAL DICTS')
 }

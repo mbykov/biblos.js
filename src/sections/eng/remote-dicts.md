@@ -8,4 +8,4 @@ tip: start from shorter dictionaries to estimate replication time needed</p>
 
 <!-- Error. Check connection? {#cloneERR} -->
 
-<div id="before-remote-table">if no remote dict's table appears, check internet connection or simply wait </div>
+<div id="before-remote-table">if no remote dict's table appears, check internet connection or reload page:  </div>

@@ -31,7 +31,6 @@ export function loadSections (config) {
         html = md.render(txt);
       }
       // log('SPATH', spath)
-      // log('HTML', html)
       let osec = create('div', 'section')
       osec.id = [sname, lang].join('_')
       osec.setAttribute('lang', lang)
