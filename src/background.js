@@ -11,6 +11,10 @@ import { MenuFactory } from "./locales/menu-factory";
 const log = console.log
 
 const config = require('./configs/app.config');
+// import { antrax } from 'antrax'
+// import { antrax } from '/home/michael/greek/antrax'
+import { test } from './lib/pouch'
+test()
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
@@ -44,6 +48,9 @@ app.on("ready", () => {
   }}
 
   const win = new BrowserWindow(opts)
+  let winBounds = settings.get('winBounds') || win.getBounds()
+  winBounds.y -= 21
+  win.setBounds(winBounds)
 
   win.loadURL(
     url.format({
@@ -77,13 +84,6 @@ app.on("ready", () => {
   const upath = app.getPath("userData")
   settings.set('apath', apath)
   settings.set('upath', upath)
-
-  // ensureCfg(upath)
-
-  ipcMain.on('lang', (event, lang) => {
-    log('_____ BACK-LANG-CHANGE', lang)
-    MenuFactory(lang)
-  })
 
 });
 

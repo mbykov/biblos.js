@@ -21,7 +21,7 @@
     "publish": null
   },
   "scripts": {
-    "postinstall_": "electron-builder install-app-deps",
+    "postinstall": "electron-builder install-app-deps",
     "preunit": "webpack --config=build/webpack.unit.config.js --env=test --display=none",
     "unit": "electron-mocha temp/specs.js --renderer --require source-map-support/register",
     "pree2e": "webpack --config=build/webpack.app.config.js --env=test --display=none && webpack --config=build/webpack.e2e.config.js --env=test --display=none",
@@ -36,6 +36,7 @@
     "electron-settings": "^3.2.0",
     "file-loader": "^3.0.1",
     "fs-extra": "^7.0.1",
+    "loigos": "^0.1.0",
     "markdown": "^0.5.0",
     "markdown-it": "^8.4.2",
     "markdown-it-attrs": "^2.3.2",

@@ -10,6 +10,8 @@ import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 import { config } from './configs/app.config'
 import "./locales/context-menu.js";
+// import { showResults, showPopup, queryDBs } from "./lib/parse-data"
+import { queryDBs } from "./lib/parse-data"
 
 const log = console.log
 const app = remote.app;
@@ -59,7 +61,7 @@ let message = q('#message')
 document.addEventListener('click', (ev) => {
   let data = ev.target.dataset
   if (!data) return
-  let parent = ev.target.parentElement
+  let state = settings.get('state')
   if (ev.target.classList.contains('external')) {
     let href = ev.target.textContent
     shell.openExternal(href)
@@ -68,13 +70,28 @@ document.addEventListener('click', (ev) => {
     over.classList.add('is-hidden')
     shell.openExternal(data.href)
   } else if (data.section) {
-    navigate({section: data.section})
-  } else if (data.dinfo) {
-    navigate({sec: 'db-info', dname: data.dinfo})
-  } else if (data.clone) {
-    log('CLONE', data.clone)
+    state.sec = data.section
+    navigate(state)
   }
 })
+
+document.addEventListener("mouseover", function(ev) {
+  if (!ev.target.textContent) return
+  if (ev.ctrlKey == true) return
+  // let tpar = ev.target.closest('.tibpar')
+  // if (tpar) hidePopups()
+
+  if (ev.target.classList.contains('active-form')) {
+    if (ev.shiftKey != true) {
+      queryDBs(ev.target)
+    }
+  // } else if (ev.target.classList.contains('tibwf')) {
+    // showResults(ev.target)
+  // } else if (ev.target.classList.contains('tibambi')) {
+    // showPopup(ev.target) // mouseover, tibambi
+  }
+}, false)
+
 
 ipcRenderer.on('version', function (event, oldver) {
   axios.get('https://api.github.com/repos/mbykov/pecha.js/releases/latest')

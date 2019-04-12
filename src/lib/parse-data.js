@@ -26,6 +26,16 @@ export function showText(state) {
     osource.appendChild(opar)
   })
 
-  // let grs = qs('span.tibetan')
-  // if (grs.length == 1) showResults(grs[0].textContent)
+  // let actives = qs('span.active-forn')
+  // if (actives.length == 1) showResults(actives[0].textContent)
+}
+
+export function queryDBs(el, compound) {
+  let progress = q('#progress')
+  progress.classList.remove('is-hidden')
+  let str = el.textContent.trim()
+  let query = {query: str}
+  if (compound) query.compound = true
+  log('sending:', query)
+  ipcRenderer.send('queryDBs', query)
 }
