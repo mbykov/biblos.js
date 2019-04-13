@@ -418,8 +418,17 @@ div.qtext > p.hidden {
   padding-right: 5px;
 }
 
-.dict-wf {
-  color: maroon;
+.dict-div {
+}
+
+.dict-query {
+    color: maroon;
+    background-color: #eee;
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.dict-div {
 }
 
 .dict-ul {
@@ -429,13 +438,33 @@ div.qtext > p.hidden {
 
 .dict-dname {
   float: right;
-  padding: 12px;
-  /* padding-top: 0; */
   color: green;
 }
 
+.dict-gends {
+    font-style: italic;
+}
+
+.dict-rdict {
+    width: 50%;
+    padding: 5px;
+}
+
+ul.dict-fls {
+    padding-left: 15px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    background-color: #A4F3F3;
+}
+
+ul.dict-trns {
+    padding-top: 5px;
+    padding-left: 15px;
+    line-height: 1.3;
+}
+
 .dict-article {
-  padding-top: 12px;
+    padding-top: 12px;
 }
 
 .dicts-table {

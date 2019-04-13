@@ -18,7 +18,7 @@ setDBs(upath, dnames)
 
 ipcMain.on('queryDBs', (event, query) => {
   antrax(query.query).then(res => {
-    console.log('RES:', query, res.terms.length, res.muts.length)
+    console.log('RES:', query, res)
     BrowserWindow.getFocusedWindow().webContents.send('query-result', res)
   }).catch(function (err) {
     console.log('ANTRAX-ERR', err)

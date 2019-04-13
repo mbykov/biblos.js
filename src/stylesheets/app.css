@@ -10,7 +10,7 @@ body {
   height: 100%;
   padding-left: 10px;
   margin: 0;
-  line-height: 1.5;
+  line-height: 1.5em;
   background: none repeat scroll 0 0 #ffffee;
   font-family: 'Source Sans Pro', sans-serif;
 }
@@ -40,6 +40,7 @@ strong {
 }
 
 ul {
+    line-height: 1em;
   list-style: none;
   margin-block-start: 0;
   margin-block-end: 0;

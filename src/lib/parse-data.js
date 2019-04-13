@@ -40,11 +40,108 @@ export function queryDBs(el, compound) {
   let str = el.textContent.trim()
   let query = {query: str}
   if (compound) query.compound = true
-  log('sending:', query)
   ipcRenderer.send('queryDBs', query)
 }
 
 function showResult(res) {
   log('CHAINS', res)
+  // if (res.terms) showTerms(res.terms)
+  if (res.dicts) showDicts(res.dicts) // res.dicts.forEach(chain=> { showMutable(chain) })
+  if (!res.dicts && !res.terms) showNoResult()
+}
 
+function showNoResult() {
+  log('NO RESULT')
+}
+function showTerms(terms) {
+  log('Terms:', terms.length)
+}
+
+function showDicts(dicts) {
+  let ores = q('#result')
+  dicts.forEach(rdict=> {
+    log('DICT:', rdict)
+    let owf = create('div', 'dict-div')
+    ores.appendChild(owf)
+    let oformhead = create('div', 'dict-query')
+    oformhead.textContent = rdict.seg
+    owf.appendChild(oformhead)
+    rdict.dicts.forEach(dict=> {
+      let odicthead = showDictHeader(dict)
+      owf.appendChild(odicthead)
+      let morphs = parseMorphs(dict)
+      if (morphs) {
+        let oMorph = createMorph(morphs)
+        owf.appendChild(oMorph)
+      }
+      if (dict.trns) {
+        let otrns = createTrns(dict)
+        owf.appendChild(otrns)
+      }
+    })
+  })
+}
+
+function showDictHeader(dict) {
+  let odicthead = create('div', 'dict-header')
+  let odname = span(dict.dname, 'dict-dname')
+  log('DNAME', dict)
+  odicthead.appendChild(odname)
+  let ordict = span(dict.rdict, 'dict-rdict')
+  odicthead.appendChild(ordict)
+  if (dict.gends) {
+    let ogends = span(dict.gends.toString(), 'dict-gends')
+    odicthead.appendChild(ogends)
+  }
+
+  return odicthead
+}
+
+function parseMorphs (dict) {
+  let morphs
+  let fls = dict.fls
+  if (dict.pos == 'verb') {
+    let vfls = _.filter(fls, flex=> { return flex.numper })
+    let pfls = _.filter(fls, flex=> { return flex.numcase })
+    let ifls = _.filter(fls, flex=> { return !flex.numcase && !flex.numper })
+    morphs = vfls.map(flex => { return [flex.tense, flex.numper].join(' ') })
+    if (pfls.length) {
+      let pmorphs = pfls.map(flex => { return [flex.tense, [flex.gend, flex.numcase].join('.') ].join(', ') })
+      morphs = morphs.concat(pmorphs)
+    }
+    if (ifls.length) {
+      let imorphs = ifls.map(flex => { return flex.tense })
+      morphs = morphs.concat(imorphs)
+    }
+  }
+  else if (dict.name && dict.gends) morphs = fls.map(flex => { return [dict.gends.toString(), flex.numcase].join('.') })
+  else if (dict.name) morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
+
+  else if (dict.pos == 'pron')  morphs = fls.map(flex => { return [flex.gend || '-', flex.numcase].join('.') })
+  else if (dict.pos == 'art')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
+  else if (dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
+  else if (dict.pos == 'part')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
+  return morphs
+}
+
+function createMorph (morphs) {
+  let ofls = create('ul', 'dict-fls')
+  morphs.forEach(morph => {
+    let ofl = create('li')
+    ofl.textContent = morph
+    ofls.appendChild(ofl)
+  })
+  return ofls
+}
+
+function createTrns (dict) {
+  let otrns = create('ul', 'dict-trns')
+  if (!dict.trns) dict.trns = ['no transtation in this dict article']
+  dict.trns.forEach(trn => {
+    let otrn = create('li')
+    let str = trn.split('(').join('<span class="grey">').split(')').join('</span>')
+    otrn.innerHTML = str
+    otrns.appendChild(otrn)
+  })
+  return otrns
 }
