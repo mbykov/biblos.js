@@ -87,6 +87,11 @@ app.on("ready", () => {
 
 });
 
+ipcMain.on('unload', (event, state) => {
+  settings.set('state', state)
+  log('UNLOAD', state)
+})
+
 app.on("window-all-closed", () => {
   app.quit();
 });

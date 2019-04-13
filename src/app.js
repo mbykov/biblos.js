@@ -20,15 +20,21 @@ const settings = require('electron').remote.require('electron-settings')
 const axios = require('axios')
 
 loadSections(config)
-
 let state = settings.get('state')
 if (!state || !state.lang) {
   state = {sec: config.defstate, lang: config.deflang}
 }
 navigate(state)
 
+window.onbeforeunload = function () {
+  // let state = settings.get('state')
+  settings.set('state', state)
+  ipcRenderer.send('unload', state)
+}
+
+
 ipcRenderer.on('section', function (event, section) {
-  let state = settings.get('state')
+  // let state = settings.get('state')
   state.sec = section
   navigate(state)
 })
@@ -45,7 +51,7 @@ clipboard
     let txt = clipboard.readText()
     let pars = sband(txt, config.code)
     if (!pars) return
-    let state = settings.get('state')
+    // let state = settings.get('state')
     state.sec = 'main'
     state.pars = pars
     navigate(state)
@@ -61,7 +67,7 @@ let message = q('#message')
 document.addEventListener('click', (ev) => {
   let data = ev.target.dataset
   if (!data) return
-  let state = settings.get('state')
+  // let state = settings.get('state')
   if (ev.target.classList.contains('external')) {
     let href = ev.target.textContent
     shell.openExternal(href)
@@ -111,10 +117,10 @@ ipcRenderer.on('version', function (event, oldver) {
 })
 
 document.addEventListener("wheel", function(ev) {
-  scrollPane(ev, state)
+  scrollPane(ev)
 }, false)
 
-function scrollPane(ev, state) {
+function scrollPane(ev) {
   if (ev.shiftKey == true) return;
   let delta = (ev.deltaY > 0) ? 32 : -32
   let opane = q('.section:not(.is-hidden)')

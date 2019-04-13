@@ -25,6 +25,7 @@ let markdown = require( "markdown" ).markdown;
 let history = []
 let hstate = 0
 let split
+let state
 
 function twoPanes(state) {
   if (split) return
@@ -47,10 +48,7 @@ Mousetrap.bind(['ctrl+1', 'ctrl+2'], function(ev) {
   // let mono
   // if (ev.which == 49) mono = 1
   // else if (ev.which == 50) mono = 2
-  // let state = settings.get('state')
   // log('STATE', state)
-  // let smono = settings.get('state.mono')
-  // log('STATEM', smono)
 })
 
 Mousetrap.bind(['esc'], function(ev) {
@@ -69,13 +67,13 @@ Mousetrap.bind(['ctrl+j'], function(ev) {
 })
 
 Mousetrap.bind(['ctrl+d'], function(ev) {
-  let state = settings.get('state')
+  // let state = settings.get('state')
   state.sec = 'help'
   navigate(state)
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
-  let state = settings.get('state')
+  // let state = settings.get('state')
   state.sec = 'home'
   navigate(state)
 })
@@ -133,6 +131,7 @@ export function navigate(state) {
   let progress = q('#progress')
   progress.classList.add('is-hidden')
 
+  log('nav:state:', state)
   settings.set('state', state)
 }
 

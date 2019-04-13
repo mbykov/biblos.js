@@ -3,7 +3,12 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, getI
 import { ipcRenderer } from "electron";
 const settings = require('electron').remote.require('electron-settings')
 const log = console.log
+let progress = q('#progress')
 
+ipcRenderer.on('query-result', function (event, chains) {
+  progress.classList.add('is-hidden')
+  showResult(chains)
+})
 
 export function showText(state) {
   if (!state.pars) return
@@ -31,11 +36,15 @@ export function showText(state) {
 }
 
 export function queryDBs(el, compound) {
-  let progress = q('#progress')
   progress.classList.remove('is-hidden')
   let str = el.textContent.trim()
   let query = {query: str}
   if (compound) query.compound = true
   log('sending:', query)
   ipcRenderer.send('queryDBs', query)
+}
+
+function showResult(res) {
+  log('CHAINS', res)
+
 }

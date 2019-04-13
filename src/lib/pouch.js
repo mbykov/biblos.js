@@ -8,7 +8,6 @@ import { setDBs } from '/home/michael/a/loigos/dist/lib/pouch'
 
 export function test() {
   log('testing...')
-  log(antrax)
 }
 
 // const upath = app.getPath("userData")
@@ -18,9 +17,9 @@ let dnames = ['lsjn']
 setDBs(upath, dnames)
 
 ipcMain.on('queryDBs', (event, query) => {
-  log('TEST QUERY___', query)
-  antrax(query.query).then(chains => {
-    console.log('RES:', chains)
+  antrax(query.query).then(res => {
+    console.log('RES:', query, res.terms.length, res.muts.length)
+    BrowserWindow.getFocusedWindow().webContents.send('query-result', res)
   }).catch(function (err) {
     console.log('ANTRAX-ERR', err)
   })
