@@ -26,13 +26,6 @@ if (!state || !state.lang) {
 }
 navigate(state)
 
-window.onbeforeunload = function () {
-  // let state = settings.get('state')
-  settings.set('state', state)
-  ipcRenderer.send('unload', state)
-}
-
-
 ipcRenderer.on('section', function (event, section) {
   // let state = settings.get('state')
   state.sec = section
@@ -61,17 +54,34 @@ clipboard
 let progress = q('#progress')
 let message = q('#message')
 
-// let home = q('#home_en')
-// home.classList.remove('is-hidden')
-
 document.addEventListener('click', (ev) => {
-  let data = ev.target.dataset
-  if (!data) return
-  // let state = settings.get('state')
-  if (ev.target.classList.contains('external')) {
-    let href = ev.target.textContent
+  let el = ev.target
+  let data = el.dataset
+  if (el.classList.contains('external')) {
+    let href = el.textContent
     shell.openExternal(href)
-  } else if (data.href) {
+  } else if (el.classList.contains('dict-dname')) {
+    log('D-DNAME', el)
+    state.sec = 'dict-edit'
+    navigate(state)
+  } else if (el.classList.contains('dict-header') || el.classList.contains('dict-rdict')) {
+    let ocont = el.closest('.dict-container')
+    let ofls = ocont.querySelector('.dict-fls')
+    let otrns = ocont.querySelector('.dict-trns')
+    if (ofls.classList.contains('is-hidden')) ofls.classList.remove('is-hidden')
+    else ofls.classList.add('is-hidden')
+    if (otrns.classList.contains('is-hidden')) otrns.classList.remove('is-hidden')
+    else otrns.classList.add('is-hidden')
+  } else if (el.classList.contains('dict-trns-li')) {
+    let ohidden = el.querySelector('.is-hidden')
+    if (ohidden) ohidden.classList.remove('is-hidden')
+    else {
+      ohidden = el.querySelector('.dict-trns-li-hidden')
+      ohidden.classList.add('is-hidden')
+    }
+  }
+  if (!data) return
+  if (data.href) {
     let over = q("#new-version")
     over.classList.add('is-hidden')
     shell.openExternal(data.href)
@@ -82,19 +92,20 @@ document.addEventListener('click', (ev) => {
 })
 
 document.addEventListener("mouseover", function(ev) {
-  if (!ev.target.textContent) return
+  let el = ev.target
+  if (!el.textContent) return
   if (ev.ctrlKey == true) return
-  // let tpar = ev.target.closest('.tibpar')
+  // let tpar = el.closest('.tibpar')
   // if (tpar) hidePopups()
 
-  if (ev.target.classList.contains('active-form')) {
+  if (el.classList.contains('active-form')) {
     if (ev.shiftKey != true) {
-      queryDBs(ev.target)
+      queryDBs(el)
     }
-  // } else if (ev.target.classList.contains('tibwf')) {
-    // showResults(ev.target)
-  // } else if (ev.target.classList.contains('tibambi')) {
-    // showPopup(ev.target) // mouseover, tibambi
+  // } else if (el.classList.contains('tibwf')) {
+    // showResults(el)
+  // } else if (el.classList.contains('tibambi')) {
+    // showPopup(el) // mouseover, tibambi
   }
 }, false)
 

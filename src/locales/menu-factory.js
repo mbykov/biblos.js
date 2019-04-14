@@ -2,6 +2,8 @@ const Menu = require('electron').Menu;
 const config = require('../configs/app.config');
 // import env from "env";
 
+import { leftMenuTemplate } from "../menu/left_menu_template";
+import { rightMenuTemplate } from "../menu/right_menu_template";
 import { fileMenuTemplate } from "../menu/file_menu_template";
 import { dictMenuTemplate } from "../menu/dict_menu_template";
 import { bookMenuTemplate } from "../menu/book_menu_template";
@@ -21,7 +23,7 @@ const log = console.log
 // const platform = process.platform;
 
 export function MenuFactory(lang) {
-  const menus = [fileMenuTemplate(), dictMenuTemplate(), bookMenuTemplate(), aboutMenuTemplate(), helpMenuTemplate()];
+  const menus = [leftMenuTemplate, rightMenuTemplate, fileMenuTemplate(), dictMenuTemplate(), bookMenuTemplate(), aboutMenuTemplate(), helpMenuTemplate()];
 
   // if (env.name !== "production") {
   //   menus.push(devMenuTemplate);

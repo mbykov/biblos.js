@@ -27,6 +27,17 @@ let hstate = 0
 let split
 let state
 
+window.onbeforeunload = function () {
+  // let state = settings.get('state')
+  settings.set('state', state)
+  ipcRenderer.send('unload', state)
+}
+
+ipcRenderer.on('action', function (event, action) {
+  if (action == 'goleft') goLeft()
+  else if (action == 'goright') goRight()
+})
+
 function twoPanes(state) {
   if (split) return
   let sizes = settings.get('split-sizes') || config.splitSizes
@@ -99,40 +110,17 @@ Mousetrap.bind(['ctrl+0'], function(ev) {
 function goLeft() {
   if (hstate <= 0) return
   else hstate--
-  let state = history[hstate]
-  state.old = true
+  state = history[hstate]
+  state.arrow = true
   navigate(state)
 }
 
 function goRight() {
   if (hstate >= history.length-1) return
   else hstate++
-  let state = history[hstate]
-  state.old = true
+  state = history[hstate]
+  state.arrow = true
   navigate(state)
-}
-
-export function navigate(state) {
-  showSection(state)
-
-  // бред?
-  if (!state.old) {
-    state.old = false
-    delete state.old
-    history.push(state)
-    hstate = history.length-1
-  }
-
-  if (state.sec == 'main') twoPanes(state), showText(state)
-  else if (state.sec == 'remote-dicts') remoteDicts()
-  else if (state.sec == 'db-info') remoteDBInfo(state)
-  // else if (section == 'activedicts') showActiveDicts()
-
-  let progress = q('#progress')
-  progress.classList.add('is-hidden')
-
-  // log('nav:state:', state)
-  settings.set('state', state)
 }
 
 function showSection(state) {
@@ -147,6 +135,29 @@ function showSection(state) {
 
   q(sectionId).classList.remove('is-hidden')
   hidePopups ()
+}
+
+export function navigate(state) {
+  showSection(state)
+
+  if (state.arrow) {
+    state.arrow = false
+  } else {
+    let oldstate = _.clone(state)
+    history.push(oldstate)
+    hstate = history.length-1
+  }
+
+  if (state.sec == 'main') twoPanes(state), showText(state)
+  else if (state.sec == 'remote-dicts') remoteDicts()
+  else if (state.sec == 'db-info') remoteDBInfo(state)
+  // else if (section == 'activedicts') showActiveDicts()
+
+  let progress = q('#progress')
+  progress.classList.add('is-hidden')
+
+  // log('nav:state:', state)
+  settings.set('state', state)
 }
 
 function hidePopups () {

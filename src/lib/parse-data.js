@@ -67,16 +67,18 @@ function showDicts(dicts) {
     oformhead.textContent = rdict.seg
     owf.appendChild(oformhead)
     rdict.dicts.forEach(dict=> {
+      let odict = create('div', 'dict-container')
+      owf.appendChild(odict)
       let odicthead = showDictHeader(dict)
-      owf.appendChild(odicthead)
+      odict.appendChild(odicthead)
       let morphs = parseMorphs(dict)
       if (morphs) {
         let oMorph = createMorph(morphs)
-        owf.appendChild(oMorph)
+        odict.appendChild(oMorph)
       }
       if (dict.trns) {
         let otrns = createTrns(dict)
-        owf.appendChild(otrns)
+        odict.appendChild(otrns)
       }
     })
   })
@@ -85,7 +87,6 @@ function showDicts(dicts) {
 function showDictHeader(dict) {
   let odicthead = create('div', 'dict-header')
   let odname = span(dict.dname, 'dict-dname')
-  log('DNAME', dict)
   odicthead.appendChild(odname)
   let ordict = span(dict.rdict, 'dict-rdict')
   odicthead.appendChild(ordict)
@@ -93,7 +94,6 @@ function showDictHeader(dict) {
     let ogends = span(dict.gends.toString(), 'dict-gends')
     odicthead.appendChild(ogends)
   }
-
   return odicthead
 }
 
@@ -138,9 +138,17 @@ function createTrns (dict) {
   let otrns = create('ul', 'dict-trns')
   if (!dict.trns) dict.trns = ['no transtation in this dict article']
   dict.trns.forEach(trn => {
-    let otrn = create('li')
-    let str = trn.split('(').join('<span class="grey">').split(')').join('</span>')
-    otrn.innerHTML = str
+    let otrn = create('li', 'dict-trns-li')
+    let parts = trn.split(/ [A-Z]/)
+    let shown = parts[0]
+    // let oshown = span(shown)
+    let hidden = trn.replace(shown, '')
+    let html = hidden.split('(').join('<span class="grey">').split(')').join('</span>')
+    let ohidden = span('', 'is-hidden')
+    ohidden.innerHTML = html
+    ohidden.classList.add('dict-trns-li-hidden')
+    otrn.innerHTML = shown
+    otrn.appendChild(ohidden)
     otrns.appendChild(otrn)
   })
   return otrns
