@@ -81,6 +81,7 @@ h4 {
     padding-top: 25px;
     padding-bottom: 25px;
     overflow-y: hidden;
+    line-height: 1.5;
     /* overflow-x: hidden; */
 }
 
@@ -417,6 +418,11 @@ div.qtext > p.hidden {
   padding-left: 5px;
   padding-right: 5px;
 }
+
+span.active-form:hover {
+    background-color: #eee8aa;
+}
+
 
 .dict-div {
 }

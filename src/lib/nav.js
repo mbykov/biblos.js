@@ -1,6 +1,6 @@
 //
 import _ from "lodash"
-import { remote, ipcRenderer, webFrame } from "electron";
+import { remote, ipcRenderer, webFrame, shell } from "electron";
 import { remoteDicts, remoteDBInfo } from '../dbs/remote'
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
@@ -28,8 +28,8 @@ let split
 let state
 
 window.onbeforeunload = function () {
-  // let state = settings.get('state')
-  settings.set('state', state)
+  let state = settings.get('state')
+  // settings.set('state', state)
   ipcRenderer.send('unload', state)
 }
 
@@ -70,6 +70,16 @@ Mousetrap.bind(['esc'], function(ev) {
 Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
   if (ev.which == 37) goLeft()
   else if (ev.which == 39) goRight()
+})
+
+Mousetrap.bind(['ctrl+p'], function(ev) {
+  let el = q('span.active-form:hover')
+  log('P', el)
+  if (!el.classList.contains('active-form')) return
+  let href = ['http://www.perseus.tufts.edu/hopper/morph?l=', el.textContent , '&la=greek#lexicon'].join('')
+  log('HREF', href)
+  shell.openExternal(href)
+
 })
 
 Mousetrap.bind(['ctrl+j'], function(ev) {

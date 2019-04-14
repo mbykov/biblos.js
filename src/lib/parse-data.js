@@ -44,7 +44,9 @@ export function queryDBs(el, compound) {
 }
 
 function showResult(res) {
-  log('CHAINS', res)
+  // log('CHAINS', res)
+  let ores = q('#result')
+  empty(ores)
   // if (res.terms) showTerms(res.terms)
   if (res.dicts) showDicts(res.dicts) // res.dicts.forEach(chain=> { showMutable(chain) })
   if (!res.dicts && !res.terms) showNoResult()
@@ -60,7 +62,7 @@ function showTerms(terms) {
 function showDicts(dicts) {
   let ores = q('#result')
   dicts.forEach(rdict=> {
-    log('DICT:', rdict)
+    // log('DICT:', rdict)
     let owf = create('div', 'dict-div')
     ores.appendChild(owf)
     let oformhead = create('div', 'dict-query')
