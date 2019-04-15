@@ -47,42 +47,70 @@ function showResult(res) {
   // log('CHAINS', res)
   let ores = q('#result')
   empty(ores)
-  // if (res.terms) showTerms(res.terms)
-  if (res.dicts) showDicts(res.dicts) // res.dicts.forEach(chain=> { showMutable(chain) })
-  if (!res.dicts && !res.terms) showNoResult()
+  log('R', res)
+  if (res.terms) showTerms(res.terms)
+  if (res.chains) showChains(res.chains)
+  if (!res.chains && !res.terms) showNoResult()
 }
 
 function showNoResult() {
   log('NO RESULT')
 }
 function showTerms(terms) {
-  log('Terms:', terms.length)
+  log('Terms:', terms)
+  terms.forEach(term=> {
+    showTerm(term)
+  })
 }
 
-function showDicts(dicts) {
+function showTerm(dict) {
+  log('Term:', dict)
   let ores = q('#result')
-  dicts.forEach(rdict=> {
-    // log('DICT:', rdict)
-    let owf = create('div', 'dict-div')
-    ores.appendChild(owf)
-    let oformhead = create('div', 'dict-query')
-    oformhead.textContent = rdict.seg
-    owf.appendChild(oformhead)
-    rdict.dicts.forEach(dict=> {
-      let odict = create('div', 'dict-container')
-      owf.appendChild(odict)
-      let odicthead = showDictHeader(dict)
-      odict.appendChild(odicthead)
-      let morphs = parseMorphs(dict)
-      if (morphs) {
-        let oMorph = createMorph(morphs)
-        odict.appendChild(oMorph)
-      }
-      if (dict.trns) {
-        let otrns = createTrns(dict)
-        odict.appendChild(otrns)
-      }
-    })
+  // log('DICT:', rdict)
+  let owf = create('div', 'dict-div')
+  ores.appendChild(owf)
+  let oformhead = create('div', 'dict-query')
+  oformhead.textContent = dict.term
+  owf.appendChild(oformhead)
+  let odict = create('div', 'dict-container')
+  owf.appendChild(odict)
+  let odicthead = showDictHeader(dict)
+  odict.appendChild(odicthead)
+  if (dict.trns) {
+    let otrns = createTrns(dict)
+    odict.appendChild(otrns)
+  }
+}
+
+function showChains(chains) {
+  chains.forEach(chain=> {
+    let lastseg = _.last(chain)
+    showLastSeg(lastseg)
+  })
+}
+
+function showLastSeg(rdict) {
+  let ores = q('#result')
+  // log('DICT:', rdict)
+  let owf = create('div', 'dict-div')
+  ores.appendChild(owf)
+  let oformhead = create('div', 'dict-query')
+  oformhead.textContent = rdict.seg
+  owf.appendChild(oformhead)
+  rdict.dicts.forEach(dict=> {
+    let odict = create('div', 'dict-container')
+    owf.appendChild(odict)
+    let odicthead = showDictHeader(dict)
+    odict.appendChild(odicthead)
+    let morphs = parseMorphs(dict)
+    if (morphs) {
+      let oMorph = createMorph(morphs)
+      odict.appendChild(oMorph)
+    }
+    if (dict.trns) {
+      let otrns = createTrns(dict)
+      odict.appendChild(otrns)
+    }
   })
 }
 

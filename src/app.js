@@ -68,8 +68,8 @@ document.addEventListener('click', (ev) => {
     let ocont = el.closest('.dict-container')
     let ofls = ocont.querySelector('.dict-fls')
     let otrns = ocont.querySelector('.dict-trns')
-    if (ofls.classList.contains('is-hidden')) ofls.classList.remove('is-hidden')
-    else ofls.classList.add('is-hidden')
+    if (ofls && ofls.classList.contains('is-hidden')) ofls.classList.remove('is-hidden')
+    else if (ofls) ofls.classList.add('is-hidden')
     if (otrns.classList.contains('is-hidden')) otrns.classList.remove('is-hidden')
     else otrns.classList.add('is-hidden')
   } else if (el.classList.contains('dict-trns-li')) {

@@ -13,7 +13,8 @@ export function test() {
 // const upath = app.getPath("userData")
 let upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 
-let dnames = ['lsjn']
+// terms, flex - defaults
+let dnames = ['wkt']
 setDBs(upath, dnames)
 
 ipcMain.on('queryDBs', (event, query) => {
