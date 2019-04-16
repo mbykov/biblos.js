@@ -47,7 +47,7 @@ function showResult(res) {
   // log('CHAINS', res)
   let ores = q('#result')
   empty(ores)
-  log('R', res)
+  // log('R', res)
   if (res.terms) showTerms(res.terms)
   if (res.chains) showChains(res.chains)
   if (!res.chains && !res.terms) showNoResult()
@@ -64,7 +64,7 @@ function showTerms(terms) {
 }
 
 function showTerm(dict) {
-  log('Term:', dict)
+  // log('Term:', dict)
   let ores = q('#result')
   // log('DICT:', rdict)
   let owf = create('div', 'dict-div')
