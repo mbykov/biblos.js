@@ -57,14 +57,12 @@ function showNoResult() {
   log('NO RESULT')
 }
 function showTerms(terms) {
-  log('Terms:', terms)
   terms.forEach(term=> {
     showTerm(term)
   })
 }
 
 function showTerm(dict) {
-  // log('Term:', dict)
   let ores = q('#result')
   // log('DICT:', rdict)
   let owf = create('div', 'dict-div')
