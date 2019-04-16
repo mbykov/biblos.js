@@ -64,7 +64,11 @@ document.addEventListener('click', (ev) => {
     log('D-DNAME', el)
     state.sec = 'dict-edit'
     navigate(state)
-  } else if (el.classList.contains('dict-header') || el.classList.contains('dict-rdict')) {
+  } else if (el.classList.contains('dict-query')) {
+    let odictCont = el.nextSibling
+    if (odictCont && odictCont.classList.contains('is-hidden')) odictCont.classList.remove('is-hidden')
+    else if (odictCont) odictCont.classList.add('is-hidden')
+  } else if (el.classList.contains('dict-header') || el.classList.contains('dict-rdict') || el.classList.contains('dict-pos') || el.classList.contains('dict-gends')) {
     let ocont = el.closest('.dict-container')
     let ofls = ocont.querySelector('.dict-fls')
     let otrns = ocont.querySelector('.dict-trns')
@@ -136,5 +140,11 @@ function scrollPane(ev) {
   let delta = (ev.deltaY > 0) ? 32 : -32
   let opane = q('.section:not(.is-hidden)')
   if (!opane) return
+  let  topPos = opane.offsetTop;
   opane.scrollTop += delta
+  // opane.scrollTop = 300
+  let oresult = q('#result')
+  oresult.scrollTop += delta
+  let osource = q('#source')
+  osource.scrollTop += delta
 }

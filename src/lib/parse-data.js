@@ -76,6 +76,11 @@ function showTerm(dict) {
   owf.appendChild(odict)
   let odicthead = showDictHeader(dict)
   odict.appendChild(odicthead)
+  let morphs = parseMorphs(dict)
+  if (morphs) {
+    let oMorph = createMorph(morphs)
+    odict.appendChild(oMorph)
+  }
   if (dict.trns) {
     let otrns = createTrns(dict)
     odict.appendChild(otrns)
@@ -123,13 +128,17 @@ function showDictHeader(dict) {
   if (dict.gends) {
     let ogends = span(dict.gends.toString(), 'dict-gends')
     odicthead.appendChild(ogends)
+  } else if (dict.term && dict.pos) {
+    let opos = span(dict.pos, 'dict-pos')
+    odicthead.appendChild(opos)
   }
   return odicthead
 }
 
 function parseMorphs (dict) {
   let morphs
-  let fls = dict.fls
+  let fls = dict.fls || dict.morphs
+  if (!fls) return
   if (dict.pos == 'verb') {
     let vfls = _.filter(fls, flex=> { return flex.numper })
     let pfls = _.filter(fls, flex=> { return flex.numcase })
@@ -169,7 +178,7 @@ function createTrns (dict) {
   if (!dict.trns) dict.trns = ['no transtation in this dict article']
   dict.trns.forEach(trn => {
     let otrn = create('li', 'dict-trns-li')
-    let parts = trn.split(/ [A-Z]/)
+    let parts = trn.split(/, [A-Z]| [A-Z][^ ]*[0-9]/)
     let shown = parts[0]
     // let oshown = span(shown)
     let hidden = trn.replace(shown, '')
