@@ -27,7 +27,6 @@ if (!state || !state.lang) {
 navigate(state)
 
 ipcRenderer.on('section', function (event, section) {
-  // let state = settings.get('state')
   state.sec = section
   navigate(state)
 })

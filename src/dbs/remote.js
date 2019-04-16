@@ -52,9 +52,8 @@ export function remoteDicts() {
 
 function showRemoteDicts(dbinfos) {
   let cfg = settings.get('cfg') || []
-  let lang = settings.get('lang') || 'eng'
-  let locals = cfg.map(dict=> { return dict.dname })
-  let installed = _.uniq(locals)
+  let state = settings.get('state')
+  let locals = _.uniq(cfg.map(dict=> { return dict.dname }))
 
   let obefore = q('#before-remote-table')
   if (!obefore) return
@@ -62,7 +61,7 @@ function showRemoteDicts(dbinfos) {
   let otable = q('#table-remote')
   if (otable) empty(otable)
   else {
-    let sec_id = ['#remote-dicts', lang].join('_')
+    let sec_id = ['#remote-dicts', state.lang].join('_')
     let osection = q(sec_id)
     otable = createRemoteTable()
     osection.appendChild(otable)
@@ -87,7 +86,7 @@ function showRemoteDicts(dbinfos) {
     oinfo.dataset.dinfo = rdb.dname
     otr.appendChild(oinfo)
     let olink = create('td', 'link')
-    if (installed.includes(rdb.dname)) {
+    if (locals.includes(rdb.dname)) {
       let check = checkmark()
       olink.appendChild(check)
     } else {
@@ -164,5 +163,8 @@ export function localDicts() {
 }
 
 function showLocalDicts() {
-  log('SHOW LOCAL DICTS')
+  let cfg = settings.get('cfg') || []
+  let state = settings.get('state')
+  let locals = _.uniq(cfg.map(dict=> { return dict.dname }))
+  log('SHOW LOCAL DICTS', cfg)
 }
