@@ -15,6 +15,7 @@ let upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)'
 
 // terms, flex - defaults
 let dnames = ['wkt', 'lsj']
+// let dnames = ['wkt']
 setDBs(upath, dnames)
 
 ipcMain.on('queryDBs', (event, query) => {
@@ -22,6 +23,6 @@ ipcMain.on('queryDBs', (event, query) => {
     // console.log('RES:', query, res)
     BrowserWindow.getFocusedWindow().webContents.send('query-result', res)
   }).catch(function (err) {
-    console.log('ANTRAX-ERR', err)
+    console.log('ANTRAX-ERR', query, err)
   })
 })

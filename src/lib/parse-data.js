@@ -44,7 +44,7 @@ export function queryDBs(el, compound) {
 }
 
 function showResult(res) {
-  // log('CHAINS', res)
+  log('RES', res)
   let ores = q('#result')
   empty(ores)
   // log('R', res)
