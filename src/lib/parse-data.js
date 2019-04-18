@@ -137,7 +137,7 @@ function parseMorphs (dict) {
   let morphs
   let fls = dict.fls || dict.morphs
   if (!fls) return
-  if (dict.pos == 'verb') {
+  if (dict.verb) {
     let vfls = _.filter(fls, flex=> { return flex.numper })
     let pfls = _.filter(fls, flex=> { return flex.numcase })
     let ifls = _.filter(fls, flex=> { return !flex.numcase && !flex.numper })
