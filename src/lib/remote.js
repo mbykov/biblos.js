@@ -50,9 +50,9 @@ let descr = {
 let wkt = {
   "_id": "description",
   "name": "wkt",
-  "lang": "grc, rus",
+  "lang": "grc, eng",
   "source": "https://en.wiktionary.org/wiki/Category:Ancient_Greek_lemmas",
-  "email": "m.bykov#gmail.com"
+  "email": "m.bykov@gmail.com"
 }
 
 
