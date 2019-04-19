@@ -9,13 +9,14 @@ import { antrax, checkConnection } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
 
 const log = console.log
-// const nano = require('nano')('http://guest:guest@diglossa.org:5984');
+// const nano = require('nano')('http://guest:guest@diglossa.org:5984')
 const nano = require('nano')('http://guest:guest@localhost:5984');
 
 initDBs()
 
 // пока что terms отдельно от wkt
 function initDBs() {
+  remoteDicts()
   let upath = app.getPath("userData")
   // log('FIRST UPATH', upath)
   upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
@@ -34,41 +35,27 @@ function initCfg(upath) {
   let pouchpath = path.resolve(upath, 'pouch')
   let dnames = fse.readdirSync(pouchpath)
   let cfg = dnames.map((dname, idx)=> { return {dname: dname, active: true, idx: idx} })
-  log('NCFG', cfg)
   settings.set('cfg', cfg)
   return cfg
 }
 
-let descr = {
-  "_id": "description",
-  "name": "И.Х.Дворецкий",
-  "lang": "grc, rus",
-  "source": "https://wiki.lingvoforum.net/wiki/index.php/Книги/Древнегреческо-русский_словарь_Дворецкого/0",
-  "email": "m.bykov#gmail.com"
-}
-
-let wkt = {
-  "_id": "description",
-  "name": "wkt",
-  "lang": "grc, eng",
-  "source": "https://en.wiktionary.org/wiki/Category:Ancient_Greek_lemmas",
-  "email": "m.bykov@gmail.com"
-}
-
-
 export function remoteDicts() {
-  nano.db.list().then((dnlist) => {
+  log('remote start')
+  nano.db.list().then(dnlist => {
+    // log('nano-dnlist', dnlist)
     let defaults = ['_users', '_replicator']
     let dnames = _.difference(dnlist, defaults)
+    log('nano-dnames', dnames)
     Promise.all(dnames.map(function(dname) {
       return nano.db.get(dname).then((info) => {
         let db = nano.use(dname)
-        return db.get('description').then((descr)=> {
-          let description = {dname: dname, size: info.doc_count}
-          if (descr) description.descr = descr
-          return description
+        // log('nano-use', dname)
+        return db.get('description').then(descr=> {
+          return {dname: dname, size: info.doc_count, descr: descr}
         }).catch(err=> {
-          return {dname: dname, size: info.doc_count}
+          // log('get-descr-err')
+          return {kuku: true}
+          // return {dname: dname, size: info.doc_count}
         })
       })
     })).then(dbinfos=> {
@@ -76,6 +63,8 @@ export function remoteDicts() {
       dbinfos = _.filter(dbinfos, dbinfo=> { return dbinfo.descr && dbinfo.descr.langs && dbinfo.descr.langs.split(/,? /).includes(config.code) })
       settings.set('dbinfos', dbinfos)
       showRemoteDicts(dbinfos)
+    }).catch(err=>{
+      log('remote-list-err:', err)
     })
   })
 }
@@ -158,10 +147,10 @@ function checkmark() {
 }
 
 export function remoteDBInfo(state) {
-  log('DINFOstate:', state)
+  // log('DINFOstate:', state)
   let dbinfos = settings.get('dbinfos')
   let dbinfo = _.find(dbinfos, dbinfo=> { return dbinfo.dname == state.dname})
-  log('DINFO:', dbinfo)
+  // log('DINFO:', dbinfo)
 }
 
 function createInfoTable() {
