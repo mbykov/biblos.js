@@ -195,11 +195,78 @@ export function localDicts() {
 function showLocalDicts() {
   let cfg = settings.get('cfg')
   if (!cfg) return
-  // let state = settings.get('state')
-  // let dnames = _.uniq(cfg.map(dict=> { return dict.dname }))
+  let state = settings.get('state')
+  let dnames = _.uniq(cfg.map(dict=> { return dict.dname }))
   log('SHOW LOCAL DICTS', cfg)
+  let obefore = q('#before-local-table')
+  if (!obefore) return
+  obefore.textContent = ''
+  let otable = q('#table-local')
+  if (otable) empty(otable)
+  else {
+    let sec_id = ['#arrange-dicts', state.lang].join('_')
+    let osection = q(sec_id)
+    if (!osection) return
+    otable = createLocalTable()
+    osection.appendChild(otable)
+  }
+  let oheader = q('#table-header-local')
+  let dbinfos = settings.get('dbinfos')
+  log('DIN', dbinfos)
+
+  dbinfos.forEach(rdb=> {
+    if (!dnames.includes(rdb.dname)) return
+    let otr = create('tr')
+    otable.appendChild(otr)
+    // insertAfter(otr, oheader)
+    let odt = create('td')
+    otr.appendChild(odt)
+    odt.textContent = rdb.descr.name
+    let osize = create('td', 'dsize')
+    osize.textContent = rdb.size
+    otr.appendChild(osize)
+    let olang = create('td', 'dlang')
+    olang.textContent = rdb.descr.langs
+    otr.appendChild(olang)
+    let oinfo = create('td', 'dinfo')
+    oinfo.textContent = 'info'
+    oinfo.dataset.dinfo = rdb.dname
+    otr.appendChild(oinfo)
+
+    // let olink = create('td', 'link')
+    // if (dnames.includes(rdb.dname)) {
+    //   let check = checkmark()
+    //   olink.appendChild(check)
+    // } else {
+    //   olink.textContent = 'sync'
+    // }
+    // olink.dataset.clone = rdb.dname
+    // otr.appendChild(olink)
+  })
+
 }
 
 export function queryRemote(query, compound) {
   return antrax(query, compound)
+}
+
+function createLocalTable() {
+  let otable = create('table', 'dicts-table')
+  otable.id = 'table-local'
+  let oheader = create('tr', 'table-header')
+  oheader.id = 'table-header-local'
+  otable.appendChild(oheader)
+  let odname = create('td')
+  odname.textContent = 'dict\'s name'
+  oheader.appendChild(odname)
+  let osize = create('td')
+  osize.textContent = 'docs'
+  oheader.appendChild(osize)
+  let olang = create('td')
+  olang.textContent = 'langs'
+  oheader.appendChild(olang)
+  let oinfo = create('td')
+  oinfo.textContent = 'info'
+  oheader.appendChild(oinfo)
+  return otable
 }
