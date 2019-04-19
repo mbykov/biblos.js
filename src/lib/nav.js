@@ -1,7 +1,7 @@
 //
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
-import { remoteDicts, remoteDBInfo, localDicts } from '../dbs/remote'
+import { remoteDicts, remoteDBInfo, localDicts } from './remote'
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { config } from '../configs/app.config'

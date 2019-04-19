@@ -7,7 +7,7 @@
 <a href="#" data-section="remote-dicts">Replicate</a> dictionaries from server,
 or <a href="#" data-section="csv">import</a> dictionary from CSV file.
 
-<a href="#" data-section="activedicts">Arrage, activate, delete</a> them as you like.
+<a href="#" data-section="arrange-dicts">Arrage, activate, delete</a> them as you like.
 
 &nbsp;
 

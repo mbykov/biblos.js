@@ -1,6 +1,7 @@
 import _ from 'lodash'
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, getInnermostHovered } from './utils'
 import { ipcRenderer } from "electron";
+import { queryRemote } from "./remote";
 const settings = require('electron').remote.require('electron-settings')
 const log = console.log
 let progress = q('#progress')
@@ -31,20 +32,28 @@ export function showText(state) {
     osource.appendChild(opar)
   })
 
-  // let actives = qs('span.active-forn')
+  // let actives = qs('span.active-form')
   // if (actives.length == 1) showResults(actives[0].textContent)
 }
 
 export function queryDBs(el, compound) {
   progress.classList.remove('is-hidden')
   let str = el.textContent.trim()
-  let query = {query: str}
-  if (compound) query.compound = true
-  ipcRenderer.send('queryDBs', query)
+  // let query = {query: str}
+  // if (compound) query.compound = true
+  queryRemote(str).then(res => {
+    if (!res) return
+    showResult(res)
+  }).catch(function (err) {
+    console.log('ANTRAX-ERR', str, err)
+  })
+
+  // ipcRenderer.send('queryDBs', query)
+  // XXX
 }
 
 function showResult(res) {
-  // log('RES', res)
+  progress.classList.add('is-hidden')
   let ores = q('#result')
   empty(ores)
   // log('R', res)

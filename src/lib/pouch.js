@@ -10,8 +10,10 @@ export function test() {
   log('testing...')
 }
 
-// const upath = app.getPath("userData")
-let upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
+const upath = app.getPath("userData")
+log('FIRST UPATH', upath)
+upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
+log('UPATH', upath)
 
 // terms, flex - defaults
 let dnames = ['wkt', 'dvr', 'lsj']

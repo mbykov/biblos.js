@@ -13,8 +13,10 @@ const log = console.log
 const config = require('./configs/app.config');
 // import { antrax } from 'antrax'
 // import { antrax } from '/home/michael/greek/antrax'
-import { test } from './lib/pouch'
-test()
+
+// теперь remote checkConnection
+// import { test } from './lib/pouch'
+// test()
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
@@ -80,10 +82,10 @@ app.on("ready", () => {
     settings.set('winBounds', win.getBounds())
   })
 
-  // const apath = app.getAppPath()
-  // const upath = app.getPath("userData")
-  // settings.set('apath', apath)
-  // settings.set('upath', upath)
+  const apath = app.getAppPath()
+  const upath = app.getPath("userData")
+  settings.set('apath', apath)
+  settings.set('upath', upath)
 
 });
 
