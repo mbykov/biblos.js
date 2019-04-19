@@ -1,25 +1,43 @@
 import _ from "lodash"
 import { ipcRenderer } from "electron";
+const { app } = require('electron').remote
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, insertAfter } from '../lib//utils'
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../configs/app.config'
 import path from "path";
-
 import { antrax, checkConnection } from '/home/michael/a/loigos'
+const fse = require('fs-extra')
 
 const log = console.log
 // const nano = require('nano')('http://guest:guest@diglossa.org:5984');
 const nano = require('nano')('http://guest:guest@localhost:5984');
 
-// const upath1 =  settings.get('upath')
-// log('FIRST UPATH', upath1)
-const upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
-log('UPATH', upath)
+initDBs()
 
-// terms, flex - defaults
-let dnames = ['wkt', 'dvr', 'lsj']
-// let dnames = ['wkt']
-checkConnection(upath, dnames)
+// пока что terms отдельно от wkt
+function initDBs() {
+  let upath = app.getPath("userData")
+  // log('FIRST UPATH', upath)
+  upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
+  // log('UPATH', upath)
+
+  let cfg = settings.get('cfg')
+  if (cfg) return
+  cfg = initCfg(upath)
+  let dnames = cfg.map(dict=> { return dict.dname })
+  dnames = ['wkt', 'dvr', 'lsj']
+  // let dnames = ['wkt']
+  checkConnection(upath, dnames)
+}
+
+function initCfg(upath) {
+  let pouchpath = path.resolve(upath, 'pouch')
+  let dnames = fse.readdirSync(pouchpath)
+  let cfg = dnames.map((dname, idx)=> { return {dname: dname, active: true, idx: idx} })
+  log('NCFG', cfg)
+  settings.set('cfg', cfg)
+  return cfg
+}
 
 let descr = {
   "_id": "description",
@@ -175,22 +193,13 @@ export function localDicts() {
 }
 
 function showLocalDicts() {
-  let cfg = settings.get('cfg') || []
-  let state = settings.get('state')
-  let locals = _.uniq(cfg.map(dict=> { return dict.dname }))
+  let cfg = settings.get('cfg')
+  if (!cfg) return
+  // let state = settings.get('state')
+  // let dnames = _.uniq(cfg.map(dict=> { return dict.dname }))
   log('SHOW LOCAL DICTS', cfg)
 }
 
-ipcRenderer.on('queryDBs', (event, query) => {
-  log('QUERY-from-REMOTE:', query)
-  antrax(query.query).then(res => {
-    log('RES-from-REMOTE:', query, res)
-    // BrowserWindow.getFocusedWindow().webContents.send('query-result', res)
-  }).catch(function (err) {
-    console.log('ANTRAX-ERR', query, err)
-  })
-})
-
-export function queryRemote(query) {
-  return antrax(query)
+export function queryRemote(query, compound) {
+  return antrax(query, compound)
 }

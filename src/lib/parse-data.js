@@ -6,10 +6,10 @@ const settings = require('electron').remote.require('electron-settings')
 const log = console.log
 let progress = q('#progress')
 
-ipcRenderer.on('query-result', function (event, chains) {
-  progress.classList.add('is-hidden')
-  showResult(chains)
-})
+// ipcRenderer.on('query-result', function (event, chains) {
+//   progress.classList.add('is-hidden')
+//   showResult(chains)
+// })
 
 export function showText(state) {
   if (!state.pars) return
@@ -39,9 +39,7 @@ export function showText(state) {
 export function queryDBs(el, compound) {
   progress.classList.remove('is-hidden')
   let str = el.textContent.trim()
-  // let query = {query: str}
-  // if (compound) query.compound = true
-  queryRemote(str).then(res => {
+  queryRemote(str, compound).then(res => {
     if (!res) return
     showResult(res)
   }).catch(function (err) {
