@@ -135,15 +135,19 @@ document.addEventListener("wheel", function(ev) {
 }, false)
 
 function scrollPane(ev) {
-  if (ev.shiftKey == true) return;
-  let delta = (ev.deltaY > 0) ? 32 : -32
-  let opane = q('.section:not(.is-hidden)')
-  if (!opane) return
-  let  topPos = opane.offsetTop;
-  opane.scrollTop += delta
-  // opane.scrollTop = 300
-  let oresult = q('#result')
-  oresult.scrollTop += delta
+  let oclosest = ev.target.closest('#source') || ev.target.closest('#result')
+  let closeid = oclosest.id
   let osource = q('#source')
-  osource.scrollTop += delta
+  let oresult = q('#result')
+  let opane
+  if (ev.shiftKey == true || ev.ctrlKey == true) {
+    if (closeid == 'source') opane = oresult
+    else opane = osource
+  } else {
+    opane = oclosest
+  }
+  if (!opane) return
+  let delta = (ev.deltaY > 0) ? 32 : -32
+  // let opane = q('.section:not(.is-hidden)')
+  opane.scrollTop += delta
 }

@@ -14,7 +14,7 @@ export function test() {
 let upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 
 // terms, flex - defaults
-let dnames = ['wkt', 'lsj']
+let dnames = ['wkt', 'dvr', 'lsj']
 // let dnames = ['wkt']
 setDBs(upath, dnames)
 

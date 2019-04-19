@@ -44,7 +44,7 @@ export function queryDBs(el, compound) {
 }
 
 function showResult(res) {
-  log('RES', res)
+  // log('RES', res)
   let ores = q('#result')
   empty(ores)
   // log('R', res)
@@ -158,6 +158,12 @@ function parseMorphs (dict) {
   else if (dict.pos == 'art')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
   else if (dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
   else if (dict.pos == 'part')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
+
+  if (morphs.toString() == '.') {
+    let degree = fls.map(flex => { return flex.degree }).toString()
+    if (degree == 'adv') morphs = ['adverb']
+    else morphs = [['adverb:', degree].join(' ')]
+  }
   return morphs
 }
 
