@@ -48,7 +48,6 @@ export function queryDBs(el, compound) {
 }
 
 function showResult(res) {
-  // log('showResult:', res)
   progress.classList.add('is-hidden')
   let ores = q('#result')
   empty(ores)

@@ -3,8 +3,8 @@ import "./stylesheets/main.css";
 import _ from "lodash"
 import { remote, ipcRenderer, shell } from "electron";
 import env from "env";
-import sband from "../../../sband"
-// import sband from "speckled-band"
+// import sband from "../../../sband"
+import sband from "speckled-band"
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
@@ -38,10 +38,14 @@ ipcRenderer.on('lang', function (event, lang) {
   remote.getCurrentWindow().reload()
 })
 
+// let coronis = "᾽"
+// let rscm = "’"
+
 clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
     let pars = sband(txt, config.code)
+    log('SBAND', pars)
     if (!pars) return
     // let state = settings.get('state')
     state.sec = 'main'

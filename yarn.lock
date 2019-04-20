@@ -5797,10 +5797,10 @@ spdx-license-ids@^3.0.0:
   resolved "https://registry.yarnpkg.com/spdx-license-ids/-/spdx-license-ids-3.0.3.tgz#81c0ce8f21474756148bbb5f3bfc0f36bf15d76e"
   integrity sha512-uBIcIl3Ih6Phe3XHK1NqboJLdGfwr1UN3k6wSD1dZpmPsIkb8AGNbZYJ1fOBk834+Gxy8rpfDxrS6XLEMZMY2g==
 
-speckled-band@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/speckled-band/-/speckled-band-2.0.0.tgz#fa464aeb47c23aae39aa3de495ce23b6eadde177"
-  integrity sha512-lDdfZ70pisnb2q5ER6K6pj0CM9ynq2OmkWZWT/DYrbqvr8bQgv2w8qUWjrhW3r4bSeqtwG2acVxVyqgpi1mbWg==
+speckled-band@^3.1.3:
+  version "3.1.3"
+  resolved "https://registry.yarnpkg.com/speckled-band/-/speckled-band-3.1.3.tgz#739fa3dda4376cdeeea2468588c69678390da608"
+  integrity sha512-QwbCUa8PAGM6k5e3HpmZ837A48NXbm0RJATb4NVRiwvDOld8E9vgAoelCVdUv4nts/VByvvy6Ul243Is3T9zeg==
   dependencies:
     lodash "^4.17.11"
 

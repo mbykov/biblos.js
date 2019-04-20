@@ -164,7 +164,7 @@ export function navigate(state) {
   let progress = q('#progress')
   progress.classList.add('is-hidden')
 
-  log('nav:state:', state)
+  // log('nav:state:', state)
   settings.set('state', state)
 }
 
