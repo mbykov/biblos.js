@@ -1,7 +1,7 @@
 //
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
-import { remoteDicts, remoteDBInfo, localDicts } from './remote'
+import { remoteDicts, localDicts, showDBinfo } from './remote'
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { config } from '../configs/app.config'
@@ -158,13 +158,13 @@ export function navigate(state) {
 
   if (state.sec == 'main') twoPanes(state), showText(state)
   else if (state.sec == 'remote-dicts') remoteDicts()
-  else if (state.sec == 'db-info') remoteDBInfo(state)
   else if (state.sec == 'arrange-dicts') localDicts()
+  else if (state.sec == 'db-info') showDBinfo(state)
 
   let progress = q('#progress')
   progress.classList.add('is-hidden')
 
-  // log('nav:state:', state)
+  log('nav:state:', state)
   settings.set('state', state)
 }
 

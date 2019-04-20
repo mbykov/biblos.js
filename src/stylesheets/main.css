@@ -527,3 +527,9 @@ ul.dict-trns {
   color: maroon;
   font-weight: bold;
 }
+
+ul.info-table {
+    line-height: 1.5em;
+    list-style: none;
+
+}

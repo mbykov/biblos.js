@@ -54,25 +54,19 @@ export function remoteDicts() {
   }
 
   request(getopts, function (error, response, body) {
-    if (error) console.error('error:', error)
-    if (response && response.statusCode != 200) {
-      log('statusCode:', response.statusCode)
-      return
-    }
+    if (error) console.error('soket error')
+    if (response && response.statusCode != 200)  return
 
     let dblist = JSON.parse(body)
     let dnames = _.filter(dblist, dict=> { return dict[0] != '_' })
     postopts.body = {keys: dnames}
 
     request(postopts, function (error, response, body) {
-      if (error) console.error('error:', error)
-      if (response && response.statusCode != 200) {
-        log('statusCode:', response.statusCode)
-        return
-      }
+      if (error) console.error('soket error')
+      if (response && response.statusCode != 200) return
       let dbinfos = body.map(dict=> { return {dname: dict.key, size: dict.info.doc_count} })
-      console.log('dbinfos:', dbinfos)
-      console.log('dnames:', dnames)
+      // console.log('dbinfos:', dbinfos)
+      // console.log('dnames:', dnames)
 
       Promise.all(dnames.map(function(dname) {
         let remotepath = ['http://localhost.org:5984/', dname].join('')
@@ -99,20 +93,16 @@ export function remoteDicts() {
             dbinfo.descr = descr
             cleaninfos.push(dbinfo)
           })
-          // settings.set('dbinfos', dbinfos)
-          log('DBINFOS', cleaninfos)
-          showRemoteDicts(dbinfos)
-          // return cleaninfos
+          settings.set('dbinfos', dbinfos)
+          // log('DBINFOS', cleaninfos)
+          showRemoteDicts(cleaninfos)
         })
-
     })
-
   })
 }
 
 
 function showRemoteDicts(dbinfos) {
-  log('_____________showRemoteDicts')
   let cfg = settings.get('cfg') || []
   let state = settings.get('state')
   let locals = _.uniq(cfg.map(dict=> { return dict.dname }))
@@ -121,23 +111,15 @@ function showRemoteDicts(dbinfos) {
   if (!obefore) return
   obefore.textContent = ''
   let otable = q('#table-dicts-remote')
-  let otbody = q('#table-remote-body')
-  log('OT', otable)
-  log('OTB', otbody)
-  if (otable) empty(otbody)
-  else {
-    let sec_id = ['#remote-dicts', state.lang].join('_')
-    let osection = q(sec_id)
-    otable = createRemoteTable()
-    log('OS', osection)
-    osection.appendChild(otable)
-  }
+  if (otable) remove(otable)
+  let sec_id = ['#remote-dicts', state.lang].join('_')
+  let osection = q(sec_id)
+  otable = createRemoteTable()
+  osection.appendChild(otable)
 
   dbinfos.forEach(rdb=> {
-    return
     let otr = create('tr')
-    otbody.appendChild(otr)
-    // insertAfter(otr, oheader)
+    otable.appendChild(otr)
     let odt = create('td')
     otr.appendChild(odt)
     odt.textContent = rdb.descr.name
@@ -166,48 +148,8 @@ function showRemoteDicts(dbinfos) {
 function createRemoteTable() {
   let otable = create('table', 'dicts-table')
   otable.id = 'table-dicts-remote'
-  let oheader = create('th', 'table-header')
+  let oheader = create('tr', 'table-header')
   oheader.id = 'table-header-remote'
-  otable.appendChild(oheader)
-  let oname = create('td')
-  oname.textContent = 'dict\'s name REMOTE'
-  oheader.appendChild(oname)
-  let osize = create('td')
-  osize.textContent = 'docs'
-  oheader.appendChild(osize)
-  let olang = create('td')
-  olang.textContent = 'langs'
-  oheader.appendChild(olang)
-  let oinfo = create('td')
-  oinfo.textContent = 'info'
-  oheader.appendChild(oinfo)
-  let osync = create('td')
-  osync.textContent = 'synchronize!'
-  oheader.appendChild(osync)
-  let otbody = create('tbody', 'table-body')
-  otbody.id = 'table-remote-body'
-  otable.appendChild(otbody)
-  return otable
-}
-
-function checkmark() {
-  let check = create('img', 'dict-check')
-  check.setAttribute('src', '../resources/check.png')
-  return check
-}
-
-export function remoteDBInfo(state) {
-  // log('DINFOstate:', state)
-  let dbinfos = settings.get('dbinfos')
-  let dbinfo = _.find(dbinfos, dbinfo=> { return dbinfo.dname == state.dname})
-  // log('DINFO:', dbinfo)
-}
-
-function createInfoTable() {
-  let otable = create('table', 'db-info-table')
-  otable.id = 'db-info-table'
-  let oheader = create('tr', 'db-info-table-header-remote')
-  oheader.id = 'db-info-table-header-remote'
   otable.appendChild(oheader)
   let oname = create('td')
   oname.textContent = 'dict\'s name'
@@ -225,6 +167,12 @@ function createInfoTable() {
   osync.textContent = 'synchronize!'
   oheader.appendChild(osync)
   return otable
+}
+
+function checkmark() {
+  let check = create('img', 'dict-check')
+  check.setAttribute('src', '../resources/check.png')
+  return check
 }
 
 export function localDicts() {
@@ -271,16 +219,6 @@ function showLocalDicts() {
     oinfo.textContent = 'info'
     oinfo.dataset.dinfo = rdb.dname
     otr.appendChild(oinfo)
-
-    // let olink = create('td', 'link')
-    // if (dnames.includes(rdb.dname)) {
-    //   let check = checkmark()
-    //   olink.appendChild(check)
-    // } else {
-    //   olink.textContent = 'sync'
-    // }
-    // olink.dataset.clone = rdb.dname
-    // otr.appendChild(olink)
   })
 
 }
@@ -308,4 +246,37 @@ function createLocalTable() {
   oinfo.textContent = 'info'
   oheader.appendChild(oinfo)
   return otable
+}
+
+export function showDBinfo(state) {
+  log('INFO', state.dname)
+  let dbinfos = settings.get('dbinfos')
+  let dbinfo = _.find(dbinfos, dbinfo=> { return dbinfo.dname == state.dname})
+  log('DINFO:', dbinfo)
+  let sec_id = ['#db-info', state.lang].join('_')
+  let osection = q(sec_id)
+  let oinfo = q('#db-info-table')
+  if (oinfo) remove(oinfo)
+  oinfo = createInfoTable(dbinfo)
+  osection.appendChild(oinfo)
+}
+
+function createInfoTable(dbinfo) {
+  let oinfo = create('ul', 'info-table')
+  let oremote = create('li', '')
+  oremote.textContent = ['dict\'s remote name: ', dbinfo.dname].join('')
+  oinfo.appendChild(oremote)
+  let oname = create('li', '')
+  oname.textContent = ['dict\'s full name: ', dbinfo.descr.name].join('')
+  oinfo.appendChild(oname)
+  let olangs = create('li', '')
+  olangs.textContent = ['langs: ', dbinfo.descr.langs].join('')
+  oinfo.appendChild(olangs)
+  let osource = create('li', '')
+  osource.textContent = ['source: ', dbinfo.descr.source].join('')
+  oinfo.appendChild(osource)
+  let oeditor = create('li', '')
+  oeditor.textContent = ['editor: ', dbinfo.descr.email].join('')
+  oinfo.appendChild(oeditor)
+  return oinfo
 }

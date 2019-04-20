@@ -88,6 +88,10 @@ document.addEventListener('click', (ev) => {
     let over = q("#new-version")
     over.classList.add('is-hidden')
     shell.openExternal(data.href)
+  } else if (data.dinfo) {
+    state.sec = 'db-info'
+    state.dname = data.dinfo
+    navigate(state)
   } else if (data.section) {
     state.sec = data.section
     navigate(state)
