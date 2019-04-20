@@ -10,26 +10,12 @@ const fse = require('fs-extra')
 
 const log = console.log
 const request = require('request');
-// const nano = require('nano')('http://guest:guest@diglossa.org:5984')
-// const nano = require('nano')('http://guest:guest@localhost:5984');
-// const NodeCouchDb = require('node-couchdb');
-// const diglossa = new NodeCouchDb({
-//   // host: 'diglossa.org',
-//   host: 'localhost',
-//   protocol: 'http',
-//   port: 5984,
-//   auth: {
-//     user: 'guest',
-//     pass: 'guest'
-//   }
-// })
-
+let PouchDB = require('pouchdb')
 
 initDBs()
 
 // пока что terms отдельно от wkt
 function initDBs() {
-  // remoteDicts()
   let upath = app.getPath("userData")
   // log('FIRST UPATH', upath)
   upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
@@ -53,100 +39,80 @@ function initCfg(upath) {
 }
 
 export function remoteDicts() {
-  log('remote start')
-  let dnames = ['lsj', 'dvr', 'comp', 'lobsang', 'terms', 'vasilyev', 'verbs', 'wkt']
-  // getRemoteDicts(dnames)
 
-  const options = {
+  const getopts = {
+    "url": "http://guest:guest@localhost:5984/_all_dbs"
+  }
+
+  const postopts = {
     "method": "POST",
     "url": "http://guest:guest@localhost:5984/_dbs_info",
-    "body": {keys: ['dvr']},
     "json": true,
     "headers": {
       "Content-type": "application/json"
     }
   }
 
-  // const options = {
-  //   "method": "POST",
-  //   "url": "http://guest:guest@localhost:5984/_dbs_info"
-  // }
+  request(getopts, function (error, response, body) {
+    if (error) console.error('error:', error)
+    if (response && response.statusCode != 200) {
+      log('statusCode:', response.statusCode)
+      return
+    }
 
-  // request
-  //   .post({url: url, "keys": [ "lsj", "dvr" ]})
-  //   .on('response', function(response) {
-  //     console.log(response.statusCode) // 200
-  //     console.log(response) // 'image/png'
-  //   })
+    let dblist = JSON.parse(body)
+    let dnames = _.filter(dblist, dict=> { return dict[0] != '_' })
+    postopts.body = {keys: dnames}
 
-  request(options, function (error, response, body) {
-    console.error('error:', error); // Print the error if one occurred
-    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
-    console.log('body:', body); // Print the HTML for the Google homepage.
-  });
+    request(postopts, function (error, response, body) {
+      if (error) console.error('error:', error)
+      if (response && response.statusCode != 200) {
+        log('statusCode:', response.statusCode)
+        return
+      }
+      let dbinfos = body.map(dict=> { return {dname: dict.key, size: dict.info.doc_count} })
+      console.log('dbinfos:', dbinfos)
+      console.log('dnames:', dnames)
 
-  // diglossa.listDatabases()
-  //   .then(dblist=>{
-  //     log('DIG', dblist)
-  //   })
-  // nano.db.list().then(dnlist => {
-  //   let defaults = ['_users', '_replicator']
-  //   let dnames = _.difference(dnlist, defaults)
-  //   log('nano-dnames', dnames)
-  //   getRemoteDicts(dnames)
-  // })
-}
-
-function getRemoteDicts(dnames) {
-  Promise.all(dnames.map(function(dname) {
-    log('DNAME', dname)
-    return nano.db.get(dname)
-      // .then(info => {
-      //   return info
-      // })
-  }))
-    .then(dbinfos => {
-      log('dbinfos', dbinfos)
-    })
-    .catch(err => {
-      log('err', err)
-    })
-}
-
-export function remoteDicts_() {
-  log('remote start')
-  nano.db.list().then(dnlist => {
-    // log('nano-dnlist', dnlist)
-    let defaults = ['_users', '_replicator']
-    let dnames = _.difference(dnlist, defaults)
-    log('nano-dnames', dnames)
-    Promise.all(dnames.map(function(dname) {
-      return nano.db.get(dname).then((info) => {
-        let db = nano.use(dname)
-        // log('nano-use', dname)
-        return db.get('description').then(descr=> {
-          return {dname: dname, size: info.doc_count, descr: descr}
-        }).catch(err=> {
-          // log('get-descr-err')
-          return {kuku: true}
-          // return {dname: dname, size: info.doc_count}
+      Promise.all(dnames.map(function(dname) {
+        let remotepath = ['http://localhost.org:5984/', dname].join('')
+        let remoteDB = new PouchDB(remotepath)
+        return remoteDB.get('description')
+          .then(descr=> {
+            descr.dname = dname
+            return descr
+          })
+          .catch(err=> {
+            if (err.reason == 'missing') return
+            log('REMOTE-ERR:', err.reason)
+          })
+      }))
+        .then(function(descrs) {
+          let code = config.code
+          let recode = new RegExp(code)
+          descrs = _.compact(descrs)
+          descrs = _.filter(descrs, descr=> { return recode.test(descr.langs)})
+          let cleaninfos = []
+          descrs.forEach(descr=> {
+            let dbinfo = _.find(dbinfos, info=> { return info.dname == descr.dname})
+            if (!dbinfo) return
+            dbinfo.descr = descr
+            cleaninfos.push(dbinfo)
+          })
+          // settings.set('dbinfos', dbinfos)
+          log('DBINFOS', cleaninfos)
+          showRemoteDicts(dbinfos)
+          // return cleaninfos
         })
-      })
-    })).then(dbinfos=> {
-      log('remote-promise-all', dbinfos)
-      dbinfos = _.compact(dbinfos)
-      dbinfos = _.filter(dbinfos, dbinfo=> { return dbinfo.descr && dbinfo.descr.langs && dbinfo.descr.langs.split(/,? /).includes(config.code) })
-      settings.set('dbinfos', dbinfos)
-      showRemoteDicts(dbinfos)
-    }).catch(err=>{
-      log('remote-list-err:', err)
+
     })
+
   })
 }
 
+
 function showRemoteDicts(dbinfos) {
   log('_____________showRemoteDicts')
-  return
   let cfg = settings.get('cfg') || []
   let state = settings.get('state')
   let locals = _.uniq(cfg.map(dict=> { return dict.dname }))
