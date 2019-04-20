@@ -22,11 +22,10 @@ function initDBs() {
   // log('UPATH', upath)
 
   let cfg = settings.get('cfg')
-  if (cfg) return
-  cfg = initCfg(upath)
+  if (!cfg) cfg = initCfg(upath)
   let dnames = cfg.map(dict=> { return dict.dname })
   dnames = ['wkt', 'dvr', 'lsj']
-  // let dnames = ['wkt']
+  // dnames = ['wkt']
   checkConnection(upath, dnames)
 }
 
@@ -100,7 +99,6 @@ export function remoteDicts() {
     })
   })
 }
-
 
 function showRemoteDicts(dbinfos) {
   let cfg = settings.get('cfg') || []

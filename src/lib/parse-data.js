@@ -48,10 +48,10 @@ export function queryDBs(el, compound) {
 }
 
 function showResult(res) {
+  // log('showResult:', res)
   progress.classList.add('is-hidden')
   let ores = q('#result')
   empty(ores)
-  // log('R', res)
   if (res.terms) showTerms(res.terms)
   if (res.chains) showChains(res.chains)
   if (!res.chains && !res.terms) showNoResult()
