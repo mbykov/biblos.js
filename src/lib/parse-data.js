@@ -45,9 +45,6 @@ export function queryDBs(el, compound) {
   }).catch(function (err) {
     console.log('ANTRAX-ERR', str, err)
   })
-
-  // ipcRenderer.send('queryDBs', query)
-  // XXX
 }
 
 function showResult(res) {

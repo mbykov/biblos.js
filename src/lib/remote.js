@@ -9,14 +9,27 @@ import { antrax, checkConnection } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
 
 const log = console.log
+const request = require('request');
 // const nano = require('nano')('http://guest:guest@diglossa.org:5984')
-const nano = require('nano')('http://guest:guest@localhost:5984');
+// const nano = require('nano')('http://guest:guest@localhost:5984');
+// const NodeCouchDb = require('node-couchdb');
+// const diglossa = new NodeCouchDb({
+//   // host: 'diglossa.org',
+//   host: 'localhost',
+//   protocol: 'http',
+//   port: 5984,
+//   auth: {
+//     user: 'guest',
+//     pass: 'guest'
+//   }
+// })
+
 
 initDBs()
 
 // пока что terms отдельно от wkt
 function initDBs() {
-  remoteDicts()
+  // remoteDicts()
   let upath = app.getPath("userData")
   // log('FIRST UPATH', upath)
   upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
@@ -41,6 +54,67 @@ function initCfg(upath) {
 
 export function remoteDicts() {
   log('remote start')
+  let dnames = ['lsj', 'dvr', 'comp', 'lobsang', 'terms', 'vasilyev', 'verbs', 'wkt']
+  // getRemoteDicts(dnames)
+
+  const options = {
+    "method": "POST",
+    "url": "http://guest:guest@localhost:5984/_dbs_info",
+    "body": {keys: ['dvr']},
+    "json": true,
+    "headers": {
+      "Content-type": "application/json"
+    }
+  }
+
+  // const options = {
+  //   "method": "POST",
+  //   "url": "http://guest:guest@localhost:5984/_dbs_info"
+  // }
+
+  // request
+  //   .post({url: url, "keys": [ "lsj", "dvr" ]})
+  //   .on('response', function(response) {
+  //     console.log(response.statusCode) // 200
+  //     console.log(response) // 'image/png'
+  //   })
+
+  request(options, function (error, response, body) {
+    console.error('error:', error); // Print the error if one occurred
+    console.log('statusCode:', response && response.statusCode); // Print the response status code if a response was received
+    console.log('body:', body); // Print the HTML for the Google homepage.
+  });
+
+  // diglossa.listDatabases()
+  //   .then(dblist=>{
+  //     log('DIG', dblist)
+  //   })
+  // nano.db.list().then(dnlist => {
+  //   let defaults = ['_users', '_replicator']
+  //   let dnames = _.difference(dnlist, defaults)
+  //   log('nano-dnames', dnames)
+  //   getRemoteDicts(dnames)
+  // })
+}
+
+function getRemoteDicts(dnames) {
+  Promise.all(dnames.map(function(dname) {
+    log('DNAME', dname)
+    return nano.db.get(dname)
+      // .then(info => {
+      //   return info
+      // })
+  }))
+    .then(dbinfos => {
+      log('dbinfos', dbinfos)
+    })
+    .catch(err => {
+      log('err', err)
+    })
+}
+
+export function remoteDicts_() {
+  log('remote start')
   nano.db.list().then(dnlist => {
     // log('nano-dnlist', dnlist)
     let defaults = ['_users', '_replicator']
@@ -59,6 +133,7 @@ export function remoteDicts() {
         })
       })
     })).then(dbinfos=> {
+      log('remote-promise-all', dbinfos)
       dbinfos = _.compact(dbinfos)
       dbinfos = _.filter(dbinfos, dbinfo=> { return dbinfo.descr && dbinfo.descr.langs && dbinfo.descr.langs.split(/,? /).includes(config.code) })
       settings.set('dbinfos', dbinfos)
@@ -70,6 +145,8 @@ export function remoteDicts() {
 }
 
 function showRemoteDicts(dbinfos) {
+  log('_____________showRemoteDicts')
+  return
   let cfg = settings.get('cfg') || []
   let state = settings.get('state')
   let locals = _.uniq(cfg.map(dict=> { return dict.dname }))
@@ -77,19 +154,23 @@ function showRemoteDicts(dbinfos) {
   let obefore = q('#before-remote-table')
   if (!obefore) return
   obefore.textContent = ''
-  let otable = q('#table-remote')
-  if (otable) empty(otable)
+  let otable = q('#table-dicts-remote')
+  let otbody = q('#table-remote-body')
+  log('OT', otable)
+  log('OTB', otbody)
+  if (otable) empty(otbody)
   else {
     let sec_id = ['#remote-dicts', state.lang].join('_')
     let osection = q(sec_id)
     otable = createRemoteTable()
+    log('OS', osection)
     osection.appendChild(otable)
   }
-  let oheader = q('#remote-table-header')
 
   dbinfos.forEach(rdb=> {
+    return
     let otr = create('tr')
-    otable.appendChild(otr)
+    otbody.appendChild(otr)
     // insertAfter(otr, oheader)
     let odt = create('td')
     otr.appendChild(odt)
@@ -118,12 +199,12 @@ function showRemoteDicts(dbinfos) {
 
 function createRemoteTable() {
   let otable = create('table', 'dicts-table')
-  otable.id = 'table-remote'
-  let oheader = create('tr', 'table-header')
+  otable.id = 'table-dicts-remote'
+  let oheader = create('th', 'table-header')
   oheader.id = 'table-header-remote'
   otable.appendChild(oheader)
   let oname = create('td')
-  oname.textContent = 'dict\'s name'
+  oname.textContent = 'dict\'s name REMOTE'
   oheader.appendChild(oname)
   let osize = create('td')
   osize.textContent = 'docs'
@@ -137,6 +218,9 @@ function createRemoteTable() {
   let osync = create('td')
   osync.textContent = 'synchronize!'
   oheader.appendChild(osync)
+  let otbody = create('tbody', 'table-body')
+  otbody.id = 'table-remote-body'
+  otable.appendChild(otbody)
   return otable
 }
 
@@ -178,7 +262,7 @@ function createInfoTable() {
 }
 
 export function localDicts() {
-  showLocalDicts()
+  // showLocalDicts()
 }
 
 function showLocalDicts() {
@@ -199,7 +283,7 @@ function showLocalDicts() {
     otable = createLocalTable()
     osection.appendChild(otable)
   }
-  let oheader = q('#table-header-local')
+  // let oheader = q('#table-header-local')
   let dbinfos = settings.get('dbinfos')
   log('DIN', dbinfos)
 
