@@ -39,20 +39,59 @@ export function showText(state) {
 export function queryDBs(el, compound) {
   progress.classList.remove('is-hidden')
   let str = el.textContent.trim()
-  queryRemote(str, compound).then(res => {
-    if (!res) return
-    showResult(res)
-  }).catch(function (err) {
-    console.log('ANTRAX-ERR', str, err)
+  queryRemote(str, compound)
+    .then(res => {
+      if (!res) return
+      if (compound) showCompound(el, res)
+      else showResult(res)
+    }).catch(function (err) {
+      console.log('ANTRAX-ERR', str, err)
+    })
+}
+
+function showCompound(el, res) {
+  progress.classList.add('is-hidden')
+  log('COMP', res)
+  if (!res.chains) return
+  let oul = createPopup(el)
+  res.chains.forEach(chain=> {
+    let oline = create('li', 'compline')
+    oul.appendChild(oline)
+    chain.forEach(sec=> {
+      let ospan
+      ospan = span(sec.seg, '')
+      if (!sec.flexes) ospan.classList.add('comp-segment')
+      if (sec.connector) ospan.classList.add('comp-connector')
+      else if (sec.dicts) ospan.classList.add('active-dict')
+      oline.appendChild(ospan)
+    })
   })
 }
+
+
+function createPopup(el, upper) {
+  let opopup = q('#ambi')
+  if (opopup) remove(opopup)
+  opopup = create('div', 'popup')
+  // opopup.classList.add('upper')
+  document.body.appendChild(opopup)
+
+  let coords = getCoords(el)
+  opopup.classList.remove('is-hidden')
+  let ncoords = {top: coords.bottom+5, left: coords.left}
+  placePopup(ncoords, opopup)
+  let oul = create('ul', 'complist')
+  opopup.appendChild(oul)
+  return oul
+}
+
 
 function showResult(res) {
   progress.classList.add('is-hidden')
   let ores = q('#result')
   empty(ores)
   if (res.terms) showTerms(res.terms)
-  if (res.chains) showChains(res.chains)
+  if (res.chains) showMutables(res.chains)
   if (!res.chains && !res.terms) showNoResult()
 }
 
@@ -88,7 +127,7 @@ function showTerm(dict) {
   }
 }
 
-function showChains(chains) {
+function showMutables(chains) {
   chains.forEach(chain=> {
     let lastseg = _.last(chain)
     showLastSeg(lastseg)

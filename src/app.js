@@ -67,6 +67,9 @@ document.addEventListener('click', (ev) => {
     log('D-DNAME', el)
     state.sec = 'dict-edit'
     navigate(state)
+  }  else if (el.classList.contains('active-form')) {
+    log('A-form', el.textContent) // βᾰθῠγήρως
+    queryDBs(el, true)
   } else if (el.classList.contains('dict-query')) {
     let odictCont = el.nextSibling
     if (odictCont && odictCont.classList.contains('is-hidden')) odictCont.classList.remove('is-hidden')

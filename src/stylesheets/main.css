@@ -255,10 +255,6 @@ input[type='file'] {
   padding-left: 5px;
 }
 
-span.active-form {
-  cursor: pointer;
-}
-
 span.query {
     cursor: pointer;
     color: maroon;
@@ -421,7 +417,19 @@ div.qtext > p.hidden {
   padding-right: 5px;
 }
 
+span.active-form {
+    cursor: pointer;
+}
+
 span.active-form:hover {
+    background-color: #eee8aa;
+}
+
+span.active-dict {
+    cursor: pointer;
+}
+
+span.active-dict:hover {
     background-color: #eee8aa;
 }
 
@@ -532,4 +540,28 @@ ul.info-table {
     line-height: 1.5em;
     list-style: none;
 
+}
+
+
+.popup {
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    color: black;
+    display: 'block';
+    padding: 3px;
+    position: absolute;
+    z-index: 1001;
+    box-shadow: 0.15em 0.15em 1em rgba(0, 0, 0, 0.75);
+    height: auto;
+    top: 250px;
+    left: 300px;
+    background-color: white;
+    font-size: 1.5em;
+}
+
+.comp-segment {
+    /* color: 'red'; */
+}
+
+.comp-segment:after {
+    content: ' - ';
 }

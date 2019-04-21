@@ -30,8 +30,8 @@ export function recreate (element) {
   element.parentNode.replaceChild(newElement, element)
 }
 
-// function cret (str) {
-//   return document.createTextNode(str)
+// function cretxt (str) {
+  // return document.createTextNode(str)
 // }
 
 export function span (str, style) {
@@ -89,13 +89,6 @@ export function findAncestor (el, cls) {
   }
 }
 
-export function placePopup (coords, el) {
-  var top = [coords.top, 'px'].join('')
-  var left = [coords.left, 'px'].join('')
-  el.style.top = top
-  el.style.left = left
-}
-
 export function plog () {
   var vs = _.values(arguments)
   if (vs.length === 1) vs = vs[0]
@@ -124,4 +117,17 @@ export function getStore(name) {
 export function setStore(name, obj) {
   let oapp = q('#app')
   q('#app').setAttribute()
+}
+
+export function getCoords (el) {
+  let rect = el.getBoundingClientRect()
+  return rect
+  // return {top: rect.top, left: rect.left}
+}
+
+export function placePopup (coords, el) {
+  let top = [coords.top, 'px'].join('')
+  let left = [coords.left, 'px'].join('')
+  el.style.top = top
+  el.style.left = left
 }
