@@ -18,6 +18,7 @@ export function showText(state) {
   if (!osource || !oresult) return
   empty(osource)
   empty(oresult)
+  closePopups()
 
   state.pars.forEach(spans => {
     let opar = p()
@@ -86,7 +87,7 @@ function createPopup(el, upper) {
 
   let coords = getCoords(el)
   opopup.classList.remove('is-hidden')
-  let ncoords = {top: coords.bottom+5, left: coords.left}
+  let ncoords = {top: coords.top+24, left: coords.left}
   placePopup(ncoords, opopup)
   let oul = create('ul', 'compound-list')
   opopup.appendChild(oul)

@@ -44,7 +44,8 @@ ipcRenderer.on('lang', function (event, lang) {
 clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
-    let pars = sband(txt, config.code)
+    let clean = cleanStr(txt)
+    let pars = sband(clean, config.code)
     if (!pars) return
     // let state = settings.get('state')
     state.sec = 'main'
@@ -156,4 +157,12 @@ function scrollPane(ev) {
   let delta = (ev.deltaY > 0) ? 32 : -32
   // let opane = q('.section:not(.is-hidden)')
   opane.scrollTop += delta
+}
+
+function cleanStr(row) {
+  let clean = row.trim()
+  clean = clean.replace(/ᾰ/gi, 'α').replace(/ᾱ/gi, 'α').replace(/ῑ/gi, 'ι').replace(/ῐ/gi, 'ι').replace(/ῠ/gi, 'υ').replace(/ῡ/gi, 'υ')
+  clean = clean.replace(/̆/gi, '')
+  clean = clean.replace(/-/g, '')
+  return clean
 }
