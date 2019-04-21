@@ -185,6 +185,8 @@ function showTerm(dict) {
 
 function showMutables(chains) {
   chains.forEach(chain=> {
+    if (chain.length > 1) return
+    // BUG ======= если chain не из одного сегмента =============================== BUG
     let lastseg = _.last(chain)
     showLastSeg(lastseg)
   })
