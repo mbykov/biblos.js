@@ -565,3 +565,12 @@ ul.info-table {
 .comp-segment:after {
     content: ' - ';
 }
+
+.sect-dicts-ul {
+    list-style: none;
+    padding: 5px;
+    background-color: #E9FED6;
+}
+.sect-dict-line {
+    cursor: pointer;
+}

@@ -11,7 +11,7 @@ import { navigate } from './lib/nav'
 import { config } from './configs/app.config'
 import "./locales/context-menu.js";
 // import { showResults, showPopup, queryDBs } from "./lib/parse-data"
-import { queryDBs } from "./lib/parse-data"
+import { queryDBs, showSegment, showSegResult } from "./lib/parse-data"
 
 const log = console.log
 const app = remote.app;
@@ -45,7 +45,6 @@ clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
     let pars = sband(txt, config.code)
-    log('SBAND', pars)
     if (!pars) return
     // let state = settings.get('state')
     state.sec = 'main'
@@ -68,7 +67,6 @@ document.addEventListener('click', (ev) => {
     state.sec = 'dict-edit'
     navigate(state)
   }  else if (el.classList.contains('active-form')) {
-    log('A-form', el.textContent) // βᾰθῠγήρως
     queryDBs(el, true)
   } else if (el.classList.contains('dict-query')) {
     let odictCont = el.nextSibling
@@ -108,18 +106,15 @@ document.addEventListener('click', (ev) => {
 document.addEventListener("mouseover", function(ev) {
   let el = ev.target
   if (!el.textContent) return
-  if (ev.ctrlKey == true) return
-  // let tpar = el.closest('.tibpar')
-  // if (tpar) hidePopups()
+  if (ev.ctrlKey) return
+  if (ev.shiftKey) return
 
   if (el.classList.contains('active-form')) {
-    if (ev.shiftKey != true) {
-      queryDBs(el)
-    }
-  // } else if (el.classList.contains('tibwf')) {
-    // showResults(el)
-  // } else if (el.classList.contains('tibambi')) {
-    // showPopup(el) // mouseover, tibambi
+    queryDBs(el)
+  } else if (el.classList.contains('active-dict')) {
+    showSegment(el)
+  } else if (el.classList.contains('sect-dict-line')) {
+    showSegResult(el)
   }
 }, false)
 

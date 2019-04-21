@@ -36,12 +36,20 @@ export function showText(state) {
   // if (actives.length == 1) showResults(actives[0].textContent)
 }
 
+function closePopups() {
+  let opopup = q('#popup')
+  if (opopup) remove(opopup)
+  let oetyrels = q('#etyrels')
+  if (oetyrels) remove(oetyrels)
+}
+
 export function queryDBs(el, compound) {
   progress.classList.remove('is-hidden')
   let str = el.textContent.trim()
   queryRemote(str, compound)
     .then(res => {
       if (!res) return
+      closePopups()
       if (compound) showCompound(el, res)
       else showResult(res)
     }).catch(function (err) {
@@ -51,11 +59,13 @@ export function queryDBs(el, compound) {
 
 function showCompound(el, res) {
   progress.classList.add('is-hidden')
-  log('COMP', res)
+  // log('showCOMP', res)
   if (!res.chains) return
-  let oul = createPopup(el)
-  res.chains.forEach(chain=> {
-    let oline = create('li', 'compline')
+  let opopup = createPopup(el)
+  let oul = opopup.querySelector('.compound-list')
+  res.chains.forEach((chain, idx)=> {
+    let oline = create('li', 'comp-line')
+    oline.dataset.chain = JSON.stringify(res.chains[idx])
     oul.appendChild(oline)
     chain.forEach(sec=> {
       let ospan
@@ -68,11 +78,9 @@ function showCompound(el, res) {
   })
 }
 
-
 function createPopup(el, upper) {
-  let opopup = q('#ambi')
-  if (opopup) remove(opopup)
-  opopup = create('div', 'popup')
+  let opopup = create('div', 'popup')
+  opopup.id = 'popup'
   // opopup.classList.add('upper')
   document.body.appendChild(opopup)
 
@@ -80,9 +88,56 @@ function createPopup(el, upper) {
   opopup.classList.remove('is-hidden')
   let ncoords = {top: coords.bottom+5, left: coords.left}
   placePopup(ncoords, opopup)
-  let oul = create('ul', 'complist')
+  let oul = create('ul', 'compound-list')
   opopup.appendChild(oul)
-  return oul
+  return opopup
+}
+
+export function showSegment(el) {
+  let clist = el.closest('.comp-line')
+  if (!clist.dataset || !clist.dataset.chain) return
+  let chain = JSON.parse(clist.dataset.chain)
+  let sec = _.find(chain, sec=> { return sec.seg == el.textContent } )
+  if (!sec) return
+  let oetyrels = q('#etyrels')
+  if (oetyrels) remove(oetyrels)
+  oetyrels = createPopup(el)
+  oetyrels.id = 'etyrels'
+  // log('SEC', sec.dicts)
+  let oul = create('ul', 'sect-dicts-ul')
+  oetyrels.appendChild(oul)
+  let gdicts = _.groupBy(sec.dicts, 'rdict' )
+  // log('GD', gdicts)
+  // let dicts = _.values(gdicts)
+  for (let rdict in gdicts) {
+    let dicts = gdicts[rdict]
+    let odictline = create('li', 'sect-dict-line')
+    let lastseg = {seg: rdict, dicts: dicts}
+    odictline.dataset.lastseg = JSON.stringify(lastseg)
+    odictline.textContent = rdict
+    oul.appendChild(odictline)
+  }
+}
+
+function getPos(dict) {
+  let pos
+  if (dict.pos) pos = dict.pos
+  else if (dict.verb) pos = 'verb'
+  else if (dict.name) pos = 'name'
+  return pos
+}
+
+export function showSegResult(el) {
+  let ores = q('#result')
+  empty(ores)
+  let odictline = el.closest('.sect-dict-line')
+  if (!odictline.dataset || !odictline.dataset.lastseg) return
+  let lastseg = JSON.parse(odictline.dataset.lastseg)
+  if (!lastseg) return
+  lastseg.dicts.forEach(dict=> { dict.fls = [] })
+  let chain = [lastseg]
+  let chains = [chain]
+  showMutables(chains)
 }
 
 
