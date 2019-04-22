@@ -24,6 +24,7 @@ export function showText(state) {
     let opar = p()
     opar.classList.add('par')
     spans.forEach(spn => {
+      if (spn.punct) spn.text += ' '
       let ospan = span(spn.text)
       if (spn.lang) ospan.classList.add('active-form')
       else if (spn.punct) ospan.classList.add('punct') //, wfs.push(spn.text)

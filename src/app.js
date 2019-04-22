@@ -47,7 +47,6 @@ clipboard
     let clean = cleanStr(txt)
     let pars = sband(clean, config.code)
     if (!pars) return
-    // let state = settings.get('state')
     state.sec = 'main'
     state.pars = pars
     navigate(state)
