@@ -68,10 +68,12 @@ function showCompound(el, res) {
     let oline = create('li', 'comp-line')
     oline.dataset.chain = JSON.stringify(res.chains[idx])
     oul.appendChild(oline)
-    chain.forEach(sec=> {
+    chain.forEach((sec, idx)=> {
+      let last
+      if (idx == chain.length-1) last = true
       let ospan
       ospan = span(sec.seg, '')
-      if (!sec.flexes) ospan.classList.add('comp-segment')
+      if (!last && !sec.flexes) ospan.classList.add('comp-segment')
       if (sec.connector) ospan.classList.add('comp-connector')
       else if (sec.dicts) ospan.classList.add('active-dict')
       oline.appendChild(ospan)
@@ -135,7 +137,9 @@ export function showSegResult(el) {
   if (!odictline.dataset || !odictline.dataset.lastseg) return
   let lastseg = JSON.parse(odictline.dataset.lastseg)
   if (!lastseg) return
-  lastseg.dicts.forEach(dict=> { dict.fls = [] })
+  lastseg.dicts.forEach(dict=> {
+    if (!dict.fls) dict.fls = []
+  })
   let chain = [lastseg]
   let chains = [chain]
   showMutables(chains)
@@ -153,7 +157,10 @@ function showResult(res) {
 
 function showNoResult() {
   log('NO RESULT')
+  let ores = q('#result')
+  ores.textContent = 'no resul, try Shift-click'
 }
+
 function showTerms(terms) {
   terms.forEach(term=> {
     showTerm(term)
@@ -185,11 +192,25 @@ function showTerm(dict) {
 
 function showMutables(chains) {
   chains.forEach(chain=> {
-    if (chain.length > 1) return
-    // BUG ======= если chain не из одного сегмента =============================== BUG
-    let lastseg = _.last(chain)
-    showLastSeg(lastseg)
+    if (chain.length > 1) showCompoundCaution(chain)
+    else {
+      let lastseg = _.last(chain)
+      showLastSeg(lastseg)
+    }
   })
+}
+
+function showCompoundCaution(chain) {
+  let ores = q('#result')
+  let ocaution = create('div', 'dict-query')
+  ores.appendChild(ocaution)
+  let odict = create('div', 'dict-container')
+  ocaution.appendChild(odict)
+  let odicthead = create('div', 'dict-header')
+  odict.appendChild(odicthead)
+  let line = chain.map(sec=> { return sec.seg}).join('-')
+  line = ['compound: ', line].join('')
+  odicthead.textContent = line
 }
 
 function showLastSeg(rdict) {
@@ -258,6 +279,8 @@ function parseMorphs (dict) {
   else if (dict.pos == 'art')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
   else if (dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
   else if (dict.pos == 'part')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
+
+  if (!morphs) return false
 
   if (morphs.toString() == '.') {
     let degree = fls.map(flex => { return flex.degree }).toString()
