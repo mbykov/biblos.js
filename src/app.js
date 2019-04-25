@@ -112,9 +112,11 @@ document.addEventListener("mouseover", function(ev) {
   if (el.classList.contains('active-form')) {
     queryDBs(el)
   } else if (el.classList.contains('active-dict')) {
-    showSegment(el)
-  } else if (el.classList.contains('sect-dict-line')) {
     showSegResult(el)
+    // showSegment(el)
+  } else if (el.classList.contains('sect-dict-line')) {
+    // showSegResult(el)
+    log('это от старого варианта, sect-dict-line')
   }
 }, false)
 

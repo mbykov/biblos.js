@@ -2,13 +2,13 @@ import _ from 'lodash'
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, getInnermostHovered } from './utils'
 import { ipcRenderer } from "electron";
 import { queryRemote } from "./remote";
+// const Mousetrap = require('mousetrap')
 const settings = require('electron').remote.require('electron-settings')
 const log = console.log
 let progress = q('#progress')
 
-// ipcRenderer.on('query-result', function (event, chains) {
-//   progress.classList.add('is-hidden')
-//   showResult(chains)
+// Mousetrap.bind(['esc'], function(ev) {
+//   closePopups()
 // })
 
 export function showText(state) {
@@ -35,7 +35,7 @@ export function showText(state) {
   })
 
   // let actives = qs('span.active-form')
-  // if (actives.length == 1) showResults(actives[0].textContent)
+  // if (actives.length == 1) show_Results(actives[0].textContent)
 }
 
 function closePopups() {
@@ -43,43 +43,6 @@ function closePopups() {
   if (opopup) remove(opopup)
   let oetyrels = q('#etyrels')
   if (oetyrels) remove(oetyrels)
-}
-
-export function queryDBs(el, compound) {
-  progress.classList.remove('is-hidden')
-  let str = el.textContent.trim()
-  queryRemote(str, compound)
-    .then(res => {
-      if (!res) return
-      closePopups()
-      if (compound) showCompound(el, res)
-      else showResult(res)
-    }).catch(function (err) {
-      console.log('ANTRAX-ERR', str, err)
-    })
-}
-
-function showCompound(el, res) {
-  progress.classList.add('is-hidden')
-  // log('showCOMP', res)
-  if (!res.chains) return
-  let opopup = createPopup(el)
-  let oul = opopup.querySelector('.compound-list')
-  res.chains.forEach((chain, idx)=> {
-    let oline = create('li', 'comp-line')
-    oline.dataset.chain = JSON.stringify(res.chains[idx])
-    oul.appendChild(oline)
-    chain.forEach((sec, idx)=> {
-      let last
-      if (idx == chain.length-1) last = true
-      let ospan
-      ospan = span(sec.seg, '')
-      if (!last && !sec.flexes) ospan.classList.add('comp-segment')
-      if (sec.connector) ospan.classList.add('comp-connector')
-      else if (sec.dicts) ospan.classList.add('active-dict')
-      oline.appendChild(ospan)
-    })
-  })
 }
 
 function createPopup(el, upper) {
@@ -123,40 +86,17 @@ export function showSegment(el) {
   }
 }
 
-function getPos(dict) {
-  let pos
-  if (dict.pos) pos = dict.pos
-  else if (dict.verb) pos = 'verb'
-  else if (dict.name) pos = 'name'
-  return pos
-}
-
 export function showSegResult(el) {
   let ores = q('#result')
   empty(ores)
-  let odictline = el.closest('.sect-dict-line')
-  if (!odictline.dataset || !odictline.dataset.lastseg) return
-  let lastseg = JSON.parse(odictline.dataset.lastseg)
-  if (!lastseg) return
-  lastseg.dicts.forEach(dict=> {
-    if (!dict.fls) dict.fls = []
-  })
-  let chain = [lastseg]
-  let chains = [chain]
-  showMutables(chains)
+  let segdicts = JSON.parse(el.dataset.segdicts)
+  // log('segdicts', segdicts)
+  if (!segdicts.length) return
+  let rdict = {seg: el.textContent, dicts: segdicts}
+  showDict(rdict)
 }
 
-
-function showResult(res) {
-  progress.classList.add('is-hidden')
-  let ores = q('#result')
-  empty(ores)
-  if (res.terms) showTerms(res.terms)
-  if (res.chains) showMutables(res.chains)
-  if (!res.chains && !res.terms) showNoResult()
-}
-
-function showNoResult() {
+function noResult() {
   log('NO RESULT')
   let ores = q('#result')
   ores.textContent = 'no resul, try Shift-click'
@@ -191,32 +131,82 @@ function showTerm(dict) {
   }
 }
 
-function showMutables(chains) {
-  chains.forEach(chain=> {
-    if (chain.length > 1) showCompoundCaution(chain)
-    else {
-      let lastseg = _.last(chain)
-      showLastSeg(lastseg)
-    }
+function showCompound(el, res) {
+  progress.classList.add('is-hidden')
+  if (!res.chains || !res.chains.length) return
+  log('showCOMP', res.chains)
+  if (res.chains.length == 1 && res.chains[0].length == 1) return
+  let opopup = createPopup(el)
+  let oul = opopup.querySelector('.compound-list')
+  res.chains.forEach((chain, idx)=> {
+    let oline = create('li', 'comp-line')
+    // oline.dataset.chain = JSON.stringify(res.chains[idx])
+    oul.appendChild(oline)
+    chain.forEach((sec, idy)=> {
+      let ospan
+      let last = false
+      let size = chain.length - 1
+      if (idy == size) last = true
+      ospan = span(sec.seg, '')
+      if (!last && !sec.flexes) ospan.classList.add('comp-segment')
+      if (sec.connector) ospan.classList.add('comp-connector')
+      else if (sec.dicts) ospan.classList.add('active-dict')
+      ospan.dataset.segdicts = JSON.stringify(res.chains[idx][idy].dicts)
+      oline.appendChild(ospan)
+    })
   })
 }
 
-function showCompoundCaution(chain) {
-  let ores = q('#result')
-  let ocaution = create('div', 'dict-query')
-  ores.appendChild(ocaution)
-  let odict = create('div', 'dict-container')
-  ocaution.appendChild(odict)
-  let odicthead = create('div', 'dict-header')
-  odict.appendChild(odicthead)
-  let line = chain.map(sec=> { return sec.seg}).join('-')
-  line = ['compound: ', line].join('')
-  odicthead.textContent = line
+export function queryDBs(el, compound) {
+  progress.classList.remove('is-hidden')
+  let str = el.textContent.trim()
+  queryRemote(str, compound)
+    .then(res => {
+      closePopups()
+      if (!res) return noResult()
+      if (compound) showCompound(el, res)
+      else parseResult(res)
+    }).catch(function (err) {
+      console.log('ANTRAX-ERR', str, err)
+    })
 }
 
-function showLastSeg(rdict) {
+function parseResult(res) {
+  progress.classList.add('is-hidden')
   let ores = q('#result')
-  // log('DICT:', rdict)
+  empty(ores)
+  if (res.terms) showTerms(res.terms)
+  if (res.chains) analyzeChains(res.chains)
+  if (!res.chains && !res.terms) noResult()
+}
+
+function analyzeChains(chains) {
+  // log('aCHAINS:', chains)
+  let singles = _.filter(chains, chain=> { return chain.length == 1 })
+  singles.forEach(chain=> { showDict(chain[0]) })
+  let comps = _.filter(chains, chain=> { return chain.length > 1 })
+  comps = _.flatten(comps)
+  let res = {chains: comps}
+  // showCompound(res)
+}
+
+
+// function showCompoundCaution(chain) {
+//   let ores = q('#result')
+//   let ocaution = create('div', 'dict-query')
+//   ores.appendChild(ocaution)
+//   let odict = create('div', 'dict-container')
+//   ocaution.appendChild(odict)
+//   let odicthead = create('div', 'dict-header')
+//   odict.appendChild(odicthead)
+//   let line = chain.map(sec=> { return sec.seg}).join('-')
+//   line = ['compound: ', line].join('')
+//   odicthead.textContent = line
+// }
+
+function showDict(rdict) {
+  let ores = q('#result')
+  // log('showDICT:', rdict)
   let owf = create('div', 'dict-div')
   ores.appendChild(owf)
   let oformhead = create('div', 'dict-query')
@@ -250,6 +240,12 @@ function showDictHeader(dict) {
     odicthead.appendChild(ogends)
   } else if (dict.term && dict.pos) {
     let opos = span(dict.pos, 'dict-pos')
+    odicthead.appendChild(opos)
+  } else if (dict.suf) {
+    let opos = span('suff', 'dict-pos')
+    odicthead.appendChild(opos)
+  } else if (dict.pref) {
+    let opos = span('pref', 'dict-pos')
     odicthead.appendChild(opos)
   }
   return odicthead
@@ -319,4 +315,12 @@ function createTrns (dict) {
     otrns.appendChild(otrn)
   })
   return otrns
+}
+
+function getPos(dict) {
+  let pos
+  if (dict.pos) pos = dict.pos
+  else if (dict.verb) pos = 'verb'
+  else if (dict.name) pos = 'name'
+  return pos
 }

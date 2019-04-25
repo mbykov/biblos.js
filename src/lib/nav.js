@@ -63,7 +63,7 @@ Mousetrap.bind(['ctrl+1', 'ctrl+2'], function(ev) {
 })
 
 Mousetrap.bind(['esc'], function(ev) {
-  hidePopups()
+  closePopups()
 })
 
 // arrows
@@ -142,7 +142,7 @@ function showSection(state) {
   if (!q(sectionId)) return
 
   q(sectionId).classList.remove('is-hidden')
-  hidePopups ()
+  // hidePopups ()
 }
 
 export function navigate(state) {
@@ -168,7 +168,9 @@ export function navigate(state) {
   settings.set('state', state)
 }
 
-function hidePopups () {
-  let otrans = q('#transcript')
-  otrans.classList.add('is-hidden')
+function closePopups() {
+  let opopup = q('#popup')
+  if (opopup) remove(opopup)
+  let oetyrels = q('#etyrels')
+  if (oetyrels) remove(oetyrels)
 }
