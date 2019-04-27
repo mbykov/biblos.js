@@ -185,24 +185,11 @@ function analyzeChains(chains) {
   let singles = _.filter(chains, chain=> { return chain.length == 1 })
   singles.forEach(chain=> { showDict(chain[0]) })
   let comps = _.filter(chains, chain=> { return chain.length > 1 })
-  comps = _.flatten(comps)
+  // comps = _.flatten(comps)
   let res = {chains: comps}
+  log('LONG CHAINS:', comps)
   // showCompound(res)
 }
-
-
-// function showCompoundCaution(chain) {
-//   let ores = q('#result')
-//   let ocaution = create('div', 'dict-query')
-//   ores.appendChild(ocaution)
-//   let odict = create('div', 'dict-container')
-//   ocaution.appendChild(odict)
-//   let odicthead = create('div', 'dict-header')
-//   odict.appendChild(odicthead)
-//   let line = chain.map(sec=> { return sec.seg}).join('-')
-//   line = ['compound: ', line].join('')
-//   odicthead.textContent = line
-// }
 
 function showDict(rdict) {
   let ores = q('#result')
