@@ -184,11 +184,11 @@ function analyzeChains(chains) {
   // log('aCHAINS:', chains)
   let singles = _.filter(chains, chain=> { return chain.length == 1 })
   singles.forEach(chain=> { showDict(chain[0]) })
-  let comps = _.filter(chains, chain=> { return chain.length > 1 })
-  // comps = _.flatten(comps)
-  let res = {chains: comps}
-  log('LONG CHAINS:', comps)
-  // showCompound(res)
+  // let comps = _.filter(chains, chain=> { return chain.length > 1 })
+  // // comps = _.flatten(comps)
+  // let res = {chains: comps}
+  // // log('LONG CHAINS:', comps)
+  // // showCompound(res)
 }
 
 function showDict(rdict) {

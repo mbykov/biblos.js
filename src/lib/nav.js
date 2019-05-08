@@ -1,7 +1,7 @@
 //
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
-import { remoteDicts, localDicts, showDBinfo } from './remote'
+import { remoteDicts, localDicts, showDBinfo, generateChunk } from './remote'
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { config } from '../configs/app.config'
@@ -86,9 +86,22 @@ Mousetrap.bind(['ctrl+j'], function(ev) {
 })
 
 Mousetrap.bind(['ctrl+d'], function(ev) {
-  // let state = settings.get('state')
-  state.sec = 'help'
-  navigate(state)
+  let state = settings.get('state')
+  // TODO: добавлять local-dict-path при создании local-dict
+  state.ldpath = '/home/michael/diglossa.texts/Dyscolus'
+  log('CTRL-D')
+  let ldpath = state.ldpath
+  if (!ldpath) return
+  generateChunk(state)
+})
+
+// сливает chunk и localDict
+Mousetrap.bind(['ctrl+shift+d'], function(ev) {
+  let state = settings.get('state')
+  log('CTRL-SHIFT-D', state)
+  // let ldpath = state.ldpath
+  // if (!ldpath) return
+  // generateDictChunk(state)
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {

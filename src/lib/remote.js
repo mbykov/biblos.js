@@ -6,6 +6,7 @@ const settings = require('electron').remote.require('electron-settings')
 import { config } from '../configs/app.config'
 import path from "path";
 import { antrax, checkConnection } from '/home/michael/a/loigos'
+import { freq, csv } from '/home/michael/greek/localDict'
 const fse = require('fs-extra')
 
 const log = console.log
@@ -277,4 +278,12 @@ function createInfoTable(dbinfo) {
   oeditor.textContent = ['editor: ', dbinfo.descr.email].join('')
   oinfo.appendChild(oeditor)
   return oinfo
+}
+
+export function generateChunk (state) {
+  let dpath = state.ldpath
+  let ldictpath = path.resolve(dpath, 'local.csv')
+  if (!fse.existsSync(ldictpath)) return
+  let chunkpath = path.resolve(dpath, 'localChunk.csv')
+  log('LDCHUNK', chunkpath)
 }
