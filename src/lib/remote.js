@@ -6,7 +6,7 @@ const settings = require('electron').remote.require('electron-settings')
 import { config } from '../configs/app.config'
 import path from "path";
 import { antrax, checkConnection } from '/home/michael/a/loigos'
-import { freq, csv } from '/home/michael/greek/localDict'
+import { freqChunk, csv } from '/home/michael/greek/dictCSV'
 const fse = require('fs-extra')
 
 const log = console.log
@@ -284,6 +284,12 @@ export function generateChunk (state) {
   let dpath = state.ldpath
   let ldictpath = path.resolve(dpath, 'local.csv')
   if (!fse.existsSync(ldictpath)) return
+  if (!state.pars) return
   let chunkpath = path.resolve(dpath, 'localChunk.csv')
-  log('LDCHUNK', chunkpath)
+  let freq = {}
+  freqChunk(freq, state.pars)
+  let frvalues = _.values(freq)
+  log('CHUNK', chunkpath, frvalues.length)
+  csv(chunkpath, frvalues)
+
 }
