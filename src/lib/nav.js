@@ -1,7 +1,7 @@
 //
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
-import { remoteDicts, localDicts, showDBinfo, generateChunk } from './remote'
+import { remoteDicts, localDicts, showDBinfo, generateDictChunk, mergeDictChunk } from './remote'
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import Split from 'split.js'
 import { config } from '../configs/app.config'
@@ -87,21 +87,28 @@ Mousetrap.bind(['ctrl+j'], function(ev) {
 
 Mousetrap.bind(['ctrl+d'], function(ev) {
   let state = settings.get('state')
+  if (!state.pars) return
   // TODO: добавлять local-dict-path при создании local-dict
   state.ldpath = '/home/michael/diglossa.texts/Dyscolus'
-  log('CTRL-D')
-  let ldpath = state.ldpath
-  if (!ldpath) return
-  generateChunk(state)
+  state.kuku = true
+  settings.set('state', state)
+  // let ldpath = state.ldpath
+  if (!state.ldpath) return
+  log('CTRL-D', state.ldpath)
+  generateDictChunk(state)
 })
 
-// сливает chunk и localDict
+// merge chunk & localDict
 Mousetrap.bind(['ctrl+shift+d'], function(ev) {
   let state = settings.get('state')
-  log('CTRL-SHIFT-D', state)
+  // let ldpath = state.ldpath
+  // ============= BUG !!!!!!!!! =============
+  state.ldpath = '/home/michael/diglossa.texts/Dyscolus'
+  if (!state.ldpath) return
+  log('CTRL-SHIFT-D', state.ldpath)
   // let ldpath = state.ldpath
   // if (!ldpath) return
-  // generateDictChunk(state)
+  mergeDictChunk(state)
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {

@@ -6,8 +6,10 @@ const settings = require('electron').remote.require('electron-settings')
 import { config } from '../configs/app.config'
 import path from "path";
 import { antrax, checkConnection } from '/home/michael/a/loigos'
-import { freqChunk, csv } from '/home/michael/greek/dictCSV'
+import { freqChunk, makeCsv, createLocalPouch } from '/home/michael/greek/dictCSV'
 const fse = require('fs-extra')
+// const fcsv = require('csv-parse')
+// const csv2 = require('csv2')
 
 const log = console.log
 const request = require('request');
@@ -280,16 +282,31 @@ function createInfoTable(dbinfo) {
   return oinfo
 }
 
-export function generateChunk (state) {
+export function generateDictChunk (state) {
   let dpath = state.ldpath
   let ldictpath = path.resolve(dpath, 'local.csv')
   if (!fse.existsSync(ldictpath)) return
-  if (!state.pars) return
   let chunkpath = path.resolve(dpath, 'localChunk.csv')
   let freq = {}
   freqChunk(freq, state.pars)
   let frvalues = _.values(freq)
-  log('CHUNK', chunkpath, frvalues.length)
-  csv(chunkpath, frvalues)
+  // log('CHUNK', chunkpath, frvalues.length)
+  makeCsv(chunkpath, frvalues)
 
 }
+
+export function mergeDictChunk (state) {
+  let dictpath = path.resolve(state.ldpath, 'local.csv')
+  if (!fse.existsSync(dictpath)) return
+  let chunkpath = path.resolve(state.ldpath, 'localChunk.csv')
+  if (!fse.existsSync(chunkpath)) return
+  log('_____merge-chunk______')
+  // let fkeys = {}
+  // let rs = fse.createReadStream(dictpath);
+
+
+}
+
+let upath = app.getPath("userData")
+
+createLocalPouch
