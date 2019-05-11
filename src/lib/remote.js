@@ -24,8 +24,10 @@ function initDBs() {
   if (!cfg) cfg = initCfg(upath)
   let dnames = cfg.map(dict=> { return dict.dname })
   // TODO:  cfg и все localdicts - еще предстоит сделать <<<<=========================== TODO ========================
-  dnames = ['wkt', 'dvr', 'lsj', 'local']
+  // dnames = ['wkt', 'dvr', 'lsj', 'local']
+  // dnames = ['wkt', 'dvr', 'lsj']
   // dnames = ['wkt']
+  dnames = ['local']
   checkConnection(upath, dnames)
 }
 
