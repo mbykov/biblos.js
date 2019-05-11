@@ -5,11 +5,8 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../configs/app.config'
 import path from "path";
-import { antrax, checkConnection, createFromCsv } from '/home/michael/a/loigos'
-import { freqChunk, createCsv, generateDocs } from '/home/michael/greek/dictCSV'
+import { antrax, checkConnection } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
-// const fcsv = require('csv-parse')
-// const csv2 = require('csv2')
 
 const log = console.log
 const request = require('request');
@@ -19,10 +16,9 @@ initDBs()
 
 // пока что terms отдельно от wkt
 function initDBs() {
+  // UPATH
   let upath = app.getPath("userData")
-  // log('FIRST UPATH', upath)
   upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
-  // log('UPATH', upath)
 
   let cfg = settings.get('cfg')
   if (!cfg) cfg = initCfg(upath)
@@ -282,48 +278,3 @@ function createInfoTable(dbinfo) {
   oinfo.appendChild(oeditor)
   return oinfo
 }
-
-export function generateDictChunk (state) {
-  let dpath = state.ldpath
-  let ldictpath = path.resolve(dpath, 'local.csv')
-  if (!fse.existsSync(ldictpath)) return
-  let chunkpath = path.resolve(dpath, 'localChunk.csv')
-  let freq = {}
-  freqChunk(freq, state.pars)
-  let frvalues = _.values(freq)
-  // log('CHUNK', chunkpath, frvalues.length)
-  createCsv(chunkpath, frvalues)
-  // здесь нужен сигнал закрыть крутилку
-}
-
-export function mergeDictChunk (state) {
-  let dictpath = path.resolve(state.ldpath, 'local.csv')
-  if (!fse.existsSync(dictpath)) return
-  let chunkpath = path.resolve(state.ldpath, 'localChunk.csv')
-  if (!fse.existsSync(chunkpath)) return
-
-  Promise.all([
-    generateDocs(dictpath),
-    generateDocs(chunkpath)
-  ]
-  ).then(res=> {
-    log('DOCS from local', res[0])
-    log('DOCS from chunk', res[1])
-    let docs = res[0]
-    let chunks = res[1]
-    chunks.forEach(newdoc=> {
-      let olddoc = _.find(docs, doc=> { return doc._id == newdoc._id})
-      if (olddoc) olddoc = newdoc
-      else docs.push(newdoc)
-
-    })
-    let upath = app.getPath("userData")
-    upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
-    createFromCsv(upath, docs)
-    // переписать найденные строки в local.doc
-    // создать новую DB
-  })
-
-}
-
-// let upath = app.getPath("userData")

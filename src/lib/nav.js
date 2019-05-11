@@ -1,23 +1,27 @@
 //
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
-import { remoteDicts, localDicts, showDBinfo, generateDictChunk, mergeDictChunk } from './remote'
+import { remoteDicts, localDicts, showDBinfo } from './remote'
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
+import { generateDictChunk, mergeDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
 import { config } from '../configs/app.config'
 import { showText } from "./parse-data";
+import path from "path";
 // import { serverDicts, showActiveDicts } from "./dict";
 // import { signup } from "./auth";
 
 const app = remote.app;
 const apath = app.getAppPath()
-const upath = app.getPath("userData")
+
+// UPATH
+let upath = app.getPath("userData")
+upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 
 const log = console.log
 const clipboard = require('electron-clipboard-extended')
 const settings = require('electron').remote.require('electron-settings')
 const Mousetrap = require('mousetrap')
-const path = require('path')
 // const slash = require('slash')
 const {getCurrentWindow} = require('electron').remote
 let markdown = require( "markdown" ).markdown;
@@ -94,7 +98,7 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
   settings.set('state', state)
   // let ldpath = state.ldpath
   if (!state.ldpath) return
-  log('CTRL-D', state.ldpath)
+  log('nav: CTRL-D', state.ldpath)
   generateDictChunk(state)
 })
 
@@ -105,10 +109,9 @@ Mousetrap.bind(['ctrl+shift+d'], function(ev) {
   // ============= BUG !!!!!!!!! =============
   state.ldpath = '/home/michael/diglossa.texts/Dyscolus'
   if (!state.ldpath) return
-  log('CTRL-SHIFT-D', state.ldpath)
-  // let ldpath = state.ldpath
-  // if (!ldpath) return
-  mergeDictChunk(state)
+  log('nav: CTRL-SHIFT-D', state.ldpath)
+  let ldpath = state.ldpath
+  mergeDictChunk(ldpath, upath)
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
