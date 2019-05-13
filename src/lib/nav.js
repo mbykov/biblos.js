@@ -104,14 +104,21 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
 
 // merge chunk & localDict
 Mousetrap.bind(['ctrl+shift+d'], function(ev) {
+  let progress = q('#progress')
+  progress.classList.remove('is-hidden')
   let state = settings.get('state')
   // let ldpath = state.ldpath
   // ============= BUG !!!!!!!!! =============
   state.ldpath = '/home/michael/diglossa.texts/Dyscolus'
   if (!state.ldpath) return
   log('nav: CTRL-SHIFT-D', state.ldpath)
+
   let ldpath = state.ldpath
   mergeDictChunk(ldpath, upath)
+    .then(res=> {
+      log('MERGE-RES', res)
+      progress.classList.add('is-hidden')
+    })
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
