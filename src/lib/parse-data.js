@@ -239,6 +239,7 @@ function showDictHeader(dict) {
 }
 
 function parseMorphs (dict) {
+  // log('DICT', dict)
   let morphs
   let fls = dict.fls || dict.morphs
   if (!fls) return
