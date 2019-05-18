@@ -94,7 +94,7 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
   if (!state.pars) return
   // TODO: добавлять local-dict-path при создании local-dict
   state.ldpath = '/home/michael/diglossa.texts/Dyscolus'
-  state.kuku = true
+  // state.kuku = true
   settings.set('state', state)
   // let ldpath = state.ldpath
   if (!state.ldpath) return

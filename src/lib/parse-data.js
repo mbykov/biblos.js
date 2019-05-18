@@ -34,8 +34,12 @@ export function showText(state) {
     osource.appendChild(opar)
   })
 
-  // let actives = qs('span.active-form')
-  // if (actives.length == 1) show_Results(actives[0].textContent)
+  let actives = qs('span.active-form')
+  if (actives.length == 1) {
+    let mono = actives[0]
+    // log('MONO', mono)
+    if (mono) queryDBs(mono)
+  }
 }
 
 function closePopups() {
@@ -181,7 +185,7 @@ function parseResult(res) {
 }
 
 function analyzeChains(chains) {
-  log('analyze-CHAINS:', chains)
+  // log('analyze-CHAINS:', chains)
   let singles = _.filter(chains, chain=> { return chain.length == 1 })
   singles.forEach(chain=> { showDict(chain[0]) })
   // let comps = _.filter(chains, chain=> { return chain.length > 1 })
