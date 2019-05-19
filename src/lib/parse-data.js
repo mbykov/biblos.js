@@ -316,3 +316,27 @@ function getPos(dict) {
   else if (dict.name) pos = 'name'
   return pos
 }
+
+export function toggleResults() {
+  let dtrns = qs('.dict-trns')
+  let dfls = qs('.dict-fls')
+  let first = dtrns[0]
+  if (!first) return
+  if (first.classList.contains('is-hidden')) dtrns.forEach(otrns=> { otrns.classList.remove('is-hidden')  }), dfls.forEach(ofls=> { ofls.classList.remove('is-hidden')  })
+  else dtrns.forEach(otrns=> {  otrns.classList.add('is-hidden')  }), dfls.forEach(ofls=> {  ofls.classList.add('is-hidden')  })
+}
+
+export function toggleOneResult() {
+  let dtrns = qs('.dict-trns')
+  let dfls = qs('.dict-fls')
+  let opened = q('ul.dict-trns:not(.is-hidden)')
+  let next = 0
+  dtrns.forEach((otrns, idx)=> {
+    if (!otrns.classList.contains('is-hidden')) next = idx + 1
+    otrns.classList.add('is-hidden')
+    if (dfls[idx]) dfls[idx].classList.add('is-hidden')
+  })
+  if (next == dtrns.length) next = 0
+  dtrns[next].classList.remove('is-hidden')
+  if (dfls[next]) dfls[next].classList.remove('is-hidden')
+}

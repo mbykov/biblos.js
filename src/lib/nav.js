@@ -6,7 +6,7 @@ import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import { generateDictChunk, mergeDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
 import { config } from '../configs/app.config'
-import { showText } from "./parse-data";
+import { showText, toggleResults, toggleOneResult } from "./parse-data";
 import path from "path";
 // import { serverDicts, showActiveDicts } from "./dict";
 // import { signup } from "./auth";
@@ -125,6 +125,14 @@ Mousetrap.bind(['ctrl+f'], function(ev) {
   // let state = settings.get('state')
   state.sec = 'home'
   navigate(state)
+})
+
+Mousetrap.bind(['space'], function(ev) {
+  toggleResults()
+})
+
+Mousetrap.bind(['tab'], function(ev) {
+  toggleOneResult()
 })
 
 // TODO - здесь плохо
