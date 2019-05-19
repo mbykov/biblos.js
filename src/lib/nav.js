@@ -77,8 +77,8 @@ Mousetrap.bind(['alt+left', 'alt+right'], function(ev) {
 })
 
 Mousetrap.bind(['ctrl+p'], function(ev) {
-  let el = q('span.active-form:hover')
-  if (!el.classList.contains('active-form')) return
+  let el = q('span.active-form:hover') || q('span.active-dict:hover')
+  if (!el) return
   let href = ['http://www.perseus.tufts.edu/hopper/morph?l=', el.textContent , '&la=greek#lexicon'].join('')
   shell.openExternal(href)
 

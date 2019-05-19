@@ -11,7 +11,7 @@ import { navigate } from './lib/nav'
 import { config } from './configs/app.config'
 import "./locales/context-menu.js";
 // import { showResults, showPopup, queryDBs } from "./lib/parse-data"
-import { queryDBs, showSegment, showSegResult } from "./lib/parse-data"
+import { queryDBs, showSegResult, showCognate } from "./lib/parse-data"
 
 const log = console.log
 const app = remote.app;
@@ -67,7 +67,9 @@ document.addEventListener('click', (ev) => {
     state.sec = 'dict-edit'
     navigate(state)
   }  else if (el.classList.contains('active-form')) {
-    queryDBs(el, true)
+    log('CLICK')
+    if (ev.shiftKey) queryDBs(el, 'strong')
+    else queryDBs(el, true)
   } else if (el.classList.contains('dict-query')) {
     let odictCont = el.nextSibling
     if (odictCont && odictCont.classList.contains('is-hidden')) odictCont.classList.remove('is-hidden')
@@ -113,10 +115,8 @@ document.addEventListener("mouseover", function(ev) {
     queryDBs(el)
   } else if (el.classList.contains('active-dict')) {
     showSegResult(el)
-    // showSegment(el)
-  } else if (el.classList.contains('sect-dict-line')) {
-    // showSegResult(el)
-    log('это от старого варианта, sect-dict-line')
+  } else if (el.classList.contains('cognate-line')) {
+    showCognate(el)
   }
 }, false)
 
@@ -144,6 +144,7 @@ document.addEventListener("wheel", function(ev) {
 
 function scrollPane(ev) {
   let oclosest = ev.target.closest('#source') || ev.target.closest('#result')
+  if (!oclosest) return
   let closeid = oclosest.id
   let osource = q('#source')
   let oresult = q('#result')

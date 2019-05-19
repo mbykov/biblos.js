@@ -64,31 +64,29 @@ function createPopup(el, upper) {
   return opopup
 }
 
-export function showSegment(el) {
-  let clist = el.closest('.comp-line')
-  if (!clist.dataset || !clist.dataset.chain) return
-  let chain = JSON.parse(clist.dataset.chain)
-  let sec = _.find(chain, sec=> { return sec.seg == el.textContent } )
-  if (!sec) return
-  let oetyrels = q('#etyrels')
-  if (oetyrels) remove(oetyrels)
-  oetyrels = createPopup(el)
-  oetyrels.id = 'etyrels'
-  // log('SEC', sec.dicts)
-  let oul = create('ul', 'sect-dicts-ul')
-  oetyrels.appendChild(oul)
-  let gdicts = _.groupBy(sec.dicts, 'rdict' )
-  // log('GD', gdicts)
-  // let dicts = _.values(gdicts)
-  for (let rdict in gdicts) {
-    let dicts = gdicts[rdict]
-    let odictline = create('li', 'sect-dict-line')
-    let lastseg = {seg: rdict, dicts: dicts}
-    odictline.dataset.lastseg = JSON.stringify(lastseg)
-    odictline.textContent = rdict
-    oul.appendChild(odictline)
-  }
-}
+// export function showSegment(el) {
+//   let clist = el.closest('.comp-line')
+//   if (!clist.dataset || !clist.dataset.chain) return
+//   let chain = JSON.parse(clist.dataset.chain)
+//   let sec = _.find(chain, sec=> { return sec.seg == el.textContent } )
+//   if (!sec) return
+//   let oetyrels = q('#etyrels')
+//   if (oetyrels) remove(oetyrels)
+//   oetyrels = createPopup(el)
+//   oetyrels.id = 'etyrels'
+//   // log('SEC', sec.dicts)
+//   let oul = create('ul', 'sect-dicts-ul')
+//   oetyrels.appendChild(oul)
+//   let gdicts = _.groupBy(sec.dicts, 'rdict' )
+//   for (let rdict in gdicts) {
+//     let dicts = gdicts[rdict]
+//     let odictline = create('li', 'sect-dict-line')
+//     let lastseg = {seg: rdict, dicts: dicts}
+//     odictline.dataset.lastseg = JSON.stringify(lastseg)
+//     odictline.textContent = rdict
+//     oul.appendChild(odictline)
+//   }
+// }
 
 export function showSegResult(el) {
   let ores = q('#result')
@@ -136,7 +134,6 @@ function showTerm(dict) {
 }
 
 function showCompound(el, res) {
-  progress.classList.add('is-hidden')
   if (!res.chains || !res.chains.length) return
   log('showCOMP', res.chains)
   if (res.chains.length == 1 && res.chains[0].length == 1) return
@@ -161,26 +158,57 @@ function showCompound(el, res) {
   })
 }
 
+function showCognateList(el, dicts) {
+  // log('COGNATES', dicts)
+  let opopup = createPopup(el)
+  let oul = opopup.querySelector('.compound-list')
+  oul.classList.add('cognate-list')
+
+  let gdicts = _.groupBy(dicts, 'rdict' )
+  for (let rdict in gdicts) {
+    let dicts = gdicts[rdict]
+    let oline = create('li', 'cognate-line')
+    oline.textContent = rdict
+    oline.dataset.dicts = JSON.stringify(dicts)
+    oul.appendChild(oline)
+  }
+}
+
+export function showCognate(el) {
+  let ores = q('#result')
+  empty(ores)
+  let segdicts = JSON.parse(el.dataset.dicts)
+  // log('segdicts', segdicts)
+  if (!segdicts.length) return
+  let rdict = {seg: el.textContent, dicts: segdicts}
+  showDict(rdict)
+}
+
+
 export function queryDBs(el, compound) {
   progress.classList.remove('is-hidden')
   let str = el.textContent.trim()
   queryRemote(str, compound)
     .then(res => {
       closePopups()
+      progress.classList.add('is-hidden')
       if (!res) return noResult()
-      if (compound) showCompound(el, res)
-      else parseResult(res)
+      // if (compound) showCompound(el, res)
+      // else
+      parseResult(el, res)
     }).catch(function (err) {
       console.log('ANTRAX-ERR', str, err)
     })
 }
 
-function parseResult(res) {
-  progress.classList.add('is-hidden')
+function parseResult(el, res) {
+  // progress.classList.add('is-hidden')
   let ores = q('#result')
   empty(ores)
+  if (res.compound) showCompound(el, res)
   if (res.terms) showTerms(res.terms)
   if (res.chains) analyzeChains(res.chains)
+  if (res.cognates) showCognateList(el, res.cognates)
   if (!res.chains && !res.terms) noResult()
 }
 
