@@ -127,6 +127,12 @@ Mousetrap.bind(['ctrl+f'], function(ev) {
   navigate(state)
 })
 
+Mousetrap.bind(['ctrl+z'], function(ev) {
+  log('ZERO STATE')
+  state = {sec: config.defstate, lang: config.deflang}
+  navigate(state)
+})
+
 Mousetrap.bind(['space'], function(ev) {
   toggleResults()
 })
