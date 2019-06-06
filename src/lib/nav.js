@@ -116,7 +116,7 @@ Mousetrap.bind(['ctrl+shift+d'], function(ev) {
   let ldpath = state.ldpath
   mergeDictChunk(ldpath, upath)
     .then(res=> {
-      log('MERGE-RES', res)
+      // log('MERGE-RES', res)
       progress.classList.add('is-hidden')
     })
 })
