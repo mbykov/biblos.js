@@ -543,7 +543,6 @@ ul.info-table {
 
 }
 
-
 .popup {
     border: 1px solid rgba(0, 0, 0, 0.2);
     color: black;
@@ -589,4 +588,11 @@ li.cognate-line {
 
 li.cognate-line:hover {
     background-color: #E9FED6;
+}
+
+.table-chunk-header {
+    color: maroon;
+    font-weight: bold;
+    margin-bottom: 15px;
+    paddicg-bottom: 15px;
 }

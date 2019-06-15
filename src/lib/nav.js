@@ -1,7 +1,7 @@
 //
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
-import { remoteDicts, localDicts, showDBinfo } from './remote'
+import { remoteDicts, localDicts, showDBinfo, showLocalChunk } from './remote'
 import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
 import { generateDictChunk, mergeDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
@@ -19,7 +19,7 @@ let upath = app.getPath("userData")
 upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 
 const log = console.log
-const clipboard = require('electron-clipboard-extended')
+// const clipboard = require('electron-clipboard-extended')
 const settings = require('electron').remote.require('electron-settings')
 const Mousetrap = require('mousetrap')
 // const slash = require('slash')
@@ -99,7 +99,12 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
   // let ldpath = state.ldpath
   if (!state.ldpath) return
   log('nav: CTRL-D', state.ldpath)
-  generateDictChunk(state)
+  let dname = 'local'
+  generateDictChunk(upath, dname, state, (res)=> {
+    state.sec = 'local-chunk'
+    state.localChunk = res
+    navigate(state)
+  })
 })
 
 // merge chunk & localDict
@@ -204,6 +209,7 @@ export function navigate(state) {
   else if (state.sec == 'remote-dicts') remoteDicts()
   else if (state.sec == 'arrange-dicts') localDicts()
   else if (state.sec == 'db-info') showDBinfo(state)
+  else if (state.sec == 'local-chunk') showLocalChunk(state)
 
   let progress = q('#progress')
   progress.classList.add('is-hidden')

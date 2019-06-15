@@ -280,3 +280,61 @@ function createInfoTable(dbinfo) {
   oinfo.appendChild(oeditor)
   return oinfo
 }
+
+export function showLocalChunk(state) {
+  log('LocalChunk', state.localChunk)
+  let sec_id = ['#local-chunk', state.lang].join('_')
+  let osection = q(sec_id)
+  // log('OSEC', osection)
+  if (!state.localChunk) return
+  let ochunk = createLocalChunk(state.localChunk)
+  osection.appendChild(ochunk)
+}
+
+function createLocalChunk (dicts) {
+  let otable = create('table', 'dicts-table')
+  otable.id = 'table-local-chunk'
+  if (!dicts) return
+  // log('______________________odicts', dicts)
+  let oheader = create('tr', 'table-chunk-header')
+  otable.appendChild(oheader)
+
+  let oname = create('td')
+  oname.textContent = 'wordform'
+  oheader.appendChild(oname)
+  let opos = create('td')
+  opos.textContent = 'pos'
+  oheader.appendChild(opos)
+  let okey = create('td')
+  okey.textContent = 'key'
+  oheader.appendChild(okey)
+  let otrns = create('td')
+  otrns.textContent = 'translation'
+  oheader.appendChild(otrns)
+
+  dicts.forEach(dict=> {
+    log('______________________odict', dict)
+    let oline = create('tr', 'table-line')
+    // oline.id = 'table-local-chunk'
+    otable.appendChild(oline)
+
+    let ordict = create('td')
+    ordict.textContent = dict.rdict
+    oline.appendChild(ordict)
+
+    let opos = create('td')
+    opos.textContent = dict.pos
+    oline.appendChild(opos)
+
+    let okey = create('td')
+    okey.textContent = dict.key
+    oline.appendChild(okey)
+
+    let otrns = create('td')
+    otrns.textContent = dict.trns
+    oline.appendChild(otrns)
+
+  })
+
+  return otable
+}
