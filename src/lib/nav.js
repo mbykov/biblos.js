@@ -14,6 +14,9 @@ import path from "path";
 const app = remote.app;
 const apath = app.getAppPath()
 
+const Menu = remote.Menu;
+const MenuItem = remote.MenuItem;
+
 // UPATH
 let upath = app.getPath("userData")
 upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
@@ -85,8 +88,7 @@ Mousetrap.bind(['ctrl+p'], function(ev) {
 })
 
 Mousetrap.bind(['ctrl+j'], function(ev) {
-  let html = markdown.toHTML( "Hello *World*!" )
-  log('START  MD', html)
+  log('START  MENU')
 })
 
 Mousetrap.bind(['ctrl+d'], function(ev) {
@@ -223,4 +225,64 @@ function closePopups() {
   if (opopup) remove(opopup)
   let oetyrels = q('#etyrels')
   if (oetyrels) remove(oetyrels)
+}
+
+document.onmousedown = mouseclick
+
+/*
+  меню - попроще
+  форма:
+  - персей
+  текст:
+  - local dict
+  - merge local
+  - local to csv
+
+
+*/
+
+const perseus = new MenuItem({
+  label: "Perseus Greek Word Study Tool",
+  click: () => {
+    document.execCommand("copy");
+  }
+});
+
+const wiktionary = new MenuItem({
+  label: "Wiktionary",
+  click: () => {
+    document.execCommand("copy");
+  }
+});
+
+const localDict = new MenuItem({
+  label: "Local Dictionary for this text",
+  click: () => {
+    document.execCommand("copy");
+  }
+});
+
+const megreLocalDict = new MenuItem({
+  label: "Main Local Dictionary",
+  click: () => {
+    document.execCommand("copy");
+  }
+});
+
+function mouseclick(ev) {
+  if (ev.button != 2) return
+  const normalMenu = new Menu();
+
+  let el = ev.target
+  if (el.classList.contains('active-form')) normalMenu.append(perseus), normalMenu.append(wiktionary) // log('context:', el.textContent)
+  else log('context:', 'kuku')
+  // log('_____RIGHT', el)
+
+  normalMenu.append(localDict)
+  normalMenu.append(megreLocalDict)
+
+  let state = settings.get('state')
+
+  ev.preventDefault();
+  normalMenu.popup(remote.getCurrentWindow());
 }
