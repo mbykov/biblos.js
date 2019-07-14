@@ -2,7 +2,7 @@
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
 import { remoteDicts, localDicts, showDBinfo, showLocalChunk } from './remote'
-import { q, qs, empty, create, remove, span, p, div, enclitic } from './utils'
+import { q, qs, empty, create, remove, span, p, div } from './utils'
 import { generateDictChunk, mergeDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
 import { config } from '../configs/app.config'

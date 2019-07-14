@@ -96,18 +96,6 @@ export function plog () {
   console.log(util.inspect(vs, {showHidden: false, depth: 3}))
 }
 
-export function enclitic(str) {
-  let syms = str.split('')
-  let stress = false
-  let clean = []
-  let stresses = [ac.oxia, ac.varia, ac.peris]
-  syms.forEach(sym => {
-    if (!stresses.includes(sym)) clean.push(sym)
-    else if (!stress) clean.push(sym), stress = true
-  })
-  return clean.join('')
-}
-
 export function getStore(name) {
   let json, obj
 
@@ -130,4 +118,29 @@ export function placePopup (coords, el) {
   let left = [coords.left, 'px'].join('')
   el.style.top = top
   el.style.left = left
+}
+
+export const accents = {
+  'oxia': '\u0301',
+  'varia_': '\u0060',
+  'varia': '\u0300',
+  'peris': '\u0342',
+  '': '',
+  'psili': '\u0313',
+  'dasia': '\u0314',
+  '': ''
+}
+
+export function enclitic(str) {
+  let syms = str.split('')
+  let stress = false
+  let clean = []
+  let stresses = [accents.oxia, accents.varia, accents.peris]
+  // console.log('STRESSES', stresses)
+  syms.forEach(sym => {
+    if (!stresses.includes(sym)) clean.push(sym)
+    else if (!stress) clean.push(sym), stress = true
+    // console.log('---------------------------', sym, stress)
+  })
+  return clean.join('')
 }

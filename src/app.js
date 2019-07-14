@@ -3,8 +3,8 @@ import "./stylesheets/main.css";
 import _ from "lodash"
 import { remote, ipcRenderer, shell } from "electron";
 import env from "env";
-// import sband from "../../../sband"
-import sband from "speckled-band"
+import sband from "../../..//sband"
+// import sband from "speckled-band"
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
@@ -166,5 +166,6 @@ function cleanStr(row) {
   clean = clean.replace(/ᾰ/gi, 'α').replace(/ᾱ/gi, 'α').replace(/ῑ/gi, 'ι').replace(/ῐ/gi, 'ι').replace(/ῠ/gi, 'υ').replace(/ῡ/gi, 'υ')
   clean = clean.replace(/̆/gi, '')
   clean = clean.replace(/-/g, '')
+  clean = clean.replace(/\' /g, '᾽ ')
   return clean
 }

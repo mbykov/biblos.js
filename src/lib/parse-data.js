@@ -1,7 +1,8 @@
 import _ from 'lodash'
-import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, getInnermostHovered } from './utils'
+import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, getInnermostHovered, enclitic } from './utils'
 import { ipcRenderer } from "electron";
 import { queryRemote } from "./remote";
+import {oxia, comb, plain, strip} from '../../../../greek/orthos'
 // const Mousetrap = require('mousetrap')
 const settings = require('electron').remote.require('electron-settings')
 const log = console.log
@@ -188,6 +189,8 @@ export function showCognate(el) {
 export function queryDBs(el, compound) {
   progress.classList.remove('is-hidden')
   let str = el.textContent.trim()
+  str = enclitic(comb(str))
+  log('ENCLIT', str)
   queryRemote(str, compound)
     .then(res => {
       closePopups()
