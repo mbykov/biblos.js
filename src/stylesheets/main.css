@@ -467,10 +467,14 @@ span.active-dict:hover {
 
 .dict-gends {
     font-style: italic;
+    padding-left: 5px;
 }
 
 .dict-pos {
     font-style: italic;
+    background-color: #99ff99;
+    margin-left: 5px;
+    margin-right: 5px;
 }
 
 .dict-rdict {

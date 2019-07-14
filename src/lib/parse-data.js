@@ -107,13 +107,13 @@ function noResult() {
 
 function showTerms(terms) {
   terms.forEach(term=> {
-    showTerm(term)
+    // showTerm(term)
   })
 }
 
 function showTerm(dict) {
   let ores = q('#result')
-  // log('DICT:', rdict)
+  log('TERM::', dict)
   let owf = create('div', 'dict-div')
   ores.appendChild(owf)
   let oformhead = create('div', 'dict-query')
@@ -204,7 +204,6 @@ export function queryDBs(el, compound) {
 }
 
 function parseResult(el, res) {
-  // progress.classList.add('is-hidden')
   let ores = q('#result')
   empty(ores)
   if (res.compound) showCompound(el, res)
@@ -217,7 +216,10 @@ function parseResult(el, res) {
 function analyzeChains(chains) {
   // log('analyze-CHAINS:', chains)
   let singles = _.filter(chains, chain=> { return chain.length == 1 })
-  singles.forEach(chain=> { showDict(chain[0]) })
+  singles.forEach(chain=> {
+    let rdict = chain[0]
+    showDict(rdict)
+  })
   // let comps = _.filter(chains, chain=> { return chain.length > 1 })
   // // comps = _.flatten(comps)
   // let res = {chains: comps}
@@ -227,13 +229,14 @@ function analyzeChains(chains) {
 
 function showDict(rdict) {
   let ores = q('#result')
-  // log('showDICT:', rdict)
+  log('RDICT:', rdict)
   let owf = create('div', 'dict-div')
   ores.appendChild(owf)
   let oformhead = create('div', 'dict-query')
   oformhead.textContent = rdict.seg
   owf.appendChild(oformhead)
-  rdict.dicts.forEach(dict=> {
+  let dicts = _.sortBy(rdict.dicts, ['weight']);
+  dicts.forEach(dict=> {
     let odict = create('div', 'dict-container')
     owf.appendChild(odict)
     let odicthead = showDictHeader(dict)
@@ -256,9 +259,12 @@ function showDictHeader(dict) {
   odicthead.appendChild(odname)
   let ordict = span(dict.rdict, 'dict-rdict')
   odicthead.appendChild(ordict)
-  if (dict.gends) {
-    let ogends = span(dict.gends.toString(), 'dict-gends')
-    odicthead.appendChild(ogends)
+  if (dict.verb) {
+    let opos = span('verb', 'dict-pos')
+    odicthead.appendChild(opos)
+  } if (dict.name) {
+    let opos = span('name', 'dict-pos')
+    odicthead.appendChild(opos)
   } else if (dict.term && dict.pos) {
     let opos = span(dict.pos, 'dict-pos')
     odicthead.appendChild(opos)
@@ -268,6 +274,11 @@ function showDictHeader(dict) {
   } else if (dict.pref) {
     let opos = span('pref', 'dict-pos')
     odicthead.appendChild(opos)
+  }
+
+  if (dict.gends) {
+    let ogends = span(dict.gends.toString(), 'dict-gends')
+    odicthead.appendChild(ogends)
   }
   return odicthead
 }
