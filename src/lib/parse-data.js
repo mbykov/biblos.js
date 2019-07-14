@@ -190,7 +190,6 @@ export function queryDBs(el, compound) {
   progress.classList.remove('is-hidden')
   let str = el.textContent.trim()
   str = enclitic(comb(str))
-  log('ENCLIT', str)
   queryRemote(str, compound)
     .then(res => {
       closePopups()
