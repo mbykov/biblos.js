@@ -184,7 +184,7 @@ function showLocalDicts() {
   if (!cfg) return
   let state = settings.get('state')
   let dnames = _.uniq(cfg.map(dict=> { return dict.dname }))
-  log('SHOW LOCAL DICTS', cfg)
+  log('SHOW LOCAL DICTS CFG:', cfg)
   let obefore = q('#before-local-table')
   if (!obefore) return
   obefore.textContent = ''
@@ -282,7 +282,7 @@ function createInfoTable(dbinfo) {
 }
 
 export function showLocalChunk(state) {
-  log('LocalChunk', state.localChunk)
+  // log('LocalChunk state:', state.localChunk)
   let sec_id = ['#local-chunk', state.lang].join('_')
   let osection = q(sec_id)
   // log('OSEC', osection)
@@ -292,7 +292,10 @@ export function showLocalChunk(state) {
 }
 
 function createLocalChunk (dicts) {
-  let otable = create('table', 'dicts-table')
+  let otable = q('#table-local-chunk')
+  if (otable) remove(otable)
+
+  otable = create('table', 'dicts-table')
   otable.id = 'table-local-chunk'
   if (!dicts) return
   // log('______________________odicts', dicts)
@@ -313,9 +316,9 @@ function createLocalChunk (dicts) {
   oheader.appendChild(otrns)
 
   dicts.forEach(dict=> {
-    log('______________________odict', dict)
+    // log('______________________odict', dict)
     let oline = create('tr', 'table-line')
-    // oline.id = 'table-local-chunk'
+    oline.dataset.localdict = JSON.stringify(dict)
     otable.appendChild(oline)
 
     let ordict = create('td')
@@ -337,4 +340,18 @@ function createLocalChunk (dicts) {
   })
 
   return otable
+}
+
+export function editLocalDictItem(state) {
+  if (!state.data) return
+  let dict = state.data
+  log('_______________ SHOW L.D.I', dict)
+  let ordict = q('#dict-item-rdict')
+  ordict.textContent = dict.rdict
+  let opos = q('#dict-item-pos')
+  opos.textContent = dict.pos
+  let okey = q('#dict-item-key')
+  okey.textContent = dict.key
+  let otrns = q('#dict-item-trns-input')
+  otrns.focus()
 }

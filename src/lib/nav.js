@@ -1,7 +1,7 @@
 //
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
-import { remoteDicts, localDicts, showDBinfo, showLocalChunk } from './remote'
+import { remoteDicts, localDicts, showDBinfo, showLocalChunk, editLocalDictItem } from './remote'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import { generateDictChunk, mergeDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
@@ -212,6 +212,7 @@ export function navigate(state) {
   else if (state.sec == 'arrange-dicts') localDicts()
   else if (state.sec == 'db-info') showDBinfo(state)
   else if (state.sec == 'local-chunk') showLocalChunk(state)
+  else if (state.sec == 'local-dict-item') log('___LOCAL DICT'), editLocalDictItem(state)
 
   let progress = q('#progress')
   progress.classList.add('is-hidden')
@@ -226,6 +227,9 @@ function closePopups() {
   let oetyrels = q('#etyrels')
   if (oetyrels) remove(oetyrels)
 }
+
+// ==================CONTEXT унести в /lib ==============
+
 
 document.onmousedown = mouseclick
 

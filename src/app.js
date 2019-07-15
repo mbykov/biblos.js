@@ -58,6 +58,7 @@ let message = q('#message')
 
 document.addEventListener('click', (ev) => {
   let el = ev.target
+  let parent = el.parentElement
   let data = el.dataset
   if (el.classList.contains('external')) {
     let href = el.textContent
@@ -66,8 +67,14 @@ document.addEventListener('click', (ev) => {
     log('D-DNAME', el)
     state.sec = 'dict-edit'
     navigate(state)
+  }  else if (parent && parent.classList.contains('table-line')) {
+    let dict = JSON.parse(parent.dataset.localdict)
+    log('____CLICK-CHUNK-DICT', dict)
+    state.sec = 'local-dict-item'
+    state.data = dict
+    navigate(state)
   }  else if (el.classList.contains('active-form')) {
-    log('CLICK')
+    log('WORD-FORM CLICK')
     if (ev.shiftKey) queryDBs(el, 'strong')
     else queryDBs(el, true)
   } else if (el.classList.contains('dict-query')) {

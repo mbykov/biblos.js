@@ -600,3 +600,16 @@ li.cognate-line:hover {
     margin-bottom: 15px;
     paddicg-bottom: 15px;
 }
+
+.table-line {
+    cursor: pointer;
+}
+
+.table-line:hover {
+    background-color: #eee8aa;
+}
+
+#dict-item-rdict {
+    color: maroon;
+    font-weight: bold;
+}
