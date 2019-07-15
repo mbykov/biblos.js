@@ -609,7 +609,19 @@ li.cognate-line:hover {
     background-color: #eee8aa;
 }
 
-#dict-item-rdict {
+.dict-item {
+    padding-right: 5px;
+}
+
+.dict-item-rdict {
     color: maroon;
     font-weight: bold;
+}
+
+.dict-item-input-text {
+    width: 80%;
+}
+
+.submit {
+    margin-right: 5px;
 }

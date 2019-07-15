@@ -105,6 +105,7 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
   generateDictChunk(upath, dname, state, (res)=> {
     state.sec = 'local-chunk'
     state.localChunk = res
+    // log('__NAV: LOCAL CHUNK', state)
     navigate(state)
   })
 })
@@ -212,7 +213,7 @@ export function navigate(state) {
   else if (state.sec == 'arrange-dicts') localDicts()
   else if (state.sec == 'db-info') showDBinfo(state)
   else if (state.sec == 'local-chunk') showLocalChunk(state)
-  else if (state.sec == 'local-dict-item') log('___LOCAL DICT'), editLocalDictItem(state)
+  else if (state.sec == 'local-dict-item') log('___LOCAL DICT', state), editLocalDictItem(state)
 
   let progress = q('#progress')
   progress.classList.add('is-hidden')

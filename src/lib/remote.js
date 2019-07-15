@@ -7,6 +7,7 @@ import { config } from '../configs/app.config'
 import path from "path";
 import { antrax, checkConnection } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
+import { navigate } from './nav'
 
 const log = console.log
 const request = require('request');
@@ -287,13 +288,16 @@ export function showLocalChunk(state) {
   let osection = q(sec_id)
   // log('OSEC', osection)
   if (!state.localChunk) return
-  let ochunk = createLocalChunk(state.localChunk)
+  log('__SHOW LOCAL CHUNK STATE:', state)
+  let ochunk = createLocalChunk(state)
   osection.appendChild(ochunk)
 }
 
-function createLocalChunk (dicts) {
+function createLocalChunk (state) {
   let otable = q('#table-local-chunk')
   if (otable) remove(otable)
+
+  let dicts = state.localChunk
 
   otable = create('table', 'dicts-table')
   otable.id = 'table-local-chunk'
@@ -343,15 +347,85 @@ function createLocalChunk (dicts) {
 }
 
 export function editLocalDictItem(state) {
-  if (!state.data) return
-  let dict = state.data
-  log('_______________ SHOW L.D.I', dict)
-  let ordict = q('#dict-item-rdict')
+  log('_______________ editLocalDictItem', state)
+  if (!state.rdict) return
+  let dict = _.find(state.localChunk, dict=> { return dict.rdict == state.rdict})
+  // delete state.rdict
+  if (!dict) return
+
+  let sec_id = ['#local-dict-item', state.lang].join('_')
+  let osection = q(sec_id)
+  // log('OSEC', osection)
+  let odictitem = q('.dict-item-container')
+  if (odictitem) remove(odictitem)
+  odictitem = createDictEdit(dict)
+  osection.appendChild(odictitem)
+  let oinput = q('.dict-item-input-text')
+  oinput.focus()
+
+
+  let ok = q('#dict-item-submit-ok')
+  ok.addEventListener('click', (ev) => {
+    let oinput = q('.dict-item-input-text')
+    let trns = oinput.value
+    dict.trns = trns
+    // settings.set('state', state)
+    log('_____SUBMIT OK_2', state)
+    state.sec = 'local-chunk'
+    navigate(state)
+  })
+  let cancel = q('#dict-item-submit-cancel')
+  cancel.addEventListener('click', (ev) => {
+    log('_____SUBMIT CANCEL')
+    state.sec = 'local-chunk'
+    navigate(state)
+  })
+
+}
+
+function createDictEdit (dict) {
+  let odictitem = create('div', 'dict-item-container')
+  let odictheader = create('div', 'dict-item-header')
+  let ordict = create('span', 'dict-item')
+  ordict.classList.add('dict-item-rdict')
   ordict.textContent = dict.rdict
-  let opos = q('#dict-item-pos')
+  odictheader.appendChild(ordict)
+  let opos = create('span', 'dict-item')
+  // opos.classList.add('dict-item-pos')
   opos.textContent = dict.pos
-  let okey = q('#dict-item-key')
+  odictheader.appendChild(opos)
+  let okey = create('span', 'dict-item')
+  okey.id = 'dict-item-key'
   okey.textContent = dict.key
-  let otrns = q('#dict-item-trns-input')
-  otrns.focus()
+  odictheader.appendChild(okey)
+  odictitem.appendChild(odictheader)
+  let obr = create('p', '')
+  obr.textContent = 'translation:'
+  odictitem.appendChild(obr)
+
+  let oinput = create('input', 'dict-item-input-text')
+  oinput.id = 'dict-item-input-text'
+  oinput.setAttribute('type', 'text')
+  // oinput.setAttribute('size', 50)
+  // log('O-TEXT', oinput)
+  odictitem.appendChild(oinput)
+
+  let obr1 = create('p', '')
+  odictitem.appendChild(obr1)
+
+  let osubmitok = create('input', 'submit')
+  osubmitok.setAttribute('type', 'submit')
+  osubmitok.setAttribute('value', 'ok')
+  osubmitok.id = 'dict-item-submit-ok'
+  // log('OK', osubmitok)
+  odictitem.appendChild(osubmitok)
+
+  let osubmitcancel = create('input', 'submit')
+  osubmitcancel.setAttribute('type', 'submit')
+  osubmitcancel.setAttribute('value', 'cancel')
+  osubmitcancel.id = 'dict-item-submit-cancel'
+  // log('OK', osubmitcancel)
+  odictitem.appendChild(osubmitcancel)
+
+  return odictitem
 }

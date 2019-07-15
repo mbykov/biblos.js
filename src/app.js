@@ -68,10 +68,14 @@ document.addEventListener('click', (ev) => {
     state.sec = 'dict-edit'
     navigate(state)
   }  else if (parent && parent.classList.contains('table-line')) {
-    let dict = JSON.parse(parent.dataset.localdict)
-    log('____CLICK-CHUNK-DICT', dict)
+    // let dict = JSON.parse(parent.dataset.localdict)
+    let ordict = parent.firstChild
+    if (!ordict) return
+    let rdict = ordict.textContent
+    if (!rdict) return
+    log('____CLICK-CHUNK-DICT-wordform:', rdict)
     state.sec = 'local-dict-item'
-    state.data = dict
+    state.rdict = rdict
     navigate(state)
   }  else if (el.classList.contains('active-form')) {
     log('WORD-FORM CLICK')
