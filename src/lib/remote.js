@@ -8,6 +8,10 @@ import path from "path";
 import { antrax, checkConnection } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
 import { navigate } from './nav'
+import { generateDictChunk, mergeDictChunk } from '/home/michael/greek/dictCSV'
+// UPATH
+let upath = app.getPath("userData")
+upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 
 const log = console.log
 const request = require('request');
@@ -311,7 +315,6 @@ export function createLocalChunk (state, data) {
   oheader.appendChild(otrns)
 
   dicts.forEach(dict=> {
-    // log('______________________odict', dict)
     let oline = create('tr', 'table-line')
     otable.appendChild(oline)
 
@@ -330,10 +333,36 @@ export function createLocalChunk (state, data) {
     let otrns = create('td')
     otrns.textContent = dict.trns
     oline.appendChild(otrns)
-
   })
 
   osection.appendChild(otable)
+
+  let filled = _.filter(dicts, dict=> { return dict.trns })
+  if (filled.length) {
+    let ok = q('#dict-table-submit-ok')
+    if (ok) remove(ok)
+    ok = create('input', 'submit')
+    ok.setAttribute('type', 'submit')
+    ok.setAttribute('value', 'merge to current local dict')
+    ok.id = 'dict-table-submit-ok'
+    // log('OK', osubmitok)
+    osection.appendChild(ok)
+    ok.addEventListener('click', (ev) => {
+      log('_____SUBMIT MERGE OK:', state, 'data', data)
+      navigate(state)
+      let dname = 'local'
+      mergeDictChunk(upath, dname, filled, (res)=> {
+        log('MERGE-RES', res)
+        state.sec = 'main'
+        navigate(state)
+      })
+        // .then(res=> {
+        //   // log('MERGE-RES', res)
+        //   state.sec = 'main'
+        //   navigate(state)
+        // })
+    })
+  }
 }
 
 export function editLocalDictItem(state, data) {
@@ -359,7 +388,7 @@ export function editLocalDictItem(state, data) {
     let oinput = q('.dict-item-input-text')
     let trns = oinput.value
     dict.trns = trns
-    // log('_____SUBMIT OK:', state, 'data', data, '|')
+    // log('_____SUBMIT OK:', state, 'data', data)
     state.sec = 'local-chunk'
     navigate(state, data)
   })

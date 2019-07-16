@@ -175,16 +175,14 @@ function goRight() {
   navigate()
 }
 
-function showSection(sec, lang) {
-  if (!sec) throw new Error('NO SECTION!')
-  if (!lang) throw new Error('NO LANG!')
+function showSection(state) {
+  if (!state.sec) throw new Error('NO SECTION!')
+  if (!state.lang) throw new Error('NO LANG!')
   const sections = qs('.section')
   Array.prototype.forEach.call(sections, (osection) => {
     osection.classList.add('is-hidden')
   })
-  let sectionId = ['#', sec, '_', lang].join('')
-
-  // hidePopups ()
+  let sectionId = ['#', state.sec, '_', state.lang].join('')
   q(sectionId).classList.remove('is-hidden')
   return sectionId
 }
@@ -196,13 +194,10 @@ export function navigate(state, data) {
     let oldstate = _.clone(state)
     history.push(oldstate)
     hstate = history.length-1
-
   }
-  let sec = state.sec
   // log('__STATE__PARS', state, data)
-
-  let lang  = state.lang
-  let sid = showSection(sec, lang)
+  let sec = state.sec
+  let sid = showSection(state)
   if (data) data.sid = sid
 
   if (sec == 'main') twoPanes(state), showText(state.pars)

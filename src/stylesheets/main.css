@@ -623,5 +623,6 @@ li.cognate-line:hover {
 }
 
 .submit {
+    margin-top: 25px;
     margin-right: 5px;
 }
