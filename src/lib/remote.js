@@ -5,7 +5,7 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../configs/app.config'
 import path from "path";
-import { antrax, checkConnection } from '/home/michael/a/loigos'
+import { antrax, checkConnection, updateCurrent } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
 import { navigate } from './nav'
 import { generateDictChunk, mergeDictChunk } from '/home/michael/greek/dictCSV'
@@ -349,18 +349,13 @@ export function createLocalChunk (state, data) {
     osection.appendChild(ok)
     ok.addEventListener('click', (ev) => {
       log('_____SUBMIT MERGE OK:', state, 'data', data)
-      navigate(state)
-      let dname = 'local'
-      mergeDictChunk(upath, dname, filled, (res)=> {
-        log('MERGE-RES', res)
-        state.sec = 'main'
-        navigate(state)
-      })
-        // .then(res=> {
-        //   // log('MERGE-RES', res)
-        //   state.sec = 'main'
-        //   navigate(state)
-        // })
+      // let dname = 'local'
+      updateCurrent (upath, filled)
+        .then(res=> {
+          log('MERGE-RES', res)
+          state.sec = 'main'
+          navigate(state)
+        })
     })
   }
 }
