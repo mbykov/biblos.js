@@ -282,27 +282,18 @@ function createInfoTable(dbinfo) {
   return oinfo
 }
 
-export function showLocalChunk(state) {
-  // log('LocalChunk state:', state.localChunk)
-  let sec_id = ['#local-chunk', state.lang].join('_')
-  let osection = q(sec_id)
-  // log('OSEC', osection)
-  if (!state.localChunk) return
-  log('__SHOW LOCAL CHUNK STATE:', state)
-  let ochunk = createLocalChunk(state)
-  osection.appendChild(ochunk)
-}
-
-function createLocalChunk (state) {
+export function createLocalChunk (state, data) {
+  if (!data) return
+  let dicts = data.dicts
+  // log('______________________chunk-dicts', dicts)
+  if (!dicts) return
+  let osection = q(data.sid)
   let otable = q('#table-local-chunk')
   if (otable) remove(otable)
 
-  let dicts = state.localChunk
-
   otable = create('table', 'dicts-table')
   otable.id = 'table-local-chunk'
-  if (!dicts) return
-  // log('______________________odicts', dicts)
+  otable.dataset.dicts = JSON.stringify(dicts)
   let oheader = create('tr', 'table-chunk-header')
   otable.appendChild(oheader)
 
@@ -322,7 +313,6 @@ function createLocalChunk (state) {
   dicts.forEach(dict=> {
     // log('______________________odict', dict)
     let oline = create('tr', 'table-line')
-    oline.dataset.localdict = JSON.stringify(dict)
     otable.appendChild(oline)
 
     let ordict = create('td')
@@ -343,47 +333,47 @@ function createLocalChunk (state) {
 
   })
 
-  return otable
+  osection.appendChild(otable)
 }
 
-export function editLocalDictItem(state) {
-  log('_______________ editLocalDictItem', state)
-  if (!state.rdict) return
-  let dict = _.find(state.localChunk, dict=> { return dict.rdict == state.rdict})
-  // delete state.rdict
+export function editLocalDictItem(state, data) {
+  // log('_______________ edit-data', data)
+  if (!data) return
+  let rdict = data.rdict
+  let dict = _.find(data.dicts, dict=> { return dict.rdict == rdict})
   if (!dict) return
+  // log('_______________ eDICT', dict)
 
-  let sec_id = ['#local-dict-item', state.lang].join('_')
-  let osection = q(sec_id)
+  let osection = q(data.sid)
   // log('OSEC', osection)
   let odictitem = q('.dict-item-container')
   if (odictitem) remove(odictitem)
+
   odictitem = createDictEdit(dict)
   osection.appendChild(odictitem)
   let oinput = q('.dict-item-input-text')
   oinput.focus()
-
 
   let ok = q('#dict-item-submit-ok')
   ok.addEventListener('click', (ev) => {
     let oinput = q('.dict-item-input-text')
     let trns = oinput.value
     dict.trns = trns
-    // settings.set('state', state)
-    log('_____SUBMIT OK_2', state)
+    // log('_____SUBMIT OK:', state, 'data', data, '|')
     state.sec = 'local-chunk'
-    navigate(state)
+    navigate(state, data)
   })
   let cancel = q('#dict-item-submit-cancel')
   cancel.addEventListener('click', (ev) => {
-    log('_____SUBMIT CANCEL')
+    // log('_____SUBMIT CANCEL')
     state.sec = 'local-chunk'
-    navigate(state)
+    navigate(state, data)
   })
 
 }
 
 function createDictEdit (dict) {
+  if (!dict) return
   let odictitem = create('div', 'dict-item-container')
   let odictheader = create('div', 'dict-item-header')
   let ordict = create('span', 'dict-item')

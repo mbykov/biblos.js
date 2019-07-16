@@ -1,7 +1,7 @@
 //
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
-import { remoteDicts, localDicts, showDBinfo, showLocalChunk, editLocalDictItem } from './remote'
+import { remoteDicts, localDicts, showDBinfo, createLocalChunk, editLocalDictItem } from './remote'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import { generateDictChunk, mergeDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
@@ -32,7 +32,7 @@ let markdown = require( "markdown" ).markdown;
 let history = []
 let hstate = 0
 let split
-let state
+// let state
 
 window.onbeforeunload = function () {
   let state = settings.get('state')
@@ -93,20 +93,14 @@ Mousetrap.bind(['ctrl+j'], function(ev) {
 
 Mousetrap.bind(['ctrl+d'], function(ev) {
   let state = settings.get('state')
+  // log('_____________________D', state)
   if (!state.pars) return
-  // TODO: добавлять local-dict-path при создании local-dict
-  state.ldpath = '/home/michael/diglossa.texts/Dyscolus'
-  // state.kuku = true
-  settings.set('state', state)
-  // let ldpath = state.ldpath
-  if (!state.ldpath) return
-  log('nav: CTRL-D', state.ldpath)
+  // log('nav: CTRL-D', state)
   let dname = 'local'
   generateDictChunk(upath, dname, state, (res)=> {
     state.sec = 'local-chunk'
-    state.localChunk = res
-    // log('__NAV: LOCAL CHUNK', state)
-    navigate(state)
+    let data = {dicts: res}
+    navigate(state, data)
   })
 })
 
@@ -117,7 +111,7 @@ Mousetrap.bind(['ctrl+shift+d'], function(ev) {
   let state = settings.get('state')
   // let ldpath = state.ldpath
   // ============= BUG !!!!!!!!! =============
-  state.ldpath = '/home/michael/diglossa.texts/Dyscolus'
+  // state.ldpath = '/home/michael/diglossa.texts/Dyscolus'
   if (!state.ldpath) return
   log('nav: CTRL-SHIFT-D', state.ldpath)
 
@@ -130,14 +124,16 @@ Mousetrap.bind(['ctrl+shift+d'], function(ev) {
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
-  // let state = settings.get('state')
+  log('== WILL BE DIGLOSSA FIND ==')
+  let state = settings.get('state')
   state.sec = 'home'
   navigate(state)
 })
 
 Mousetrap.bind(['ctrl+z'], function(ev) {
-  log('ZERO STATE')
-  state = {sec: config.defstate, lang: config.deflang}
+  log('== ZERO STATE ==')
+  let state = {sec: config.defstate, lang: config.deflang}
+  settings.set('state', state)
   navigate(state)
 })
 
@@ -170,55 +166,55 @@ Mousetrap.bind(['ctrl+0'], function(ev) {
 function goLeft() {
   if (hstate <= 0) return
   else hstate--
-  state = history[hstate]
-  state.arrow = true
-  navigate(state)
+  navigate()
 }
 
 function goRight() {
   if (hstate >= history.length-1) return
   else hstate++
-  state = history[hstate]
-  state.arrow = true
-  navigate(state)
+  navigate()
 }
 
-function showSection(state) {
+function showSection(sec, lang) {
+  if (!sec) throw new Error('NO SECTION!')
+  if (!lang) throw new Error('NO LANG!')
   const sections = qs('.section')
   Array.prototype.forEach.call(sections, (osection) => {
     osection.classList.add('is-hidden')
   })
-  let sectionId = ['#', state.sec, '_', state.lang].join('')
-  if (!state.lang) throw new Error('NO LANG!')
-  if (!q(sectionId)) sectionId = ['#', state.sec, '_', config.deflang].join('')
-  if (!q(sectionId)) return
+  let sectionId = ['#', sec, '_', lang].join('')
 
-  q(sectionId).classList.remove('is-hidden')
   // hidePopups ()
+  q(sectionId).classList.remove('is-hidden')
+  return sectionId
 }
 
-export function navigate(state) {
-  showSection(state)
-
-  if (state.arrow) {
-    state.arrow = false
-  } else {
+export function navigate(state, data) {
+  if (!state) state = history[hstate]
+  else {
+    // if (pars && pars.length == 1  && pars[0].length == 1) pars = false // an only wordform
     let oldstate = _.clone(state)
     history.push(oldstate)
     hstate = history.length-1
-  }
 
-  if (state.sec == 'main') twoPanes(state), showText(state)
-  else if (state.sec == 'remote-dicts') remoteDicts()
-  else if (state.sec == 'arrange-dicts') localDicts()
-  else if (state.sec == 'db-info') showDBinfo(state)
-  else if (state.sec == 'local-chunk') showLocalChunk(state)
-  else if (state.sec == 'local-dict-item') log('___LOCAL DICT', state), editLocalDictItem(state)
+  }
+  let sec = state.sec
+  // log('__STATE__PARS', state, data)
+
+  let lang  = state.lang
+  let sid = showSection(sec, lang)
+  if (data) data.sid = sid
+
+  if (sec == 'main') twoPanes(state), showText(state.pars)
+  else if (sec == 'remote-dicts') remoteDicts()
+  else if (sec == 'arrange-dicts') localDicts()
+  else if (sec == 'db-info') showDBinfo(state)
+  else if (sec == 'local-chunk') createLocalChunk(state, data)
+  else if (sec == 'local-dict-item') editLocalDictItem(state, data)
 
   let progress = q('#progress')
   progress.classList.add('is-hidden')
 
-  // log('nav:state:', state)
   settings.set('state', state)
 }
 

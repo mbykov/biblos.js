@@ -12,8 +12,8 @@ let progress = q('#progress')
 //   closePopups()
 // })
 
-export function showText(state) {
-  if (!state.pars) return
+export function showText(pars) {
+  if (!pars || !pars.length) return
   let osource = q('#source')
   let oresult = q('#result')
   if (!osource || !oresult) return
@@ -21,7 +21,7 @@ export function showText(state) {
   empty(oresult)
   closePopups()
 
-  state.pars.forEach(spans => {
+  pars.forEach(spans => {
     let opar = p()
     opar.classList.add('par')
     spans.forEach(spn => {
@@ -107,13 +107,13 @@ function noResult() {
 
 function showTerms(terms) {
   terms.forEach(term=> {
-    // showTerm(term)
+    showTerm(term)
   })
 }
 
 function showTerm(dict) {
   let ores = q('#result')
-  log('TERM::', dict)
+  // log('SHOW TERM:', dict)
   let owf = create('div', 'dict-div')
   ores.appendChild(owf)
   let oformhead = create('div', 'dict-query')
@@ -229,7 +229,7 @@ function analyzeChains(chains) {
 
 function showDict(rdict) {
   let ores = q('#result')
-  log('RDICT:', rdict)
+  // log('SHOW RDICT:', rdict)
   let owf = create('div', 'dict-div')
   ores.appendChild(owf)
   let oformhead = create('div', 'dict-query')

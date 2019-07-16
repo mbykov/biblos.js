@@ -7,7 +7,7 @@ export function fileMenuTemplate() {
     label: "File",
     submenu: [
       {  label: t("home"),
-         accelerator: "CmdOrCtrl+L",
+         accelerator: "CmdOrCtrl+H",
          click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'home') } },
       { label: t("Quit"),
         accelerator: "CmdOrCtrl+Q",

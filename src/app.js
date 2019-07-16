@@ -24,6 +24,7 @@ let state = settings.get('state')
 if (!state || !state.lang) {
   state = {sec: config.defstate, lang: config.deflang}
 }
+log('_____DEFAULT', state)
 navigate(state)
 
 ipcRenderer.on('section', function (event, section) {
@@ -49,6 +50,7 @@ clipboard
     if (!pars) return
     state.sec = 'main'
     state.pars = pars
+    // log('_____CLIPBOARD')
     navigate(state)
   })
   .startWatching()
@@ -68,17 +70,20 @@ document.addEventListener('click', (ev) => {
     state.sec = 'dict-edit'
     navigate(state)
   }  else if (parent && parent.classList.contains('table-line')) {
-    // let dict = JSON.parse(parent.dataset.localdict)
     let ordict = parent.firstChild
     if (!ordict) return
     let rdict = ordict.textContent
     if (!rdict) return
-    log('____CLICK-CHUNK-DICT-wordform:', rdict)
+    let otable = q('#table-local-chunk')
+    if (!otable) return
+    // log('____CLICK-CHUNK-DICT-wordform:', parent)
+    let dicts = JSON.parse(otable.dataset.dicts)
+    if (!dicts.length) return
     state.sec = 'local-dict-item'
-    state.rdict = rdict
-    navigate(state)
+    let data = {dicts: dicts, rdict: rdict}
+    navigate(state, data)
   }  else if (el.classList.contains('active-form')) {
-    log('WORD-FORM CLICK')
+    // log('WORD-FORM CLICK')
     if (ev.shiftKey) queryDBs(el, 'strong')
     else queryDBs(el, true)
   } else if (el.classList.contains('dict-query')) {
@@ -108,7 +113,7 @@ document.addEventListener('click', (ev) => {
     shell.openExternal(data.href)
   } else if (data.dinfo) {
     state.sec = 'db-info'
-    state.dname = data.dinfo
+    // state.dname = data.dinfo
     navigate(state)
   } else if (data.section) {
     state.sec = data.section
@@ -177,6 +182,6 @@ function cleanStr(row) {
   clean = clean.replace(/ᾰ/gi, 'α').replace(/ᾱ/gi, 'α').replace(/ῑ/gi, 'ι').replace(/ῐ/gi, 'ι').replace(/ῠ/gi, 'υ').replace(/ῡ/gi, 'υ')
   clean = clean.replace(/̆/gi, '')
   clean = clean.replace(/-/g, '')
-  clean = clean.replace(/\' /g, '᾽ ')
+  clean = clean.replace(/\' /g, '᾽ ').replace(/\’ /g, '᾽ ')
   return clean
 }
