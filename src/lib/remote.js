@@ -323,7 +323,7 @@ export function createLocalChunk (state, data) {
     oline.appendChild(ordict)
 
     let opos = create('td')
-    opos.textContent = dict.pos
+    opos.textContent = (dict.verb) ? 'verb' : 'name'
     oline.appendChild(opos)
 
     let okey = create('td')

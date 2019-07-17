@@ -3,7 +3,7 @@ import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
 import { remoteDicts, localDicts, showDBinfo, createLocalChunk, editLocalDictItem } from './remote'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
-import { generateDictChunk, mergeDictChunk } from '/home/michael/greek/dictCSV'
+import { generateDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
 import { config } from '../configs/app.config'
 import { showText, toggleResults, toggleOneResult } from "./parse-data";
@@ -99,6 +99,7 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
   let dname = 'local'
   generateDictChunk(upath, dname, state, (res)=> {
     state.sec = 'local-chunk'
+    log('_____________________genDictChunk:', res)
     let data = {dicts: res}
     navigate(state, data)
   })
@@ -108,19 +109,19 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
 Mousetrap.bind(['ctrl+shift+d'], function(ev) {
   let progress = q('#progress')
   progress.classList.remove('is-hidden')
-  let state = settings.get('state')
-  // let ldpath = state.ldpath
-  // ============= BUG !!!!!!!!! =============
-  // state.ldpath = '/home/michael/diglossa.texts/Dyscolus'
-  if (!state.ldpath) return
-  log('nav: CTRL-SHIFT-D', state.ldpath)
+  // let state = settings.get('state')
+  // // let ldpath = state.ldpath
+  // // ============= BUG !!!!!!!!! =============
+  // // state.ldpath = '/home/michael/diglossa.texts/Dyscolus'
+  // if (!state.ldpath) return
+  // log('nav: CTRL-SHIFT-D', state.ldpath)
 
-  let ldpath = state.ldpath
-  mergeDictChunk(ldpath, upath)
-    .then(res=> {
-      // log('MERGE-RES', res)
-      progress.classList.add('is-hidden')
-    })
+  // let ldpath = state.ldpath
+  // mergeDictChunk(ldpath, upath)
+  //   .then(res=> {
+  //     // log('MERGE-RES', res)
+  //     progress.classList.add('is-hidden')
+  //   })
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
