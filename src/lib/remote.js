@@ -348,8 +348,8 @@ export function createLocalChunk (state, data) {
     // log('OK', osubmitok)
     osection.appendChild(ok)
     ok.addEventListener('click', (ev) => {
-      log('_____SUBMIT MERGE OK:', state, 'data', data)
-      // let dname = 'local'
+      log('_____SUBMIT MERGE OK FILLED:', filled)
+      // filled.forEach(dict=> { dict.trns = dict.trns.split(';') })
       updateCurrent (upath, filled)
         .then(res=> {
           log('MERGE-RES', res)
@@ -382,8 +382,8 @@ export function editLocalDictItem(state, data) {
   ok.addEventListener('click', (ev) => {
     let oinput = q('.dict-item-input-text')
     let trns = oinput.value
-    dict.trns = trns
-    // log('_____SUBMIT OK:', state, 'data', data)
+    dict.trns = trns.split(';')
+    log('_____SUBMIT OK DICT:', dict)
     state.sec = 'local-chunk'
     navigate(state, data)
   })

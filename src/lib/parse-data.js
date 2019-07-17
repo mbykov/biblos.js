@@ -332,7 +332,7 @@ function createMorph (morphs) {
 
 function createTrns (dict) {
   let otrns = create('ul', 'dict-trns')
-  if (!dict.trns) dict.trns = ['no transtation in this dict article']
+  if (!dict.trns) dict.trns = ['no transtation for this dict article']
   dict.trns.forEach(trn => {
     let otrn = create('li', 'dict-trns-li')
     let parts = trn.split(/, [A-Z]| [A-Z][^ ]*[0-9]/)
