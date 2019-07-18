@@ -84,10 +84,10 @@ app.on("ready", () => {
 
 });
 
-ipcMain.on('unload', (event, state, lang) => {
-  settings.set('state', state)
-  settings.set('lang', lang)
-})
+// ipcMain.on('unload', (event, state, lang) => {
+//   settings.set('state', state)
+//   settings.set('lang', lang)
+// })
 
 ipcMain.on('lang', (event, lang) => {
   MenuFactory(lang)

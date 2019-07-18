@@ -86,7 +86,6 @@ Mousetrap.bind(['ctrl+p'], function(ev) {
   if (!el) return
   let href = ['http://www.perseus.tufts.edu/hopper/morph?l=', el.textContent , '&la=greek#lexicon'].join('')
   shell.openExternal(href)
-
 })
 
 Mousetrap.bind(['ctrl+j'], function(ev) {
@@ -284,6 +283,6 @@ function mouseclick(ev) {
 
   let state = settings.get('state')
 
-  ev.preventDefault();
+  ev.preventDefault()
   normalMenu.popup(remote.getCurrentWindow());
 }

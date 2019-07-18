@@ -1,3 +1,6 @@
+/* * {margin: 0; padding: 0;} */
+/* * {list-style-type: disc;} */
+
 @font-face {
   font-family: 'Source Code Pro';
   font-style: normal;
@@ -27,6 +30,17 @@ h2 {
     color: maroon;
 }
 
+h4 {
+    color: maroon;
+    margin-top: 50px;
+    margin-bottom: 25px;
+}
+
+p {
+    padding-bottom: 6px;
+}
+
+
 b {
     color: maroon;
 }
@@ -41,8 +55,8 @@ strong {
 }
 
 ul {
-    line-height: 1em;
-    list-style: none;
+    line-height: 1.5em;
+    list-style: disc;
     margin-block-start: 0;
     margin-block-end: 0;
     margin-inline-start: 0;
@@ -62,11 +76,11 @@ p.par {
   font-size: 1em;
 }
 
-ul.about li:before {
-    content:  "—";
-    position: relative;
-    left:     -5px;
-}
+/* ul.about li:before { */
+/*     content:  "—"; */
+/*     position: relative; */
+/*     left:     -5px; */
+/* } */
 
 .external {
     color: maroon;

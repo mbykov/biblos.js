@@ -73,7 +73,9 @@ document.addEventListener('click', (ev) => {
   let parent = el.parentElement
   let data = el.dataset
   if (el.classList.contains('external')) {
-    let href = el.textContent
+    let href = el.getAttribute('href')
+    log('____________HREF', href)
+    ev.preventDefault()
     shell.openExternal(href)
   } else if (el.classList.contains('dict-dname')) {
     log('D-DNAME', el)

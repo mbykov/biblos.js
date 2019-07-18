@@ -25,10 +25,13 @@ export function loadSections (config) {
         spath = path.resolve(__dirname, '../src/sections', lang, [sname, 'md'].join('.'))
         txt = fse.readFileSync(spath).toString()
         html = md.render(txt);
+        // html = fse.readFileSync(spath).toString()
+        // log('HTML', html)
       } catch (err) {
         spath = path.resolve(__dirname, '../src/sections', config.deflang, [sname, 'md'].join('.'))
-        txt = fse.readFileSync(spath).toString()
-        html = md.render(txt);
+        // txt = fse.readFileSync(spath).toString()
+        // html = md.render(txt);
+        html = fse.readFileSync(spath).toString()
       }
       // log('SPATH', spath)
       let osec = create('div', 'section')

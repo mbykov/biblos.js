@@ -1,13 +1,5 @@
 /* @import "./treeview.min.css" */
 
-p {
-  padding-bottom: 6px;
-}
-
-h4 {
-  color: maroon;
-}
-
 /* .is-shown { */
 /*     display: block!important; */
 /* } */
@@ -38,14 +30,14 @@ h4 {
 
 .section {
     margin: 15px;
-    margin-top: 15px;
+    margin-left: 25px;
     display: block;
     overflow-y: hidden;
     height: 100%;
     padding-bottom: 120px;
     margin-bottom: 120px;
     font-family: "Helvetica Neue", Helvetica, Arial;
-    font-size: 1em;
+    /* font-size: 1em; */
     position: relative;
 }
 
@@ -625,4 +617,14 @@ li.cognate-line:hover {
 .submit {
     margin-top: 25px;
     margin-right: 5px;
+}
+
+.section-ul {
+    list-style-type: disc;
+    margin-left: 15px;
+}
+
+ul.dict-fls {
+    list-style: none;
+    line-height: 1em;
 }
