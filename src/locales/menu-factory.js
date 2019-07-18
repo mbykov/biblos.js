@@ -23,7 +23,7 @@ const log = console.log
 // const platform = process.platform;
 
 export function MenuFactory(lang) {
-  const menus = [leftMenuTemplate, rightMenuTemplate, fileMenuTemplate(), dictMenuTemplate(), bookMenuTemplate(), aboutMenuTemplate(), helpMenuTemplate()];
+  const menus = [leftMenuTemplate, rightMenuTemplate, fileMenuTemplate(), dictMenuTemplate(), aboutMenuTemplate(), helpMenuTemplate()];
 
   // if (env.name !== "production") {
   //   menus.push(devMenuTemplate);

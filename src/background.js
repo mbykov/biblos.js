@@ -11,12 +11,6 @@ import { MenuFactory } from "./locales/menu-factory";
 const log = console.log
 
 const config = require('./configs/app.config');
-// import { antrax } from 'antrax'
-// import { antrax } from '/home/michael/greek/antrax'
-
-// теперь remote checkConnection
-// import { test } from './lib/pouch'
-// test()
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.
@@ -41,7 +35,8 @@ if (env.name !== "production") {
 
 app.on("ready", () => {
   // setApplicationMenu();
-  MenuFactory()
+  let lang = settings.get('lang') || 'eng'
+  MenuFactory(lang)
 
   let opts = {webPreferences: {
     nodeIntegration: true
@@ -89,8 +84,13 @@ app.on("ready", () => {
 
 });
 
-ipcMain.on('unload', (event, state) => {
+ipcMain.on('unload', (event, state, lang) => {
   settings.set('state', state)
+  settings.set('lang', lang)
+})
+
+ipcMain.on('lang', (event, lang) => {
+  MenuFactory(lang)
 })
 
 app.on("window-all-closed", () => {

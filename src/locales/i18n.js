@@ -10,7 +10,13 @@ let contents = {}
 const settings = require('electron-settings')
 
 export function i18n(phrase) {
+  // log('________________________PHRASE', phrase)
+  // let state = settings.get('state')
+  // log('________________________STATE', state, state.lang)
+  // let lang = state.lang || 'eng'
   let lang = settings.get('lang') || 'eng'
+  // log('________________________i18 lang', lang, phrase)
+
   if (!contents[lang]) {
     let langFile = lang + '.js'
     let localePath = path.resolve(apath, 'src/locales', langFile)
@@ -21,6 +27,7 @@ export function i18n(phrase) {
 		  loadedLanguage = fse.readJsonSync(enPath)
 	  }
     contents[lang] = loadedLanguage
+    // log('________________________loadedLanguage', lang, contents[lang])
   }
   let dcased = uncap(phrase)
   return capitalize(contents[lang][dcased]) || capitalize(phrase)

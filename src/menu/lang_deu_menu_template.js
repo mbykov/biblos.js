@@ -15,17 +15,17 @@ export const deuMenuTemplate = {
         BrowserWindow.getFocusedWindow().webContents.send('lang', 'rus')
       }
     },
-    {
-      label: "TIB",
-      click: () => {
-        BrowserWindow.getFocusedWindow().webContents.send('lang', 'tib')
-      }
-    },
-    {
-      label: "ZHO",
-      click: () => {
-        BrowserWindow.getFocusedWindow().webContents.send('lang', 'zho')
-      }
-    }
+    // {
+    //   label: "TIB",
+    //   click: () => {
+    //     BrowserWindow.getFocusedWindow().webContents.send('lang', 'tib')
+    //   }
+    // },
+    // {
+    //   label: "ZHO",
+    //   click: () => {
+    //     BrowserWindow.getFocusedWindow().webContents.send('lang', 'zho')
+    //   }
+    // }
   ]
 };

@@ -9,7 +9,7 @@ import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from 
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 import { config } from './configs/app.config'
-import "./locales/context-menu.js";
+// import "./locales/context-menu.js";
 // import { showResults, showPopup, queryDBs } from "./lib/parse-data"
 import { queryDBs, showSegResult, showCognate } from "./lib/parse-data"
 
@@ -20,21 +20,31 @@ const settings = require('electron').remote.require('electron-settings')
 const axios = require('axios')
 
 loadSections(config)
+
 let state = settings.get('state')
-if (!state || !state.lang) {
-  state = {sec: config.defstate, lang: config.deflang}
+if (!state) {
+  state = {sec: config.defstate}
+  settings.set('state', state)
 }
-log('_____DEFAULT', state)
+
+let lang = settings.get('lang')
+if (!lang) {
+  lang = config.deflang
+  settings.set('lang', lang)
+}
+
+log('_____DEFAULTS:', state.sec, lang)
 navigate(state)
 
 ipcRenderer.on('section', function (event, section) {
+  log('---------------------------------section', state.sec)
   state.sec = section
   navigate(state)
 })
 
 ipcRenderer.on('lang', function (event, lang) {
-  state.lang = lang
-  settings.set('state', state)
+  log('---------------------------------LANG', lang)
+  settings.set('lang', lang)
   ipcRenderer.send('lang', lang)
   remote.getCurrentWindow().reload()
 })

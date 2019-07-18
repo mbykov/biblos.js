@@ -34,11 +34,13 @@ let hstate = 0
 let split
 // let state
 
-window.onbeforeunload = function () {
-  let state = settings.get('state')
-  // settings.set('state', state)
-  ipcRenderer.send('unload', state)
-}
+// какой смысл? Здесь прочитал, в back обратно записал. Нонсенс
+// window.onbeforeunload = function () {
+//   let state = settings.get('state')
+//   let lang = settings.get('lang')
+//   // settings.set('state', state)
+//   ipcRenderer.send('unload', state, lang)
+// }
 
 ipcRenderer.on('action', function (event, action) {
   if (action == 'goleft') goLeft()
@@ -133,8 +135,9 @@ Mousetrap.bind(['ctrl+f'], function(ev) {
 
 Mousetrap.bind(['ctrl+z'], function(ev) {
   log('== ZERO STATE ==')
-  let state = {sec: config.defstate, lang: config.deflang}
+  let state = {sec: config.defstate}
   settings.set('state', state)
+  settings.set('lang', config.deflang)
   navigate(state)
 })
 
@@ -178,12 +181,13 @@ function goRight() {
 
 function showSection(state) {
   if (!state.sec) throw new Error('NO SECTION!')
-  if (!state.lang) throw new Error('NO LANG!')
+  let lang = settings.get('lang') || 'eng'
   const sections = qs('.section')
   Array.prototype.forEach.call(sections, (osection) => {
     osection.classList.add('is-hidden')
   })
-  let sectionId = ['#', state.sec, '_', state.lang].join('')
+  let sectionId = ['#', state.sec, '_', lang].join('')
+  log('____________ SEC ID', sectionId)
   q(sectionId).classList.remove('is-hidden')
   return sectionId
 }
@@ -196,7 +200,7 @@ export function navigate(state, data) {
     history.push(oldstate)
     hstate = history.length-1
   }
-  // log('__STATE__PARS', state, data)
+  log('__STATE__PARS', state, 'data:', data)
   let sec = state.sec
   let sid = showSection(state)
   if (data) data.sid = sid

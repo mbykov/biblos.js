@@ -1,7 +1,7 @@
 #### Hot Keys:
 just copy **Crtl+C** text everywhere on a desktop, then move mouse over a word
 
-**Ctrl-L** - home page (Library)
+**Ctrl-H** - home page (Library)
 
 **Ctrl-Shift-R** - reload application
 
