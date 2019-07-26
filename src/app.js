@@ -74,7 +74,7 @@ document.addEventListener('click', (ev) => {
   let data = el.dataset
   if (el.classList.contains('external')) {
     let href = el.getAttribute('href')
-    log('____________HREF', href)
+    if (!href) href = el.textContent
     ev.preventDefault()
     shell.openExternal(href)
   } else if (el.classList.contains('dict-dname')) {

@@ -12,4 +12,4 @@
 
 &nbsp;
 
-Morpheus is developed **not** as a linguistic program, but with attention to authentic grammar, primarily to the grammar of Apollonius the Dyscolus, and **not** a modern theory.
+Morpheus is developed **not** as a linguistic program, but with attention to authentic grammar, primarily to the grammar of Apollonius the Dyscolus, and **not** modern theory.

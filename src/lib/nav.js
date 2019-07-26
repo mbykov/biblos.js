@@ -186,7 +186,7 @@ function showSection(state) {
     osection.classList.add('is-hidden')
   })
   let sectionId = ['#', state.sec, '_', lang].join('')
-  log('____________ SEC ID', sectionId)
+  // log('____________ SEC ID', sectionId)
   q(sectionId).classList.remove('is-hidden')
   return sectionId
 }
@@ -199,7 +199,7 @@ export function navigate(state, data) {
     history.push(oldstate)
     hstate = history.length-1
   }
-  log('__STATE__PARS', state, 'data:', data)
+  // log('__STATE__PARS', state, 'data:', data)
   let sec = state.sec
   let sid = showSection(state)
   if (data) data.sid = sid

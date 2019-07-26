@@ -131,11 +131,13 @@ export const accents = {
   '': ''
 }
 
+const stresses = [accents.oxia, accents.varia, accents.peris]
+
 export function enclitic(str) {
   let syms = str.split('')
   let stress = false
   let clean = []
-  let stresses = [accents.oxia, accents.varia, accents.peris]
+  // let stresses = [accents.oxia, accents.varia, accents.peris]
   // console.log('STRESSES', stresses)
   syms.forEach(sym => {
     if (!stresses.includes(sym)) clean.push(sym)
@@ -144,3 +146,12 @@ export function enclitic(str) {
   })
   return clean.join('')
 }
+
+// export function stressed(str) {
+//   let syms = str.split('')
+//   let stress = false
+//   syms.forEach(sym => {
+//     if (stresses.includes(sym)) stress = true
+//   })
+//   return stress
+// }
