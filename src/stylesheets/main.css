@@ -94,8 +94,12 @@
 }
 
 .dinfo {
-    cursor: pointer;
+    /* cursor: pointer; */
     color: maroon;
+}
+
+.dname {
+    cursor: pointer;
 }
 
 .clause {

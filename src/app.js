@@ -6,7 +6,7 @@ import env from "env";
 import sband from "../../..//sband"
 // import sband from "speckled-band"
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
-import { cloneDict } from './lib/remote'
+import { cloneDict, moveDict } from './lib/remote'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 import { config } from './configs/app.config'
@@ -124,9 +124,11 @@ document.addEventListener('click', (ev) => {
     let over = q("#new-version")
     over.classList.add('is-hidden')
     shell.openExternal(data.href)
-  } else if (data.dinfo) {
+  } else if (data.dname) {
     // state.sec = 'db-info'
     // navigate(state)
+    // if (ev.shiftKey) return
+    moveDict(data.dname, ev.shiftKey)
   } else if (data.clone) {
     if (el.textContent != 'sync') return
     cloneDict(data.clone)

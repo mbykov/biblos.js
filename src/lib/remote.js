@@ -137,9 +137,10 @@ function showRemoteDicts(dbinfos) {
   dbinfos.forEach(rdb=> {
     let otr = create('tr')
     otable.appendChild(otr)
-    let odt = create('td')
+    let odt = create('td', 'dname')
     otr.appendChild(odt)
     odt.textContent = rdb.descr.name
+    odt.dataset.dname = rdb.dname
     let osize = create('td', 'dsize')
     osize.textContent = rdb.size
     otr.appendChild(osize)
@@ -185,7 +186,7 @@ function createRemoteTable() {
   oinfo.textContent = 'info'
   oheader.appendChild(oinfo)
   let osync = create('td')
-  osync.textContent = 'synchronized:'
+  osync.textContent = 'synced'
   oheader.appendChild(osync)
   return otable
 }
@@ -462,4 +463,20 @@ function createDictEdit (dict) {
 
 export function cloneDict(dname) {
   log('CLONE DICT', dname)
+}
+
+export function moveDict(dname, shift) {
+  log('MOVE DICT', dname, shift)
+}
+
+// это from pecha:
+export function moveDictFirst(dname) {
+  let cfg = settings.get('cfg')
+  let dict = _.find(cfg, dict=> { return dict.dname == dname })
+  let rest = _.reject(cfg, dict=> { return dict.dname == dname })
+  rest.unshift(dict)
+  cfg = rest
+  cfg.forEach((dict, idx)=> { dict.idx = idx })
+  settings.set('cfg', cfg)
+  // showActiveDicts()
 }
