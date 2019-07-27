@@ -4,7 +4,8 @@
 
 <div class="section-descr">
     <b>click</b> the dict's name to move it higher, <b>shift-click</b> to move it lower.
-    <br>Synchronization can take some time, it is slow process. But you can work with dictionary just after click, before a process will be fully finished.
+    <br>Synchronization can take some time, it is slow process.
+    <!-- But you can work with selected dictionary just after click, before a process will be fully finished. -->
     <br><b>tip</b>: start from shorter dictionaries to estimate a full synchronization time:
 </div>
 

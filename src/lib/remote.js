@@ -466,7 +466,20 @@ export function cloneDict(dname) {
 }
 
 export function moveDict(dname, shift) {
-  log('MOVE DICT', dname, shift)
+  let cfg = settings.get('cfg')
+  cfg = JSON.parse(JSON.stringify(cfg))
+  cfg = _.filter(cfg, dict=> { return !['flex', 'comp'].includes(dict.dname) }) // убрать 2 строки
+  cfg.forEach((dict, idx)=> { dict.idx = idx })
+  log('CFG-0', cfg)
+  let dict = _.find(cfg, dict=> { return dict.dname == dname })
+  if (dict.idx < 1) return
+  let before = cfg[dict.idx-1]
+  log('CFG-dict', dict, before)
+  before.idx = dict.idx
+  dict.idx = dict.idx - 1
+  cfg = _.sortBy(cfg, 'idx')
+  log('CFG-1', cfg)
+
 }
 
 // это from pecha:
