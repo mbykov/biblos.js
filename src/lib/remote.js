@@ -19,6 +19,20 @@ let PouchDB = require('pouchdb')
 
 initDBs()
 
+const getopts = {
+  "url": "http://guest:guest@diglossa.org:5984/_all_dbs"
+}
+
+const postopts = {
+  "method": "POST",
+  "url": "http://guest:guest@diglossa.org:5984/_dbs_info",
+  "json": true,
+  "headers": {
+    "Content-type": "application/json"
+  }
+}
+
+
 // пока что terms отдельно от wkt
 function initDBs() {
   // UPATH
@@ -45,37 +59,30 @@ function initCfg(upath) {
 }
 
 export function remoteDicts() {
-
-  const getopts = {
-    "url": "http://guest:guest@localhost:5984/_all_dbs"
-  }
-
-  const postopts = {
-    "method": "POST",
-    "url": "http://guest:guest@localhost:5984/_dbs_info",
-    "json": true,
-    "headers": {
-      "Content-type": "application/json"
-    }
-  }
+  // log('___GETOPTS', getopts)
+  // log('___POST', postopts)
 
   request(getopts, function (error, response, body) {
-    if (error) console.error('soket error')
+    if (error) console.error('soket error:', error)
+    // log('__get response:', response)
     if (response && response.statusCode != 200)  return
 
     let dblist = JSON.parse(body)
     let dnames = _.filter(dblist, dict=> { return dict[0] != '_' })
+    // log('__dnames:', dnames)
     postopts.body = {keys: dnames}
 
     request(postopts, function (error, response, body) {
-      if (error) console.error('soket error')
+      if (error) console.error('post soket error:', error)
+      // log('__post response:', response)
       if (response && response.statusCode != 200) return
       let dbinfos = body.map(dict=> { return {dname: dict.key, size: dict.info.doc_count} })
       // console.log('dbinfos:', dbinfos)
       // console.log('dnames:', dnames)
 
       Promise.all(dnames.map(function(dname) {
-        let remotepath = ['http://localhost.org:5984/', dname].join('')
+        let remotepath = ['http://diglossa.org:5984', dname].join('/')
+        // log('info:', dname, remotepath)
         let remoteDB = new PouchDB(remotepath)
         return remoteDB.get('description')
           .then(descr=> {
@@ -88,6 +95,7 @@ export function remoteDicts() {
           })
       }))
         .then(function(descrs) {
+          // log('info:', descrs)
           let code = config.code
           let recode = new RegExp(code)
           descrs = _.compact(descrs)
@@ -99,7 +107,7 @@ export function remoteDicts() {
             dbinfo.descr = descr
             cleaninfos.push(dbinfo)
           })
-          settings.set('dbinfos', dbinfos)
+          // settings.set('dbinfos', dbinfos)
           // log('DBINFOS', cleaninfos)
           showRemoteDicts(cleaninfos)
         })
@@ -108,19 +116,23 @@ export function remoteDicts() {
 }
 
 function showRemoteDicts(dbinfos) {
+  log('DBINFOS', dbinfos)
   let cfg = settings.get('cfg') || []
-  let state = settings.get('state')
+  let lang = settings.get('lang')
   let locals = _.uniq(cfg.map(dict=> { return dict.dname }))
+  locals = ['wkt', 'lsj', 'dvr', 'flex']
+  log('LOC', locals)
 
   let obefore = q('#before-remote-table')
   if (!obefore) return
   obefore.textContent = ''
+  // if (obefore) obefore.textContent = 'click dict\'s name to move it first'
   let otable = q('#table-dicts-remote')
   if (otable) remove(otable)
-  let sec_id = ['#remote-dicts', state.lang].join('_')
-  let osection = q(sec_id)
+  let sec_id = ['#remote-dicts', lang].join('_')
+  // let osection = q(sec_id)
   otable = createRemoteTable()
-  osection.appendChild(otable)
+  // osection.appendChild(otable)
 
   dbinfos.forEach(rdb=> {
     let otr = create('tr')
@@ -137,6 +149,8 @@ function showRemoteDicts(dbinfos) {
     let oinfo = create('td', 'dinfo')
     oinfo.textContent = 'info'
     oinfo.dataset.dinfo = rdb.dname
+    let descr = JSON.stringify(rdb.descr)
+    oinfo.setAttribute('title', descr)
     otr.appendChild(oinfo)
     let olink = create('td', 'link')
     if (locals.includes(rdb.dname)) {
@@ -148,6 +162,8 @@ function showRemoteDicts(dbinfos) {
     olink.dataset.clone = rdb.dname
     otr.appendChild(olink)
   })
+
+  obefore.parentNode.insertBefore(otable, obefore.nextSibling);
 }
 
 function createRemoteTable() {
@@ -169,7 +185,7 @@ function createRemoteTable() {
   oinfo.textContent = 'info'
   oheader.appendChild(oinfo)
   let osync = create('td')
-  osync.textContent = 'synchronize!'
+  osync.textContent = 'synchronized:'
   oheader.appendChild(osync)
   return otable
 }
@@ -442,4 +458,8 @@ function createDictEdit (dict) {
   odictitem.appendChild(osubmitcancel)
 
   return odictitem
+}
+
+export function cloneDict(dname) {
+  log('CLONE DICT', dname)
 }

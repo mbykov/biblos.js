@@ -6,6 +6,7 @@ import env from "env";
 import sband from "../../..//sband"
 // import sband from "speckled-band"
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
+import { cloneDict } from './lib/remote'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 import { config } from './configs/app.config'
@@ -124,9 +125,12 @@ document.addEventListener('click', (ev) => {
     over.classList.add('is-hidden')
     shell.openExternal(data.href)
   } else if (data.dinfo) {
-    state.sec = 'db-info'
-    // state.dname = data.dinfo
-    navigate(state)
+    // state.sec = 'db-info'
+    // navigate(state)
+  } else if (data.clone) {
+    if (el.textContent != 'sync') return
+    cloneDict(data.clone)
+    // navigate(state)
   } else if (data.section) {
     state.sec = data.section
     navigate(state)

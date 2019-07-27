@@ -633,3 +633,12 @@ ul.dict-fls {
 .compound-list {
     list-style: none;
 }
+
+.error-message {
+    color: red;
+    padding: 10px;
+}
+
+.section-descr {
+    font-size: 0.9em;
+}

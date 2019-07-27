@@ -7,7 +7,7 @@ export function dictMenuTemplate() {
     submenu: [
       { label: t("Arrange local dicts"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'arrange-dicts') } },
       { label: t("Clone dict from server"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'remote-dicts') } },
-      { label: t("Import dict form CSV"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'csv') } },
+      // { label: t("Import dict form CSV"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'csv-dicts') } },
       // { label: t("Create CSV from texts"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'localdict') } },
       // { label: t("Publish dictionary"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'publish') } },
       // { label: t("Reread the source"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('action', 'reread-dict') } },

@@ -350,14 +350,15 @@ function createTrns (dict) {
   return otrns
 }
 
-function getPos(dict) {
-  let pos
-  if (dict.pos) pos = dict.pos
-  else if (dict.verb) pos = 'verb'
-  else if (dict.name) pos = 'name'
-  return pos
-}
+// function getPos(dict) {
+//   let pos
+//   if (dict.pos) pos = dict.pos
+//   else if (dict.verb) pos = 'verb'
+//   else if (dict.name) pos = 'name'
+//   return pos
+// }
 
+// space
 export function toggleResults() {
   let dtrns = qs('.dict-trns')
   let dfls = qs('.dict-fls')
@@ -367,6 +368,7 @@ export function toggleResults() {
   else dtrns.forEach(otrns=> {  otrns.classList.add('is-hidden')  }), dfls.forEach(ofls=> {  ofls.classList.add('is-hidden')  })
 }
 
+// tab
 export function toggleOneResult() {
   let dtrns = qs('.dict-trns')
   let dfls = qs('.dict-fls')
