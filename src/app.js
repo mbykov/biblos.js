@@ -6,7 +6,7 @@ import env from "env";
 import sband from "../../..//sband"
 // import sband from "speckled-band"
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
-import { cloneDict, moveDict } from './lib/remote'
+import { cloneDict, moveDict, disableDict } from './lib/remote'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 import { config } from './configs/app.config'
@@ -119,16 +119,18 @@ document.addEventListener('click', (ev) => {
     }
   }
   let data = el.dataset
-  if (!data) return
+  // if (!data) return
   if (data.href) {
     let over = q("#new-version")
     over.classList.add('is-hidden')
     shell.openExternal(data.href)
   } else if (data.dname) {
     moveDict(data.dname, ev.shiftKey)
-  } else if (data.clone) {
-    // if (el.textContent != 'sync') return -- это нужно
-    cloneDict(data.clone)
+  } else if (data.activate) {
+    if (el.textContent != 'sync') return
+    cloneDict(data.activate)
+  } else if (data.disable) {
+    disableDict(data.disable)
   } else if (data.section) {
     state.sec = data.section
     navigate(state)

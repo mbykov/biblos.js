@@ -41,7 +41,7 @@ function initDBs(cfg) {
   if (!cfg) cfg = initCfg()
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  dnames = ['local', 'wkt', 'dvr', 'lsj']
+  // dnames = ['local', 'wkt', 'dvr', 'lsj']
   // dnames = ['wkt', 'dvr', 'lsj']
   // dnames = ['wkt']
   // dnames = ['local']
@@ -162,10 +162,10 @@ function showRemoteDicts(cfg) {
     let olink = create('td', 'link')
     if (rdb.active) {
       let check = checkmark()
-      check.dataset.clone = rdb.dname
+      check.dataset.disable = rdb.dname
       olink.appendChild(check)
     } else {
-      olink.dataset.clone = rdb.dname
+      olink.dataset.activate = rdb.dname
       olink.textContent = 'sync'
     }
     otr.appendChild(olink)
@@ -205,25 +205,24 @@ function checkmark() {
 }
 
 export function cloneDict(dname) {
-  log('CLONE DICT', dname)
+  // log('CLONE DICT', dname)
   let localpath = path.resolve(upath, 'pouch', dname)
   let remotepath = ['http://guest:guest@diglossa.org:5984', dname].join('/')
-
-  log('LOCAL DB', localpath)
-  log('REMOTE DB', remotepath)
-
   let localDB = new PouchDB(localpath)
   let remoteDB = new PouchDB(remotepath)
-
-  // localDB.info().then(function (info) {
-  //   log('LOCAL INFO', info);
-  // })
-  // localDB.info().then(function (info) {
-  //   log('REMOTE INFO', info);
-  // })
+  // localDB.info().then(function (info) {    log('LOCAL INFO', info) })
+  // localDB.info().then(function (info) {    log('REMOTE INFO', info) })
+  let progress = q('#progress')
+  progress.classList.remove('is-hidden')
 
   remoteDB.replicate.to(localDB).on('complete', function (res) {
+    let cfg = settings.get('cfg')
+    let dict = _.find(cfg, dict=> { return dict.dname == dname })
+    if (!dict) return
+    dict.active = true
     log('ok, were done!', res)
+    showRemoteDicts(cfg)
+    progress.classList.add('is-hidden')
   }).on('error', function (err) {
     log('boo, something went wrong!', err)
   })
@@ -247,6 +246,16 @@ export function moveDict(dname, shift) {
     dict.idx = dict.idx - 1
   }
   cfg = _.sortBy(cfg, 'idx')
+  settings.set('cfg', cfg)
+  showRemoteDicts(cfg)
+}
+
+export function disableDict(dname) {
+  let cfg = settings.get('cfg')
+  let dict = _.find(cfg, dict=> { return dict.dname == dname })
+  if (!dict) return
+  dict.active = false
+  // log('____REMOTE: DISABLE', dname, cfg)
   settings.set('cfg', cfg)
   showRemoteDicts(cfg)
 }
