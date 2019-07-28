@@ -56,7 +56,7 @@ function initCfg() {
   return cfg
 }
 
-export function remoteDicts() {
+export function requestRemoteDicts() {
   request(getopts, function (error, response, body) {
     if (error) console.error('soket error:', error)
     // log('__get response:', response)
@@ -95,22 +95,21 @@ export function remoteDicts() {
           let recode = new RegExp(code)
           descrs = _.compact(descrs)
           descrs = _.filter(descrs, descr=> { return recode.test(descr.langs)})
-          let cleaninfos = []
+          // let cleaninfos = []
           descrs.forEach(descr=> {
             let dbinfo = _.find(dbinfos, info=> { return info.dname == descr.dname})
             if (!dbinfo) return
-            dbinfo.descr = descr
+            // dbinfo.descr = descr
             descr.size = dbinfo.size
             delete descr._id
             delete descr._rev
-            cleaninfos.push(dbinfo)
+            // cleaninfos.push(dbinfo)
           })
-          // settings.set('dbinfos', dbinfos)
-          log('DBINFOS', cleaninfos)
-          log('DESCRS', descrs)
+          // log('DBINFOS', cleaninfos)
+          // log('DESCRS', descrs)
           let cfg = settings.get('cfg') || []
           cfg = JSON.parse(JSON.stringify(cfg))
-          log('CFG', cfg)
+          // log('CFG', cfg)
           descrs.forEach((descr, idx)=> {
             cfg.forEach(dict=> {
               if (descr.dname != dict.dname) return
@@ -119,8 +118,10 @@ export function remoteDicts() {
             })
             if (!descr.active) descr.idx = 100 + idx // new dict on server
           })
-          log('DESCRS-2', descrs)
-          settings.set('cfg', descrs)
+          // descrs.forEach((dict, idx)=> { dict.idx = idx })
+          cfg = _.sortBy(descrs, 'idx')
+          settings.set('cfg', cfg)
+          log('DESCRS-2', cfg)
           showRemoteDicts(cfg)
         })
         .catch(err=> {
@@ -139,7 +140,7 @@ function showRemoteDicts(cfg) {
   otable = createRemoteTable()
 
   cfg.forEach(rdb=> {
-    log('_________________________RDB', rdb)
+    // log('_________________________RDB', rdb)
     let otr = create('tr')
     otable.appendChild(otr)
     let odt = create('td', 'dname')
@@ -191,7 +192,7 @@ function createRemoteTable() {
   oinfo.textContent = 'info'
   oheader.appendChild(oinfo)
   let osync = create('td')
-  osync.textContent = 'synced'
+  osync.textContent = 'synchronized:'
   oheader.appendChild(osync)
   return otable
 }
@@ -209,17 +210,20 @@ export function cloneDict(dname) {
 export function moveDict(dname, shift) {
   let cfg = settings.get('cfg')
   cfg = JSON.parse(JSON.stringify(cfg))
-  cfg = _.filter(cfg, dict=> { return !['flex', 'comp'].includes(dict.dname) }) // убрать 2 строки
-  cfg.forEach((dict, idx)=> { dict.idx = idx })
-  log('CFG-0', cfg)
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
-  if (dict.idx < 1) return
-  let before = cfg[dict.idx-1]
-  log('CFG-dict', dict, before)
-  before.idx = dict.idx
-  dict.idx = dict.idx - 1
+  if (!dict) return
+  if (shift) {
+    if (dict.idx >= cfg.length -1) return
+    let after = cfg[dict.idx+1]
+    after.idx = dict.idx
+    dict.idx = dict.idx + 1
+  } else {
+    if (dict.idx < 1) return
+    let before = cfg[dict.idx-1]
+    before.idx = dict.idx
+    dict.idx = dict.idx - 1
+  }
   cfg = _.sortBy(cfg, 'idx')
-  log('CFG-1', cfg)
   settings.set('cfg', cfg)
-
+  showRemoteDicts(cfg)
 }

@@ -1,7 +1,8 @@
 //
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
-import { remoteDicts, createLocalChunk, editLocalDictItem } from './remote'
+import { requestRemoteDicts } from './remote'
+import { createLocalChunk, editLocalDictItem } from './local-dict'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import { generateDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
@@ -13,9 +14,6 @@ import path from "path";
 
 const app = remote.app;
 const apath = app.getAppPath()
-
-const Menu = remote.Menu;
-const MenuItem = remote.MenuItem;
 
 // UPATH
 let upath = app.getPath("userData")
@@ -205,9 +203,7 @@ export function navigate(state, data) {
   if (data) data.sid = sid
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
-  else if (sec == 'remote-dicts') remoteDicts()
-  // else if (sec == 'arrange-dicts') localDicts()
-  // else if (sec == 'db-info') showDBinfo(state)
+  else if (sec == 'remote-dicts') requestRemoteDicts()
   else if (sec == 'local-chunk') createLocalChunk(state, data)
   else if (sec == 'local-dict-item') editLocalDictItem(state, data)
 
@@ -222,67 +218,4 @@ function closePopups() {
   if (opopup) remove(opopup)
   let oetyrels = q('#etyrels')
   if (oetyrels) remove(oetyrels)
-}
-
-// ==================CONTEXT унести в /lib ==============
-
-
-document.onmousedown = mouseclick
-
-/*
-  меню - попроще
-  форма:
-  - персей
-  текст:
-  - local dict
-  - merge local
-  - local to csv
-
-
-*/
-
-const perseus = new MenuItem({
-  label: "Perseus Greek Word Study Tool",
-  click: () => {
-    document.execCommand("copy");
-  }
-});
-
-const wiktionary = new MenuItem({
-  label: "Wiktionary",
-  click: () => {
-    document.execCommand("copy");
-  }
-});
-
-const localDict = new MenuItem({
-  label: "Local Dictionary for this text",
-  click: () => {
-    document.execCommand("copy");
-  }
-});
-
-const megreLocalDict = new MenuItem({
-  label: "Main Local Dictionary",
-  click: () => {
-    document.execCommand("copy");
-  }
-});
-
-function mouseclick(ev) {
-  if (ev.button != 2) return
-  const normalMenu = new Menu();
-
-  let el = ev.target
-  if (el.classList.contains('active-form')) normalMenu.append(perseus), normalMenu.append(wiktionary) // log('context:', el.textContent)
-  else log('context:', 'kuku')
-  // log('_____RIGHT', el)
-
-  normalMenu.append(localDict)
-  normalMenu.append(megreLocalDict)
-
-  let state = settings.get('state')
-
-  ev.preventDefault()
-  normalMenu.popup(remote.getCurrentWindow());
 }
