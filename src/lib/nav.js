@@ -1,7 +1,7 @@
 //
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
-import { remoteDicts, localDicts, showDBinfo, createLocalChunk, editLocalDictItem } from './remote'
+import { remoteDicts, createLocalChunk, editLocalDictItem } from './remote'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import { generateDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
@@ -206,8 +206,8 @@ export function navigate(state, data) {
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
   else if (sec == 'remote-dicts') remoteDicts()
-  else if (sec == 'arrange-dicts') localDicts()
-  else if (sec == 'db-info') showDBinfo(state)
+  // else if (sec == 'arrange-dicts') localDicts()
+  // else if (sec == 'db-info') showDBinfo(state)
   else if (sec == 'local-chunk') createLocalChunk(state, data)
   else if (sec == 'local-dict-item') editLocalDictItem(state, data)
 

@@ -32,17 +32,15 @@ const postopts = {
   }
 }
 
+export function queryRemote(query, compound) {
+  return antrax(query, compound)
+}
 
-// пока что terms отдельно от wkt
-function initDBs() {
-  // UPATH
-  let upath = app.getPath("userData")
-  upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
-
-  let cfg = settings.get('cfg')
-  if (!cfg) cfg = initCfg(upath)
-  let dnames = cfg.map(dict=> { return dict.dname })
-  // TODO:  cfg и все localdicts - еще предстоит сделать <<<<=========================== TODO ========================
+function initDBs(cfg) {
+  if (!cfg) cfg = settings.get('cfg')
+  if (!cfg) cfg = initCfg()
+  let active = _.filter(cfg, dict=> { return dict.active })
+  let dnames = active.map(dict=> { return dict.dname })
   dnames = ['local', 'wkt', 'dvr', 'lsj']
   // dnames = ['wkt', 'dvr', 'lsj']
   // dnames = ['wkt']
@@ -50,7 +48,7 @@ function initDBs() {
   checkConnection(upath, dnames)
 }
 
-function initCfg(upath) {
+function initCfg() {
   let pouchpath = path.resolve(upath, 'pouch')
   let dnames = fse.readdirSync(pouchpath)
   let cfg = dnames.map((dname, idx)=> { return {dname: dname, active: true, idx: idx} })
@@ -59,9 +57,6 @@ function initCfg(upath) {
 }
 
 export function remoteDicts() {
-  // log('___GETOPTS', getopts)
-  // log('___POST', postopts)
-
   request(getopts, function (error, response, body) {
     if (error) console.error('soket error:', error)
     // log('__get response:', response)
@@ -105,56 +100,66 @@ export function remoteDicts() {
             let dbinfo = _.find(dbinfos, info=> { return info.dname == descr.dname})
             if (!dbinfo) return
             dbinfo.descr = descr
+            descr.size = dbinfo.size
+            delete descr._id
+            delete descr._rev
             cleaninfos.push(dbinfo)
           })
           // settings.set('dbinfos', dbinfos)
-          // log('DBINFOS', cleaninfos)
-          showRemoteDicts(cleaninfos)
+          log('DBINFOS', cleaninfos)
+          log('DESCRS', descrs)
+          let cfg = settings.get('cfg') || []
+          cfg = JSON.parse(JSON.stringify(cfg))
+          log('CFG', cfg)
+          descrs.forEach((descr, idx)=> {
+            cfg.forEach(dict=> {
+              if (descr.dname != dict.dname) return
+              descr.active = dict.active
+              descr.idx = dict.idx
+            })
+            if (!descr.active) descr.idx = 100 + idx // new dict on server
+          })
+          log('DESCRS-2', descrs)
+          settings.set('cfg', descrs)
+          showRemoteDicts(cfg)
+        })
+        .catch(err=> {
+          log('possible, no connection', err)
         })
     })
   })
 }
 
-function showRemoteDicts(dbinfos) {
-  log('DBINFOS', dbinfos)
-  let cfg = settings.get('cfg') || []
-  let lang = settings.get('lang')
-  let locals = _.uniq(cfg.map(dict=> { return dict.dname }))
-  locals = ['wkt', 'lsj', 'dvr', 'flex']
-  log('LOC', locals)
-
+function showRemoteDicts(cfg) {
   let obefore = q('#before-remote-table')
   if (!obefore) return
   obefore.textContent = ''
-  // if (obefore) obefore.textContent = 'click dict\'s name to move it first'
   let otable = q('#table-dicts-remote')
   if (otable) remove(otable)
-  let sec_id = ['#remote-dicts', lang].join('_')
-  // let osection = q(sec_id)
   otable = createRemoteTable()
-  // osection.appendChild(otable)
 
-  dbinfos.forEach(rdb=> {
+  cfg.forEach(rdb=> {
+    log('_________________________RDB', rdb)
     let otr = create('tr')
     otable.appendChild(otr)
     let odt = create('td', 'dname')
     otr.appendChild(odt)
-    odt.textContent = rdb.descr.name
+    odt.textContent = rdb.name
     odt.dataset.dname = rdb.dname
     let osize = create('td', 'dsize')
     osize.textContent = rdb.size
     otr.appendChild(osize)
     let olang = create('td', 'dlang')
-    olang.textContent = rdb.descr.langs
+    olang.textContent = rdb.langs
     otr.appendChild(olang)
     let oinfo = create('td', 'dinfo')
     oinfo.textContent = 'info'
     oinfo.dataset.dinfo = rdb.dname
-    let descr = JSON.stringify(rdb.descr)
+    let descr = JSON.stringify(rdb)
     oinfo.setAttribute('title', descr)
     otr.appendChild(oinfo)
     let olink = create('td', 'link')
-    if (locals.includes(rdb.dname)) {
+    if (rdb.active) {
       let check = checkmark()
       olink.appendChild(check)
     } else {
@@ -197,270 +202,6 @@ function checkmark() {
   return check
 }
 
-export function localDicts() {
-  // showLocalDicts()
-}
-
-function showLocalDicts() {
-  let cfg = settings.get('cfg')
-  if (!cfg) return
-  let state = settings.get('state')
-  let dnames = _.uniq(cfg.map(dict=> { return dict.dname }))
-  log('SHOW LOCAL DICTS CFG:', cfg)
-  let obefore = q('#before-local-table')
-  if (!obefore) return
-  obefore.textContent = ''
-  let otable = q('#table-local')
-  if (otable) empty(otable)
-  else {
-    let sec_id = ['#arrange-dicts', state.lang].join('_')
-    let osection = q(sec_id)
-    if (!osection) return
-    otable = createLocalTable()
-    osection.appendChild(otable)
-  }
-  // let oheader = q('#table-header-local')
-  let dbinfos = settings.get('dbinfos')
-  log('DIN', dbinfos)
-
-  dbinfos.forEach(rdb=> {
-    if (!dnames.includes(rdb.dname)) return
-    let otr = create('tr')
-    otable.appendChild(otr)
-    // insertAfter(otr, oheader)
-    let odt = create('td')
-    otr.appendChild(odt)
-    odt.textContent = rdb.descr.name
-    let osize = create('td', 'dsize')
-    osize.textContent = rdb.size
-    otr.appendChild(osize)
-    let olang = create('td', 'dlang')
-    olang.textContent = rdb.descr.langs
-    otr.appendChild(olang)
-    let oinfo = create('td', 'dinfo')
-    oinfo.textContent = 'info'
-    oinfo.dataset.dinfo = rdb.dname
-    otr.appendChild(oinfo)
-  })
-
-}
-
-export function queryRemote(query, compound) {
-  return antrax(query, compound)
-}
-
-function createLocalTable() {
-  let otable = create('table', 'dicts-table')
-  otable.id = 'table-local'
-  let oheader = create('tr', 'table-header')
-  oheader.id = 'table-header-local'
-  otable.appendChild(oheader)
-  let odname = create('td')
-  odname.textContent = 'dict\'s name'
-  oheader.appendChild(odname)
-  let osize = create('td')
-  osize.textContent = 'docs'
-  oheader.appendChild(osize)
-  let olang = create('td')
-  olang.textContent = 'langs'
-  oheader.appendChild(olang)
-  let oinfo = create('td')
-  oinfo.textContent = 'info'
-  oheader.appendChild(oinfo)
-  return otable
-}
-
-export function showDBinfo(state) {
-  log('INFO', state.dname)
-  let dbinfos = settings.get('dbinfos')
-  let dbinfo = _.find(dbinfos, dbinfo=> { return dbinfo.dname == state.dname})
-  log('DINFO:', dbinfo)
-  let sec_id = ['#db-info', state.lang].join('_')
-  let osection = q(sec_id)
-  let oinfo = q('#db-info-table')
-  if (oinfo) remove(oinfo)
-  oinfo = createInfoTable(dbinfo)
-  osection.appendChild(oinfo)
-}
-
-function createInfoTable(dbinfo) {
-  let oinfo = create('ul', 'info-table')
-  let oremote = create('li', '')
-  oremote.textContent = ['dict\'s remote name: ', dbinfo.dname].join('')
-  oinfo.appendChild(oremote)
-  let oname = create('li', '')
-  oname.textContent = ['dict\'s full name: ', dbinfo.descr.name].join('')
-  oinfo.appendChild(oname)
-  let olangs = create('li', '')
-  olangs.textContent = ['langs: ', dbinfo.descr.langs].join('')
-  oinfo.appendChild(olangs)
-  let osource = create('li', '')
-  osource.textContent = ['source: ', dbinfo.descr.source].join('')
-  oinfo.appendChild(osource)
-  let oeditor = create('li', '')
-  oeditor.textContent = ['editor: ', dbinfo.descr.email].join('')
-  oinfo.appendChild(oeditor)
-  return oinfo
-}
-
-export function createLocalChunk (state, data) {
-  if (!data) return
-  let dicts = data.dicts
-  // log('______________________chunk-dicts', dicts)
-  if (!dicts) return
-  let osection = q(data.sid)
-  let otable = q('#table-local-chunk')
-  if (otable) remove(otable)
-
-  otable = create('table', 'dicts-table')
-  otable.id = 'table-local-chunk'
-  otable.dataset.dicts = JSON.stringify(dicts)
-  let oheader = create('tr', 'table-chunk-header')
-  otable.appendChild(oheader)
-
-  let oname = create('td')
-  oname.textContent = 'wordform'
-  oheader.appendChild(oname)
-  let opos = create('td')
-  opos.textContent = 'pos'
-  oheader.appendChild(opos)
-  let okey = create('td')
-  okey.textContent = 'key'
-  oheader.appendChild(okey)
-  let otrns = create('td')
-  otrns.textContent = 'translation'
-  oheader.appendChild(otrns)
-
-  dicts.forEach(dict=> {
-    let oline = create('tr', 'table-line')
-    otable.appendChild(oline)
-
-    let ordict = create('td')
-    ordict.textContent = dict.rdict
-    oline.appendChild(ordict)
-
-    let opos = create('td')
-    opos.textContent = (dict.verb) ? 'verb' : 'name'
-    oline.appendChild(opos)
-
-    let okey = create('td')
-    okey.textContent = dict.key
-    oline.appendChild(okey)
-
-    let otrns = create('td')
-    otrns.textContent = dict.trns
-    oline.appendChild(otrns)
-  })
-
-  osection.appendChild(otable)
-
-  let filled = _.filter(dicts, dict=> { return dict.trns })
-  if (filled.length) {
-    let ok = q('#dict-table-submit-ok')
-    if (ok) remove(ok)
-    ok = create('input', 'submit')
-    ok.setAttribute('type', 'submit')
-    ok.setAttribute('value', 'merge to current local dict')
-    ok.id = 'dict-table-submit-ok'
-    // log('OK', osubmitok)
-    osection.appendChild(ok)
-    ok.addEventListener('click', (ev) => {
-      log('_____SUBMIT MERGE OK FILLED:', filled)
-      // filled.forEach(dict=> { dict.trns = dict.trns.split(';') })
-      updateCurrent (upath, filled)
-        .then(res=> {
-          log('MERGE-RES', res)
-          state.sec = 'main'
-          navigate(state)
-        })
-    })
-  }
-}
-
-export function editLocalDictItem(state, data) {
-  // log('_______________ edit-data', data)
-  if (!data) return
-  let rdict = data.rdict
-  let dict = _.find(data.dicts, dict=> { return dict.rdict == rdict})
-  if (!dict) return
-  // log('_______________ eDICT', dict)
-
-  let osection = q(data.sid)
-  // log('OSEC', osection)
-  let odictitem = q('.dict-item-container')
-  if (odictitem) remove(odictitem)
-
-  odictitem = createDictEdit(dict)
-  osection.appendChild(odictitem)
-  let oinput = q('.dict-item-input-text')
-  oinput.focus()
-
-  let ok = q('#dict-item-submit-ok')
-  ok.addEventListener('click', (ev) => {
-    let oinput = q('.dict-item-input-text')
-    let trns = oinput.value
-    dict.trns = trns.split(';')
-    log('_____SUBMIT OK DICT:', dict)
-    state.sec = 'local-chunk'
-    navigate(state, data)
-  })
-  let cancel = q('#dict-item-submit-cancel')
-  cancel.addEventListener('click', (ev) => {
-    // log('_____SUBMIT CANCEL')
-    state.sec = 'local-chunk'
-    navigate(state, data)
-  })
-
-}
-
-function createDictEdit (dict) {
-  if (!dict) return
-  let odictitem = create('div', 'dict-item-container')
-  let odictheader = create('div', 'dict-item-header')
-  let ordict = create('span', 'dict-item')
-  ordict.classList.add('dict-item-rdict')
-  ordict.textContent = dict.rdict
-  odictheader.appendChild(ordict)
-  let opos = create('span', 'dict-item')
-  // opos.classList.add('dict-item-pos')
-  opos.textContent = dict.pos
-  odictheader.appendChild(opos)
-  let okey = create('span', 'dict-item')
-  okey.id = 'dict-item-key'
-  okey.textContent = dict.key
-  odictheader.appendChild(okey)
-  odictitem.appendChild(odictheader)
-  let obr = create('p', '')
-  obr.textContent = 'translation:'
-  odictitem.appendChild(obr)
-
-  let oinput = create('input', 'dict-item-input-text')
-  oinput.id = 'dict-item-input-text'
-  oinput.setAttribute('type', 'text')
-  // oinput.setAttribute('size', 50)
-  // log('O-TEXT', oinput)
-  odictitem.appendChild(oinput)
-
-  let obr1 = create('p', '')
-  odictitem.appendChild(obr1)
-
-  let osubmitok = create('input', 'submit')
-  osubmitok.setAttribute('type', 'submit')
-  osubmitok.setAttribute('value', 'ok')
-  osubmitok.id = 'dict-item-submit-ok'
-  // log('OK', osubmitok)
-  odictitem.appendChild(osubmitok)
-
-  let osubmitcancel = create('input', 'submit')
-  osubmitcancel.setAttribute('type', 'submit')
-  osubmitcancel.setAttribute('value', 'cancel')
-  osubmitcancel.id = 'dict-item-submit-cancel'
-  // log('OK', osubmitcancel)
-  odictitem.appendChild(osubmitcancel)
-
-  return odictitem
-}
-
 export function cloneDict(dname) {
   log('CLONE DICT', dname)
 }
@@ -479,17 +220,6 @@ export function moveDict(dname, shift) {
   dict.idx = dict.idx - 1
   cfg = _.sortBy(cfg, 'idx')
   log('CFG-1', cfg)
-
-}
-
-// это from pecha:
-export function moveDictFirst(dname) {
-  let cfg = settings.get('cfg')
-  let dict = _.find(cfg, dict=> { return dict.dname == dname })
-  let rest = _.reject(cfg, dict=> { return dict.dname == dname })
-  rest.unshift(dict)
-  cfg = rest
-  cfg.forEach((dict, idx)=> { dict.idx = idx })
   settings.set('cfg', cfg)
-  // showActiveDicts()
+
 }
