@@ -72,7 +72,6 @@ let message = q('#message')
 document.addEventListener('click', (ev) => {
   let el = ev.target
   let parent = el.parentElement
-  let data = el.dataset
   if (el.classList.contains('external')) {
     let href = el.getAttribute('href')
     if (!href) href = el.textContent
@@ -119,20 +118,17 @@ document.addEventListener('click', (ev) => {
       ohidden.classList.add('is-hidden')
     }
   }
+  let data = el.dataset
   if (!data) return
   if (data.href) {
     let over = q("#new-version")
     over.classList.add('is-hidden')
     shell.openExternal(data.href)
   } else if (data.dname) {
-    // state.sec = 'db-info'
-    // navigate(state)
-    // if (ev.shiftKey) return
     moveDict(data.dname, ev.shiftKey)
   } else if (data.clone) {
-    if (el.textContent != 'sync') return
+    // if (el.textContent != 'sync') return -- это нужно
     cloneDict(data.clone)
-    // navigate(state)
   } else if (data.section) {
     state.sec = data.section
     navigate(state)

@@ -162,11 +162,12 @@ function showRemoteDicts(cfg) {
     let olink = create('td', 'link')
     if (rdb.active) {
       let check = checkmark()
+      check.dataset.clone = rdb.dname
       olink.appendChild(check)
     } else {
+      olink.dataset.clone = rdb.dname
       olink.textContent = 'sync'
     }
-    olink.dataset.clone = rdb.dname
     otr.appendChild(olink)
   })
 
@@ -205,6 +206,28 @@ function checkmark() {
 
 export function cloneDict(dname) {
   log('CLONE DICT', dname)
+  let localpath = path.resolve(upath, 'pouch', dname)
+  let remotepath = ['http://guest:guest@diglossa.org:5984', dname].join('/')
+
+  log('LOCAL DB', localpath)
+  log('REMOTE DB', remotepath)
+
+  let localDB = new PouchDB(localpath)
+  let remoteDB = new PouchDB(remotepath)
+
+  // localDB.info().then(function (info) {
+  //   log('LOCAL INFO', info);
+  // })
+  // localDB.info().then(function (info) {
+  //   log('REMOTE INFO', info);
+  // })
+
+  remoteDB.replicate.to(localDB).on('complete', function (res) {
+    log('ok, were done!', res)
+  }).on('error', function (err) {
+    log('boo, something went wrong!', err)
+  })
+
 }
 
 export function moveDict(dname, shift) {
