@@ -41,7 +41,7 @@ function initDBs(cfg) {
   if (!cfg) cfg = initCfg()
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  // dnames = ['local', 'wkt', 'dvr', 'lsj']
+  dnames = ['local', 'wkt', 'dvr', 'lsj', 'souda']
   // dnames = ['wkt', 'dvr', 'lsj']
   // dnames = ['wkt']
   // dnames = ['local']

@@ -9,8 +9,8 @@ import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from 
 import { cloneDict, moveDict, disableDict } from './lib/remote'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
+import { mouseMenu } from './lib/context-menu'
 import { config } from './configs/app.config'
-// import "./locales/context-menu.js";
 // import { showResults, showPopup, queryDBs } from "./lib/parse-data"
 import { queryDBs, showSegResult, showCognate } from "./lib/parse-data"
 
@@ -21,6 +21,8 @@ const settings = require('electron').remote.require('electron-settings')
 const axios = require('axios')
 
 loadSections(config)
+
+document.onmousedown = mouseMenu
 
 let state = settings.get('state')
 if (!state) {
@@ -110,12 +112,21 @@ document.addEventListener('click', (ev) => {
     else if (ofls) ofls.classList.add('is-hidden')
     if (otrns.classList.contains('is-hidden')) otrns.classList.remove('is-hidden')
     else otrns.classList.add('is-hidden')
-  } else if (el.classList.contains('dict-trns-li')) {
-    let ohidden = el.querySelector('.is-hidden')
-    if (ohidden) ohidden.classList.remove('is-hidden')
-    else {
-      ohidden = el.querySelector('.dict-trns-li-hidden')
+  } else if (el.classList.contains('dict-trns-li-shown')) {
+    let ohidden = el.nextSibling
+    if (!ohidden) return
+    if (ohidden.classList.contains('is-hidden')) {
+      ohidden.classList.remove('is-hidden')
+      el.classList.remove('ellipsis')
+    } else {
       ohidden.classList.add('is-hidden')
+      el.classList.add('ellipsis')
+    }
+  } else if (el.classList.contains('dict-trns-li-hidden')) {
+    let oshown = el.previousSibling
+    if (oshown) {
+      el.classList.add('is-hidden')
+      oshown.classList.add('ellipsis')
     }
   }
   let data = el.dataset

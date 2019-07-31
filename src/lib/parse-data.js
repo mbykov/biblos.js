@@ -65,30 +65,7 @@ function createPopup(el, upper) {
   return opopup
 }
 
-// export function showSegment(el) {
-//   let clist = el.closest('.comp-line')
-//   if (!clist.dataset || !clist.dataset.chain) return
-//   let chain = JSON.parse(clist.dataset.chain)
-//   let sec = _.find(chain, sec=> { return sec.seg == el.textContent } )
-//   if (!sec) return
-//   let oetyrels = q('#etyrels')
-//   if (oetyrels) remove(oetyrels)
-//   oetyrels = createPopup(el)
-//   oetyrels.id = 'etyrels'
-//   // log('SEC', sec.dicts)
-//   let oul = create('ul', 'sect-dicts-ul')
-//   oetyrels.appendChild(oul)
-//   let gdicts = _.groupBy(sec.dicts, 'rdict' )
-//   for (let rdict in gdicts) {
-//     let dicts = gdicts[rdict]
-//     let odictline = create('li', 'sect-dict-line')
-//     let lastseg = {seg: rdict, dicts: dicts}
-//     odictline.dataset.lastseg = JSON.stringify(lastseg)
-//     odictline.textContent = rdict
-//     oul.appendChild(odictline)
-//   }
-// }
-
+// compound: active-dict mouseover
 export function showSegResult(el) {
   let ores = q('#result')
   empty(ores)
@@ -206,56 +183,63 @@ export function queryDBs(el, compound) {
 function parseResult(el, res) {
   let ores = q('#result')
   empty(ores)
-  if (res.compound) showCompound(el, res)
-  if (res.terms) showTerms(res.terms)
-  if (res.chains) analyzeChains(res.chains)
-  if (res.cognates) showCognateList(el, res.cognates)
+  // if (res.compound) showCompound(el, res)
+  // if (res.terms) showTerms(res.terms)
+  if (res.chains) analyzeChains(el, res)
+  // if (res.cognates) showCognateList(el, res.cognates)
   if (!res.chains && !res.terms) noResult()
 }
 
-function analyzeChains(chains) {
-  // log('analyze-CHAINS:', chains)
-  let singles = _.filter(chains, chain=> { return chain.length == 1 })
-  singles.forEach(chain=> {
-    let rdict = chain[0]
-    showDict(rdict)
+function analyzeChains(el, res) {
+  // log('analyze-CHAINS:', res.chains)
+  let wf = el.textContent
+  let singlechains = _.filter(res.chains, chain=> { return chain.length == 1 })
+  let rdicts = singlechains.map(chain=> { return chain[0] })
+  let dicts = _.flatten(rdicts.map(rdict=> { return rdict.dicts }))
+  dicts = dicts.concat(res.terms)
+  // log('DICTS', dicts)
+
+  let ores = q('#result')
+  let odictitle = dictTitle(wf)
+  ores.appendChild(odictitle)
+
+  dicts = _.sortBy(dicts, 'weight')
+  let weights = dicts.map(dict=> { return dict.weight })
+  log('WGHTS', weights.toString())
+
+  dicts.forEach(dict=> {
+    let odict = showDict(dict)
+    ores.appendChild(odict)
   })
-  // let comps = _.filter(chains, chain=> { return chain.length > 1 })
-  // // comps = _.flatten(comps)
-  // let res = {chains: comps}
-  // // log('LONG CHAINS:', comps)
-  // // showCompound(res)
+
 }
 
-function showDict(rdict) {
-  let ores = q('#result')
-  // log('SHOW RDICT:', rdict)
-  let owf = create('div', 'dict-div')
-  ores.appendChild(owf)
+function dictTitle(wf) {
   let oformhead = create('div', 'dict-query')
-  oformhead.textContent = rdict.seg
-  owf.appendChild(oformhead)
-  let dicts = _.sortBy(rdict.dicts, ['weight']);
-  dicts.forEach(dict=> {
-    let odict = create('div', 'dict-container')
-    owf.appendChild(odict)
-    let odicthead = showDictHeader(dict)
-    odict.appendChild(odicthead)
-    let morphs = parseMorphs(dict)
-    if (morphs) {
-      let oMorph = createMorph(morphs)
-      odict.appendChild(oMorph)
-    }
-    if (dict.trns) {
-      let otrns = createTrns(dict)
-      odict.appendChild(otrns)
-    }
-  })
+  oformhead.textContent = wf
+  return oformhead
+}
+
+function showDict(dict) {
+  let odict = create('div', 'dict-container')
+  let odicthead = showDictHeader(dict)
+  odict.appendChild(odicthead)
+  let morphs = parseMorphs(dict)
+  if (morphs) {
+    let oMorph = createMorph(morphs)
+    odict.appendChild(oMorph)
+  }
+  if (dict.trns) {
+    let otrns = createTrns(dict)
+    odict.appendChild(otrns)
+  }
+  return odict
 }
 
 function showDictHeader(dict) {
   let odicthead = create('div', 'dict-header')
   let odname = span(dict.dname, 'dict-dname')
+  if (dict.dname == 'souda') odname.setAttribute('href', dict.href)
   odicthead.appendChild(odname)
   let ordict = span(dict.rdict, 'dict-rdict')
   odicthead.appendChild(ordict)
@@ -337,26 +321,22 @@ function createTrns (dict) {
     let otrn = create('li', 'dict-trns-li')
     let parts = trn.split(/, [A-Z]| [A-Z][^ ]*[0-9]/)
     let shown = parts[0]
-    // let oshown = span(shown)
+    let oshown = span(shown, 'dict-trns-li-shown')
+    otrn.appendChild(oshown)
     let hidden = trn.replace(shown, '')
     let html = hidden.split('(').join('<span class="grey">').split(')').join('</span>')
-    let ohidden = span('', 'is-hidden')
-    ohidden.innerHTML = html
-    ohidden.classList.add('dict-trns-li-hidden')
-    otrn.innerHTML = shown
-    otrn.appendChild(ohidden)
+    if (html) {
+      let ohidden = span('', 'is-hidden')
+      ohidden.innerHTML = html
+      ohidden.classList.add('dict-trns-li-hidden')
+      otrn.appendChild(ohidden)
+      oshown.classList.add('ellipsis')
+    }
     otrns.appendChild(otrn)
   })
   return otrns
 }
 
-// function getPos(dict) {
-//   let pos
-//   if (dict.pos) pos = dict.pos
-//   else if (dict.verb) pos = 'verb'
-//   else if (dict.name) pos = 'name'
-//   return pos
-// }
 
 // space
 export function toggleResults() {
