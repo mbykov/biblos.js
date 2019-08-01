@@ -205,7 +205,6 @@ function analyzeChains(el, res) {
 
   dicts = _.sortBy(dicts, 'weight')
   let weights = dicts.map(dict=> { return dict.weight })
-  log('WGHTS', weights.toString())
 
   dicts.forEach(dict=> {
     let odict = showDict(dict)
