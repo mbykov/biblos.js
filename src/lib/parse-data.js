@@ -68,51 +68,34 @@ function createPopup(el, upper) {
   return opopup
 }
 
-// compound: active-dict mouseover
-export function showSegResult(el) {
-  let ores = q('#result')
-  empty(ores)
-  let segdicts = JSON.parse(el.dataset.segdicts)
-  log('segdicts', segdicts)
-  if (!segdicts.length) return
-  let rdict = {seg: el.textContent, dicts: segdicts}
-  showDict(rdict)
-}
+// function showTerms(terms) {
+//   terms.forEach(term=> {
+//     showTerm(term)
+//   })
+// }
 
-function noResult() {
-  log('NO RESULT')
-  let ores = q('#result')
-  ores.textContent = 'no resul, try Shift-click'
-}
-
-function showTerms(terms) {
-  terms.forEach(term=> {
-    showTerm(term)
-  })
-}
-
-function showTerm(dict) {
-  let ores = q('#result')
-  // log('SHOW TERM:', dict)
-  let owf = create('div', 'dict-div')
-  ores.appendChild(owf)
-  let oformhead = create('div', 'dict-query')
-  oformhead.textContent = dict.term
-  owf.appendChild(oformhead)
-  let odict = create('div', 'dict-container')
-  owf.appendChild(odict)
-  let odicthead = showDictHeader(dict)
-  odict.appendChild(odicthead)
-  let morphs = parseMorphs(dict)
-  if (morphs) {
-    let oMorph = createMorph(morphs)
-    odict.appendChild(oMorph)
-  }
-  if (dict.trns) {
-    let otrns = createTrns(dict)
-    odict.appendChild(otrns)
-  }
-}
+// function showTerm(dict) {
+//   let ores = q('#result')
+//   // log('SHOW TERM:', dict)
+//   let owf = create('div', 'dict-div')
+//   ores.appendChild(owf)
+//   let oformhead = create('div', 'dict-query')
+//   oformhead.textContent = dict.term
+//   owf.appendChild(oformhead)
+//   let odict = create('div', 'dict-container')
+//   owf.appendChild(odict)
+//   let odicthead = showDictHeader(dict)
+//   odict.appendChild(odicthead)
+//   let morphs = parseMorphs(dict)
+//   if (morphs) {
+//     let oMorph = createMorph(morphs)
+//     odict.appendChild(oMorph)
+//   }
+//   if (dict.trns) {
+//     let otrns = createTrns(dict)
+//     odict.appendChild(otrns)
+//   }
+// }
 
 function showCompound(el, res) {
   if (!res.chains || !res.chains.length) return
@@ -176,47 +159,53 @@ export function queryDBs(el, compound) {
       progress.classList.add('is-hidden')
       if (!res) return noResult()
       if (compound) showCompound(el, res)
-      else parseResult(el, res)
+      else showResult(el, res)
     }).catch(function (err) {
       console.log('ANTRAX-ERR', str, err)
     })
 }
 
-function parseResult(el, res) {
-  // if (res.compound) {
-  //   showCompound(el, res)
-  //   return
-  // }
-  // if (res.terms) showTerms(res.terms)
-  // log('__________ANTRAX-RES', res)
-  if (res.chains) analyzeChains(el, res)
-  // if (res.cognates) showCognateList(el, res.cognates)
-  if (!res.chains && !res.terms) noResult()
-}
-
-function analyzeChains(el, res) {
+// compound: active-dict mouseover
+export function showSegResult(el) {
   let ores = q('#result')
   empty(ores)
+  let segdicts = JSON.parse(el.dataset.segdicts)
+  log('segdicts', segdicts)
+  if (!segdicts.length) return
+  // let rdict = {seg: el.textContent, dicts: segdicts}
+  showDicts(el, segdicts)
+}
+
+function noResult() {
+  log('NO RESULT')
+  let ores = q('#result')
+  ores.textContent = 'no resul, try Shift-click'
+}
+
+function showResult(el, res) {
   // log('analyze-CHAINS:', res.chains)
-  let wf = el.textContent
   let singlechains = _.filter(res.chains, chain=> { return chain.length == 1 })
   let rdicts = singlechains.map(chain=> { return chain[0] })
   let dicts = _.flatten(rdicts.map(rdict=> { return rdict.dicts }))
   dicts = dicts.concat(res.terms)
   // log('DICTS', dicts)
+  showDicts(el, dicts)
+}
 
+function showDicts(el, dicts) {
+  let wf = el.textContent
+  let ores = q('#result')
+  empty(ores)
   let odictitle = dictTitle(wf)
   ores.appendChild(odictitle)
-
   dicts = _.sortBy(dicts, 'weight')
-  let weights = dicts.map(dict=> { return dict.weight })
-
+  // let weights = dicts.map(dict=> { return dict.weight })
   dicts.forEach(dict=> {
     let odict = showDict(dict)
     ores.appendChild(odict)
   })
-
 }
+
 
 function dictTitle(wf) {
   let oformhead = create('div', 'dict-query')
