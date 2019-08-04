@@ -3,7 +3,7 @@ import "./stylesheets/main.css";
 import _ from "lodash"
 import { remote, ipcRenderer, shell } from "electron";
 import env from "env";
-import sband from "../../..//sband"
+import sband from "../../../sband"
 // import sband from "speckled-band"
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
 import { cloneDict, moveDict, disableDict } from './lib/remote'
@@ -12,7 +12,7 @@ import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
 import { config } from './configs/app.config'
 // import { showResults, showPopup, queryDBs } from "./lib/parse-data"
-import { queryDBs, showSegResult, showCognate } from "./lib/parse-data"
+import { queryDBs, showSegResult, showCognate, showTranslit } from "./lib/parse-data"
 
 const log = console.log
 const app = remote.app;
@@ -152,9 +152,10 @@ document.addEventListener("mouseover", function(ev) {
   let el = ev.target
   if (!el.textContent) return
   if (ev.ctrlKey) return
-  if (ev.shiftKey) return
-
-  if (el.classList.contains('active-form')) {
+  if (ev.altKey) {
+    if (!el.classList.contains('active-form')) return
+    showTranslit(el, ev.shiftKey)
+  } else if (el.classList.contains('active-form')) {
     queryDBs(el)
   } else if (el.classList.contains('active-dict')) {
     showSegResult(el)

@@ -3,6 +3,8 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, getI
 import { ipcRenderer } from "electron";
 import { queryRemote } from "./remote";
 import {oxia, comb, plain, strip} from '../../../../greek/orthos'
+import { t15n } from "../../../transgript";
+
 // const Mousetrap = require('mousetrap')
 const settings = require('electron').remote.require('electron-settings')
 const log = console.log
@@ -59,6 +61,7 @@ function createPopup(el, upper) {
   let coords = getCoords(el)
   opopup.classList.remove('is-hidden')
   let ncoords = {top: coords.top+24, left: coords.left}
+  if (upper) ncoords = {top: coords.top-32, left: coords.left}
   placePopup(ncoords, opopup)
   let oul = create('ul', 'compound-list')
   opopup.appendChild(oul)
@@ -113,7 +116,7 @@ function showTerm(dict) {
 
 function showCompound(el, res) {
   if (!res.chains || !res.chains.length) return
-  log('showCOMP', res.chains)
+  // log('________showCOMP', res.chains)
   if (res.chains.length == 1 && res.chains[0].length == 1) return
   let opopup = createPopup(el)
   let oul = opopup.querySelector('.compound-list')
@@ -172,25 +175,28 @@ export function queryDBs(el, compound) {
       closePopups()
       progress.classList.add('is-hidden')
       if (!res) return noResult()
-      // if (compound) showCompound(el, res)
-      // else
-      parseResult(el, res)
+      if (compound) showCompound(el, res)
+      else parseResult(el, res)
     }).catch(function (err) {
       console.log('ANTRAX-ERR', str, err)
     })
 }
 
 function parseResult(el, res) {
-  let ores = q('#result')
-  empty(ores)
-  // if (res.compound) showCompound(el, res)
+  // if (res.compound) {
+  //   showCompound(el, res)
+  //   return
+  // }
   // if (res.terms) showTerms(res.terms)
+  // log('__________ANTRAX-RES', res)
   if (res.chains) analyzeChains(el, res)
   // if (res.cognates) showCognateList(el, res.cognates)
   if (!res.chains && !res.terms) noResult()
 }
 
 function analyzeChains(el, res) {
+  let ores = q('#result')
+  empty(ores)
   // log('analyze-CHAINS:', res.chains)
   let wf = el.textContent
   let singlechains = _.filter(res.chains, chain=> { return chain.length == 1 })
@@ -199,7 +205,6 @@ function analyzeChains(el, res) {
   dicts = dicts.concat(res.terms)
   // log('DICTS', dicts)
 
-  let ores = q('#result')
   let odictitle = dictTitle(wf)
   ores.appendChild(odictitle)
 
@@ -361,4 +366,13 @@ export function toggleOneResult() {
   if (next == dtrns.length) next = 0
   dtrns[next].classList.remove('is-hidden')
   if (dfls[next]) dfls[next].classList.remove('is-hidden')
+}
+
+export function showTranslit(el, shift) {
+  closePopups()
+  let opopup = createPopup(el, true)
+  let param
+  if (shift) param = 'gem'
+  let trnsl = t15n(el.textContent, param)
+  opopup.textContent = trnsl
 }
