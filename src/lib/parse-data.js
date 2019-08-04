@@ -73,7 +73,7 @@ export function showSegResult(el) {
   let ores = q('#result')
   empty(ores)
   let segdicts = JSON.parse(el.dataset.segdicts)
-  // log('segdicts', segdicts)
+  log('segdicts', segdicts)
   if (!segdicts.length) return
   let rdict = {seg: el.textContent, dicts: segdicts}
   showDict(rdict)
