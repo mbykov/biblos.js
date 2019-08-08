@@ -2,13 +2,14 @@
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
 import { requestRemoteDicts } from './remote'
-import { createLocalChunk, editLocalDictItem } from './local-dict'
+import { createLocalChunk, editLocalDictItem, showFullLocalDict } from './local-dict'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import { generateDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
 import { config } from '../configs/app.config'
 import { showText, toggleResults, toggleOneResult } from "./parse-data";
 import path from "path";
+import { readDictionary } from '/home/michael/a/loigos'
 // import { serverDicts, showActiveDicts } from "./dict";
 // import { signup } from "./auth";
 
@@ -90,7 +91,10 @@ Mousetrap.bind(['ctrl+j'], function(ev) {
   log('START  MENU')
 })
 
+// create local chunk
 Mousetrap.bind(['ctrl+d'], function(ev) {
+  let progress = q('#progress')
+  progress.classList.remove('is-hidden')
   let state = settings.get('state')
   // log('_____________________D', state)
   if (!state.pars) return
@@ -104,24 +108,21 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
   })
 })
 
-// merge chunk & localDict
+// show full local dict
 Mousetrap.bind(['ctrl+shift+d'], function(ev) {
   let progress = q('#progress')
   progress.classList.remove('is-hidden')
-  // let state = settings.get('state')
-  // // let ldpath = state.ldpath
-  // // ============= BUG !!!!!!!!! =============
-  // // state.ldpath = '/home/michael/diglossa.texts/Dyscolus'
-  // if (!state.ldpath) return
-  // log('nav: CTRL-SHIFT-D', state.ldpath)
-
-  // let ldpath = state.ldpath
-  // mergeDictChunk(ldpath, upath)
-  //   .then(res=> {
-  //     // log('MERGE-RES', res)
-  //     progress.classList.add('is-hidden')
-  //   })
-})
+  let state = settings.get('state')
+  let dname = 'local'
+  readDictionary(upath, dname)
+    .then(res=> {
+      let docs = _.flatten(res.map(dict=> { return dict.docs }))
+      state.sec = 'local-dict'
+      log('_____________________showFullDict:', res)
+      let data = {dicts: docs}
+      navigate(state, data)
+    })
+ })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
   log('== WILL BE DIGLOSSA FIND ==')
@@ -205,6 +206,7 @@ export function navigate(state, data) {
   if (sec == 'main') twoPanes(state), showText(state.pars)
   else if (sec == 'remote-dicts') requestRemoteDicts()
   else if (sec == 'local-chunk') createLocalChunk(state, data)
+  else if (sec == 'local-dict') showFullLocalDict(state, data)
   else if (sec == 'local-dict-item') editLocalDictItem(state, data)
 
   let progress = q('#progress')

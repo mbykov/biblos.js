@@ -336,6 +336,7 @@ function createTrns (dict) {
 // space
 export function toggleResults() {
   let dtrns = qs('.dict-trns')
+  if (!dtrns.length) return
   let dfls = qs('.dict-fls')
   let first = dtrns[0]
   if (!first) return
@@ -346,6 +347,7 @@ export function toggleResults() {
 // tab
 export function toggleOneResult() {
   let dtrns = qs('.dict-trns')
+  if (!dtrns.length) return
   let dfls = qs('.dict-fls')
   let opened = q('ul.dict-trns:not(.is-hidden)')
   let next = 0

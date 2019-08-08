@@ -8,7 +8,6 @@ import path from "path";
 import { antrax, checkConnection, updateCurrent } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
 import { navigate } from './nav'
-import { generateDictChunk, mergeDictChunk } from '/home/michael/greek/dictCSV'
 // UPATH
 let upath = app.getPath("userData")
 upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')

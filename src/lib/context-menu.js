@@ -4,6 +4,7 @@ import { generateDictChunk } from '/home/michael/greek/dictCSV'
 import { navigate } from './nav'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import path from "path";
+import { readDictionary } from '/home/michael/a/loigos'
 
 const settings = require('electron').remote.require('electron-settings')
 const Menu = remote.Menu;
@@ -61,7 +62,7 @@ const souda = new MenuItem({
 });
 
 const localDict = new MenuItem({
-  label: "create local dictionary for this text",
+  label: "create local dictionary for current text",
   click: () => {
     let progress = q('#progress')
     progress.classList.remove('is-hidden')
@@ -77,10 +78,23 @@ const localDict = new MenuItem({
   }
 });
 
-const mergeLocalDict = new MenuItem({
-  label: "the whole local dictionary",
+const showLocalDict = new MenuItem({
+  label: "show local dictionary",
   click: () => {
     document.execCommand("copy");
+    let progress = q('#progress')
+    progress.classList.remove('is-hidden')
+    let state = settings.get('state')
+    let dname = 'local'
+
+    readDictionary(upath, dname)
+      .then(res=> {
+        let docs = _.flatten(res.map(dict=> { return dict.docs }))
+        state.sec = 'local-dict'
+        log('_____________________showFullDict:', res)
+        let data = {dicts: docs}
+        navigate(state, data)
+      })
   }
 });
 
@@ -92,7 +106,7 @@ export function mouseMenu(ev) {
   if (target.classList.contains('active-form')) normalMenu.append(perseus), normalMenu.append(wiktionary), normalMenu.append(souda)
 
   normalMenu.append(localDict)
-  normalMenu.append(mergeLocalDict)
+  normalMenu.append(showLocalDict)
 
   ev.preventDefault()
   normalMenu.popup(remote.getCurrentWindow());

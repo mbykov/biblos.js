@@ -2,13 +2,12 @@
 
 import _ from "lodash"
 const { app } = require('electron').remote
-import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, insertAfter } from '../lib//utils'
+import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, insertAfter } from '../lib/utils'
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../configs/app.config'
 import path from "path";
-import { updateCurrent } from '/home/michael/a/loigos'
+import { updateCurrent, readDictionary } from '/home/michael/a/loigos'
 import { navigate } from './nav'
-import { generateDictChunk, mergeDictChunk } from '/home/michael/greek/dictCSV'
 
 // UPATH
 let upath = app.getPath("userData")
@@ -16,12 +15,7 @@ upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 
 const log = console.log
 
-export function createLocalChunk (state, data) {
-  if (!data) return
-  let dicts = data.dicts
-  // log('______________________chunk-dicts', dicts)
-  if (!dicts) return
-  let osection = q(data.sid)
+function createLocalTable (dicts) {
   let otable = q('#table-local-chunk')
   if (otable) remove(otable)
 
@@ -37,9 +31,9 @@ export function createLocalChunk (state, data) {
   let opos = create('td')
   opos.textContent = 'pos'
   oheader.appendChild(opos)
-  let okey = create('td')
-  okey.textContent = 'key'
-  oheader.appendChild(okey)
+  // let okey = create('td')
+  // okey.textContent = 'key'
+  // oheader.appendChild(okey)
   let otrns = create('td')
   otrns.textContent = 'translation'
   oheader.appendChild(otrns)
@@ -56,15 +50,24 @@ export function createLocalChunk (state, data) {
     opos.textContent = (dict.verb) ? 'verb' : 'name'
     oline.appendChild(opos)
 
-    let okey = create('td')
-    okey.textContent = dict.key
-    oline.appendChild(okey)
+    // let okey = create('td')
+    // okey.textContent = dict.key
+    // oline.appendChild(okey)
 
     let otrns = create('td')
     otrns.textContent = dict.trns
     oline.appendChild(otrns)
   })
+  return otable
+}
 
+export function createLocalChunk (state, data) {
+  if (!data) return
+  let dicts = data.dicts
+  // log('______________________chunk-dicts', dicts)
+  if (!dicts) return
+  let osection = q(data.sid)
+  let otable = createLocalTable(dicts)
   osection.appendChild(otable)
 
   let filled = _.filter(dicts, dict=> { return dict.trns })
@@ -135,12 +138,15 @@ function createDictEdit (dict) {
   odictheader.appendChild(ordict)
   let opos = create('span', 'dict-item')
   // opos.classList.add('dict-item-pos')
-  opos.textContent = dict.pos
+  let pos = (dict.verb) ? 'verb' : (dict.name) ? 'name' : dict.pos
+  opos.textContent = pos
   odictheader.appendChild(opos)
-  let okey = create('span', 'dict-item')
-  okey.id = 'dict-item-key'
-  okey.textContent = dict.key
-  odictheader.appendChild(okey)
+
+  // let okey = create('span', 'dict-item')
+  // okey.id = 'dict-item-key'
+  // okey.textContent = dict.key
+  // odictheader.appendChild(okey)
+
   odictitem.appendChild(odictheader)
   let obr = create('p', '')
   obr.textContent = 'translation:'
@@ -171,4 +177,14 @@ function createDictEdit (dict) {
   odictitem.appendChild(osubmitcancel)
 
   return odictitem
+}
+
+export function showFullLocalDict (state, data) {
+  log('___________________showFullLocalDict', data)
+  let dicts = data.dicts
+  if (!dicts) return
+  let osection = q(data.sid)
+  let otable = createLocalTable(dicts)
+  osection.appendChild(otable)
+
 }
