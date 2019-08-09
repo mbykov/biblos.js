@@ -18,15 +18,6 @@ upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 
 let target
 
-/*
-  меню - попроще
-  форма:
-  - персей
-  текст:
-  - local dict
-  - local to csv
-*/
-
 const perseus = new MenuItem({
   label: "Perseus Greek Word Study Tool",
   click: (ev) => {
@@ -79,7 +70,7 @@ const localDict = new MenuItem({
 });
 
 const showLocalDict = new MenuItem({
-  label: "show local dictionary",
+  label: "show full local dictionary",
   click: () => {
     document.execCommand("copy");
     let progress = q('#progress')
