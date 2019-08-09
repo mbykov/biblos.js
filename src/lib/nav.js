@@ -126,9 +126,12 @@ Mousetrap.bind(['ctrl+shift+d'], function(ev) {
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
   log('== WILL BE DIGLOSSA FIND ==')
-  let state = settings.get('state')
-  state.sec = 'home'
-  navigate(state)
+  let cfg = settings.get('cfg')
+  let dnames = cfg.map(dict=> { return dict.dname })
+  log('_________CFG', cfg, dnames)
+  // let state = settings.get('state')
+  // state.sec = 'home'
+  // navigate(state)
 })
 
 Mousetrap.bind(['ctrl+z'], function(ev) {

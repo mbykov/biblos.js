@@ -5,7 +5,7 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../configs/app.config'
 import path from "path";
-import { antrax, checkConnection, updateCurrent } from '/home/michael/a/loigos'
+import { antrax, checkConnection } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
 import { navigate } from './nav'
 // UPATH
@@ -40,7 +40,7 @@ function initDBs(cfg) {
   if (!cfg) cfg = initCfg()
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  dnames = ['local', 'wkt', 'dvr', 'lsj', 'souda']
+  // dnames = ['local', 'wkt', 'dvr', 'lsj', 'souda']
   // dnames = ['wkt', 'dvr', 'lsj']
   // dnames = ['wkt']
   // dnames = ['local']
@@ -51,6 +51,7 @@ function initCfg() {
   let pouchpath = path.resolve(upath, 'pouch')
   let dnames = fse.readdirSync(pouchpath)
   let cfg = dnames.map((dname, idx)=> { return {dname: dname, active: true, idx: idx} })
+  // log('__________________________INIT CFG', cfg)
   settings.set('cfg', cfg)
   return cfg
 }
@@ -108,17 +109,22 @@ export function requestRemoteDicts() {
           // log('DESCRS', descrs)
           let cfg = settings.get('cfg') || []
           cfg = JSON.parse(JSON.stringify(cfg))
-          // log('CFG', cfg)
           descrs.forEach((descr, idx)=> {
             cfg.forEach(dict=> {
               if (descr.dname != dict.dname) return
               descr.active = dict.active
+              descr.sync = true
               descr.idx = dict.idx
+              dict.ok = true
             })
             if (!descr.active) descr.idx = 100 + idx // new dict on server
           })
-          // descrs.forEach((dict, idx)=> { dict.idx = idx })
+          let unoks = _.filter(cfg, dict=> { return !dict.ok })
+          descrs.push(...unoks)
           cfg = _.sortBy(descrs, 'idx')
+          // cfg.forEach(dict=> { dict.sync = true })
+          let dvr = _.find(cfg, dict=> { return dict.dname == 'dvr' })
+          dvr.sync = false
           settings.set('cfg', cfg)
           log('DESCRS-2', cfg)
           showRemoteDicts(cfg)
@@ -159,15 +165,27 @@ function showRemoteDicts(cfg) {
     oinfo.setAttribute('title', descr)
     otr.appendChild(oinfo)
     let olink = create('td', 'link')
+    if (rdb.sync) {
+      let check = checkmark()
+      check.dataset.unsync = rdb.dname
+      olink.appendChild(check)
+    } else {
+      olink.dataset.sync = rdb.dname
+      olink.textContent = 'clone'
+    }
+    otr.appendChild(olink)
+    let oact = create('td', 'link')
     if (rdb.active) {
       let check = checkmark()
       check.dataset.disable = rdb.dname
-      olink.appendChild(check)
+      oact.appendChild(check)
     } else {
-      olink.dataset.activate = rdb.dname
-      olink.textContent = 'sync'
+      oact.dataset.activate = rdb.dname
+      let text = (rdb.sync) ? 'activate' : '------------'
+      // log('ACT:', rdb, rdb.sync, text)
+      oact.textContent = text
     }
-    otr.appendChild(olink)
+    otr.appendChild(oact)
   })
 
   obefore.parentNode.insertBefore(otable, obefore.nextSibling);
@@ -192,8 +210,11 @@ function createRemoteTable() {
   oinfo.textContent = 'info'
   oheader.appendChild(oinfo)
   let osync = create('td')
-  osync.textContent = 'synchronized:'
+  osync.textContent = 'clone:'
   oheader.appendChild(osync)
+  let oact = create('td')
+  oact.textContent = 'activate:'
+  oheader.appendChild(oact)
   return otable
 }
 
@@ -220,6 +241,7 @@ export function cloneDict(dname) {
     if (!dict) return
     dict.active = true
     log('ok, were done!', res)
+    settings.set('cfg', cfg)
     showRemoteDicts(cfg)
     progress.classList.add('is-hidden')
   }).on('error', function (err) {
@@ -231,6 +253,7 @@ export function cloneDict(dname) {
 export function moveDict(dname, shift) {
   let cfg = settings.get('cfg')
   cfg = JSON.parse(JSON.stringify(cfg))
+  cfg.forEach((dict,idx)=> { dict.idx = idx })
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
   if (!dict) return
   if (shift) {
@@ -249,12 +272,13 @@ export function moveDict(dname, shift) {
   showRemoteDicts(cfg)
 }
 
-export function disableDict(dname) {
+export function activateDict(dname, on) {
   let cfg = settings.get('cfg')
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
   if (!dict) return
-  dict.active = false
-  // log('____REMOTE: DISABLE', dname, cfg)
+  dict.active = (on) ? true : false
+  // log('____REMOTE: ACT/DIS', dname, cfg)
   settings.set('cfg', cfg)
+  initDBs(cfg)
   showRemoteDicts(cfg)
 }

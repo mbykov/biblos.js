@@ -81,13 +81,23 @@ export function createLocalChunk (state, data) {
     // log('OK', osubmitok)
     osection.appendChild(ok)
     ok.addEventListener('click', (ev) => {
-      log('_____SUBMIT MERGE OK FILLED:', filled)
+      // log('_____SUBMIT MERGE OK FILLED:', filled)
       // filled.forEach(dict=> { dict.trns = dict.trns.split(';') })
       updateCurrent (upath, filled)
         .then(res=> {
-          log('MERGE-RES', res)
+          log('MERGE-RES-update-dict', res)
+          let cfg = settings.get('cfg')
+          let locdict = {active: true, dname: 'local', idx: 0, langs: 'grc,any', name: 'local dict', size: res.size}
+          cfg.unshift(locdict)
+          cfg.forEach((dict, idx)=> { dict.idx = idx})
+          let dnames = cfg.map(dict=> { return dict.dname })
+          log('CFG', cfg, dnames)
+          settings.set('cfg', cfg)
           state.sec = 'main'
           navigate(state)
+        })
+        .catch(err=> {
+          console.log('ERR: update local dict', err)
         })
     })
   }
@@ -116,7 +126,7 @@ export function editLocalDictItem(state, data) {
     let oinput = q('.dict-item-input-text')
     let trns = oinput.value
     dict.trns = trns.split(';')
-    log('_____SUBMIT OK DICT:', dict)
+    // log('_____SUBMIT OK DICT:', dict)
     state.sec = 'local-chunk'
     navigate(state, data)
   })
@@ -180,7 +190,7 @@ function createDictEdit (dict) {
 }
 
 export function showFullLocalDict (state, data) {
-  log('___________________showFullLocalDict', data)
+  // log('___________________showFullLocalDict', data)
   let dicts = data.dicts
   if (!dicts) return
   let osection = q(data.sid)
