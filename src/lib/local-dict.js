@@ -6,7 +6,7 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../configs/app.config'
 import path from "path";
-import { updateCurrent, readDictionary } from '/home/michael/a/loigos'
+import { updateCurrent, readDictionary, checkConnection } from '/home/michael/a/loigos'
 import { navigate } from './nav'
 
 // UPATH
@@ -62,11 +62,11 @@ function createLocalTable (dicts) {
 }
 
 export function createLocalChunk (state, data) {
-  if (!data) return
-  let dicts = data.dicts
-  // log('______________________chunk-dicts', dicts)
+  // if (!data) return
+  let dicts = state.dicts
+  // log('______________________chunk-dicts', state)
   if (!dicts) return
-  let osection = q(data.sid)
+  let osection = q(state.sid)
   let otable = createLocalTable(dicts)
   osection.appendChild(otable)
 
@@ -81,14 +81,16 @@ export function createLocalChunk (state, data) {
     // log('OK', osubmitok)
     osection.appendChild(ok)
     ok.addEventListener('click', (ev) => {
-      // log('_____SUBMIT MERGE OK FILLED:', filled)
-      // filled.forEach(dict=> { dict.trns = dict.trns.split(';') })
       updateCurrent (upath, filled)
         .then(res=> {
           log('MERGE-RES-update-dict', res)
           let cfg = settings.get('cfg')
-          let locdict = {active: true, dname: 'local', idx: 0, langs: 'grc,any', name: 'local dict', size: res.size}
-          cfg.unshift(locdict)
+          let locdict = _.find(cfg, dict=> { return dict.dname == 'local' })
+          if (!locdict) {
+            locdict = {active: true, dname: 'local', name: 'Local', idx: 0, langs: 'grc,any'}
+            cfg.unshift(locdict)
+          }
+          locdict.size = res.size
           cfg.forEach((dict, idx)=> { dict.idx = idx})
           let dnames = cfg.map(dict=> { return dict.dname })
           log('CFG', cfg, dnames)
@@ -105,13 +107,13 @@ export function createLocalChunk (state, data) {
 
 export function editLocalDictItem(state, data) {
   // log('_______________ edit-data', data)
-  if (!data) return
-  let rdict = data.rdict
-  let dict = _.find(data.dicts, dict=> { return dict.rdict == rdict})
+  // if (!data) return
+  let rdict = state.rdict
+  let dict = _.find(state.dicts, dict=> { return dict.rdict == rdict})
   if (!dict) return
   // log('_______________ eDICT', dict)
 
-  let osection = q(data.sid)
+  let osection = q(state.sid)
   // log('OSEC', osection)
   let odictitem = q('.dict-item-container')
   if (odictitem) remove(odictitem)
@@ -191,9 +193,9 @@ function createDictEdit (dict) {
 
 export function showFullLocalDict (state, data) {
   // log('___________________showFullLocalDict', data)
-  let dicts = data.dicts
+  let dicts = state.dicts
   if (!dicts) return
-  let osection = q(data.sid)
+  let osection = q(state.sid)
   let otable = createLocalTable(dicts)
   osection.appendChild(otable)
 

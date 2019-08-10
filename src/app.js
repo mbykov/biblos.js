@@ -94,6 +94,8 @@ document.addEventListener('click', (ev) => {
     let dicts = JSON.parse(otable.dataset.dicts)
     if (!dicts.length) return
     state.sec = 'local-dict-item'
+    state.dicts = dicts
+    state.rdict = rdict
     let data = {dicts: dicts, rdict: rdict}
     navigate(state, data)
   }  else if (el.classList.contains('active-form')) {
@@ -143,8 +145,8 @@ document.addEventListener('click', (ev) => {
   } else if (data.disable) {
     activateDict(data.disable, false)
   } else if (data.clone) {
-    if (el.textContent != 'sync') return
-    cloneDict(data.activate)
+    if (el.textContent != 'clone') return
+    cloneDict(data.clone)
   } else if (data.section) {
     state.sec = data.section
     navigate(state)

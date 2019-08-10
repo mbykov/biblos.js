@@ -1,7 +1,7 @@
 //
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
-import { requestRemoteDicts } from './remote'
+import { initDBs, requestRemoteDicts } from './remote'
 import { createLocalChunk, editLocalDictItem, showFullLocalDict } from './local-dict'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import { generateDictChunk } from '/home/michael/greek/dictCSV'
@@ -12,6 +12,7 @@ import path from "path";
 import { readDictionary } from '/home/michael/a/loigos'
 // import { serverDicts, showActiveDicts } from "./dict";
 // import { signup } from "./auth";
+
 
 const app = remote.app;
 const apath = app.getAppPath()
@@ -104,6 +105,7 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
     state.sec = 'local-chunk'
     log('_____________________genDictChunk:', res)
     let data = {dicts: res}
+    state.dicts = res
     navigate(state, data)
   })
 })
@@ -116,10 +118,11 @@ Mousetrap.bind(['ctrl+shift+d'], function(ev) {
   let dname = 'local'
   readDictionary(upath, dname)
     .then(res=> {
-      let docs = _.flatten(res.map(dict=> { return dict.docs }))
+      let dicts = _.flatten(res.map(dict=> { return dict.docs }))
       state.sec = 'local-dict'
       log('_____________________showFullDict:', res)
-      let data = {dicts: docs}
+      state.dicts = dicts
+      let data = {dicts: dicts}
       navigate(state, data)
     })
  })
@@ -127,19 +130,30 @@ Mousetrap.bind(['ctrl+shift+d'], function(ev) {
 Mousetrap.bind(['ctrl+f'], function(ev) {
   log('== WILL BE DIGLOSSA FIND ==')
   let cfg = settings.get('cfg')
-  let dnames = cfg.map(dict=> { return dict.dname })
-  log('_________CFG', cfg, dnames)
+  let dnames = cfg.map(dict=> { return [dict.dname, dict.idx].join('-') })
+  log('_________CFG:', cfg, 'dnames:', dnames)
   // let state = settings.get('state')
   // state.sec = 'home'
   // navigate(state)
 })
 
 Mousetrap.bind(['ctrl+z'], function(ev) {
-  log('== ZERO STATE ==')
   let state = {sec: config.defstate}
   settings.set('state', state)
-  settings.set('lang', config.deflang)
-  navigate(state)
+  initDBs()
+  // cfg = []
+  // settings.set('cfg', cfg)
+  // settings.set('lang', config.deflang)
+  log('== INIT STATE == ')
+  // navigate(state)
+})
+
+Mousetrap.bind(['ctrl+shift+z'], function(ev) {
+  let state = {sec: config.defstate}
+  settings.set('state', state)
+  let cfg = []
+  settings.set('cfg', cfg)
+  log('== ZERO STATE CFG == ', cfg)
 })
 
 Mousetrap.bind(['space'], function(ev) {
@@ -205,6 +219,7 @@ export function navigate(state, data) {
   let sec = state.sec
   let sid = showSection(state)
   if (data) data.sid = sid
+  state.sid = sid
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
   else if (sec == 'remote-dicts') requestRemoteDicts()

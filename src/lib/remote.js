@@ -35,23 +35,23 @@ export function queryRemote(query, compound) {
   return antrax(query, compound)
 }
 
-function initDBs(cfg) {
+export function initDBs(cfg) {
   if (!cfg) cfg = settings.get('cfg')
   if (!cfg) cfg = initCfg()
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  // dnames = ['local', 'wkt', 'dvr', 'lsj', 'souda']
-  // dnames = ['wkt', 'dvr', 'lsj']
   // dnames = ['wkt']
-  // dnames = ['local']
   checkConnection(upath, dnames)
 }
 
 function initCfg() {
   let pouchpath = path.resolve(upath, 'pouch')
   let dnames = fse.readdirSync(pouchpath)
-  let cfg = dnames.map((dname, idx)=> { return {dname: dname, active: true, idx: idx} })
-  // log('__________________________INIT CFG', cfg)
+  dnames = _.filter(dnames, dname=> { return dname != 'flex' })
+  let cfg = dnames.map((dname, idx)=> { return {dname: dname, active: true, sync: true, idx: idx} })
+  let locdict = _.find(cfg, dict=> { return dict.dname == 'local' })
+  if (locdict) locdict = {name: 'Local', langs: 'grc,any'}
+  log('__________________________INIT CFG', cfg)
   settings.set('cfg', cfg)
   return cfg
 }
@@ -109,7 +109,9 @@ export function requestRemoteDicts() {
           // log('DESCRS', descrs)
           let cfg = settings.get('cfg') || []
           cfg = JSON.parse(JSON.stringify(cfg))
+          log('FIRST CFG', cfg)
           descrs.forEach((descr, idx)=> {
+            descr.sync = true
             cfg.forEach(dict=> {
               if (descr.dname != dict.dname) return
               descr.active = dict.active
@@ -122,9 +124,11 @@ export function requestRemoteDicts() {
           let unoks = _.filter(cfg, dict=> { return !dict.ok })
           descrs.push(...unoks)
           cfg = _.sortBy(descrs, 'idx')
+          cfg.forEach((dict, idx)=> { dict.idx = idx }) // , dict.active = true
+
           // cfg.forEach(dict=> { dict.sync = true })
-          let dvr = _.find(cfg, dict=> { return dict.dname == 'dvr' })
-          dvr.sync = false
+          // let dvr = _.find(cfg, dict=> { return dict.dname == 'dvr' })
+          // dvr.sync = false
           settings.set('cfg', cfg)
           log('DESCRS-2', cfg)
           showRemoteDicts(cfg)
@@ -170,7 +174,7 @@ function showRemoteDicts(cfg) {
       check.dataset.unsync = rdb.dname
       olink.appendChild(check)
     } else {
-      olink.dataset.sync = rdb.dname
+      olink.dataset.clone = rdb.dname
       olink.textContent = 'clone'
     }
     otr.appendChild(olink)
@@ -268,6 +272,7 @@ export function moveDict(dname, shift) {
     dict.idx = dict.idx - 1
   }
   cfg = _.sortBy(cfg, 'idx')
+  log('_______________MOVE', cfg)
   settings.set('cfg', cfg)
   showRemoteDicts(cfg)
 }
