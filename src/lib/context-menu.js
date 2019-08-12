@@ -62,8 +62,8 @@ const localDict = new MenuItem({
     let dname = 'local'
     generateDictChunk(upath, dname, state.pars, (res)=> {
       state.sec = 'local-chunk'
-      let data = {dicts: res}
-      navigate(state, data)
+      state.dicts = res
+      navigate(state)
     })
 
   }
@@ -80,11 +80,11 @@ const showLocalDict = new MenuItem({
 
     readDictionary(upath, dname)
       .then(res=> {
-        let docs = _.flatten(res.map(dict=> { return dict.docs }))
+        let dicts = _.flatten(res.map(dict=> { return dict.docs }))
         state.sec = 'local-dict'
+        state.dicts = dicts
         log('_____________________showFullDict:', res)
-        let data = {dicts: docs}
-        navigate(state, data)
+        navigate(state)
       })
   }
 });
