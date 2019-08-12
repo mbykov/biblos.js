@@ -60,7 +60,7 @@ const localDict = new MenuItem({
     let state = settings.get('state')
     if (!state.pars) return
     let dname = 'local'
-    generateDictChunk(upath, dname, state, (res)=> {
+    generateDictChunk(upath, dname, state.pars, (res)=> {
       state.sec = 'local-chunk'
       let data = {dicts: res}
       navigate(state, data)

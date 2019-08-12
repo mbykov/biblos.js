@@ -6,7 +6,7 @@ import env from "env";
 import sband from "../../../sband"
 // import sband from "speckled-band"
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
-import { cloneDict, moveDict, activateDict, delDict } from './lib/remote'
+import { cloneDict, moveDict, activateDict } from './lib/remote'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
@@ -137,7 +137,7 @@ document.addEventListener('click', (ev) => {
 document.addEventListener('click', (ev) => {
   let el = ev.target
   let data = el.dataset
-  // if (!data) return
+  if (!data) return
   if (data.href) {
     let over = q("#new-version")
     over.classList.add('is-hidden')
@@ -153,9 +153,6 @@ document.addEventListener('click', (ev) => {
     log('___________clone click')
     if (el.textContent != 'clone') return
     cloneDict(data.clone)
-  } else if (data.deldict) {
-    if (el.textContent != 'del') return
-    delDict(data.deldict)
   } else if (data.section) {
     state.sec = data.section
     navigate(state)

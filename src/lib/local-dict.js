@@ -6,9 +6,10 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../configs/app.config'
 import path from "path";
-import { updateCurrent, readDictionary, checkConnection } from '/home/michael/a/loigos'
+import { updateCurrent, readDictionary, checkConnection, delDictionary } from '/home/michael/a/loigos'
 import { navigate } from './nav'
 import { initDBs } from './remote'
+let progress = q('#progress')
 
 
 // UPATH
@@ -194,10 +195,71 @@ function createDictEdit (dict) {
 
 export function showFullLocalDict (state, data) {
   // log('___________________showFullLocalDict', data)
-  let dicts = state.dicts
-  if (!dicts) return
   let osection = q(state.sid)
+  let dicts = state.dicts
+  let omess = q('#message')
+  if (omess) remove(omess)
+  if (!dicts.length) {
+    log('________________________NO DICTS')
+    let text = 'no items in local dict. Create dictionary for some text firstly'
+    let omess = create('p')
+    omess.textContent = text
+    osection.appendChild(omess)
+    return
+  }
   let otable = createLocalTable(dicts)
   osection.appendChild(otable)
 
+  let odel = q('#deldict-submit')
+  if (odel) remove(odel)
+  odel = create('input', 'submit')
+  odel.setAttribute('type', 'submit')
+  odel.setAttribute('value', 'delete local dict completely')
+  odel.id = 'deldict-submit'
+  osection.appendChild(odel)
+
+  // odel.addEventListener('click', (ev) => {
+
+  //   updateCurrent (upath, newdocs)
+  //     .then(res=> {
+  //       let cfg = settings.get('cfg')
+  //       cfg = JSON.parse(JSON.stringify(cfg))
+  //       let dnames = cfg.map(dict=> { return dict.dname })
+  //       // log('CFG', cfg, dnames)
+  //       // initDBs(cfg)
+  //       settings.set('cfg', cfg)
+  //       state.sec = 'main'
+  //       navigate(state)
+  //     })
+  //     .catch(err=> {
+  //       console.log('ERR: update local dict', err)
+  //     })
+  // })
+
 }
+
+// local-table events:
+document.addEventListener('click', (ev) => {
+  let el = ev.target
+  if (!el || el.type != 'submit') return
+  progress.classList.remove('is-hidden')
+  if (el.id == 'deldict-submit') log('DEL DICT SUBM')
+  let dname = 'local'
+  delDictionary(upath, dname)
+    .then(res=> {
+      if (!res) return
+      log('del result complete', res)
+      let state = settings.get('state')
+      state.dicts = []
+      let cfg = settings.get('cfg')
+      cfg = JSON.parse(JSON.stringify(cfg))
+      // let dnames = cfg.map(dict=> { return dict.dname })
+      // log('CFG', cfg, dnames)
+      cfg = _.filter(cfg, dict=> { return dict.dname != 'local' })
+      initDBs(cfg)
+      settings.set('cfg', cfg)
+      progress.classList.add('is-hidden')
+      state.sec = 'main'
+      navigate(state)
+    })
+})
