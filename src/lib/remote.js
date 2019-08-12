@@ -5,7 +5,7 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../configs/app.config'
 import path from "path";
-import { antrax, checkConnection } from '/home/michael/a/loigos'
+import { antrax, checkConnection, delDictionary } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
 import { navigate } from './nav'
 // UPATH
@@ -15,6 +15,7 @@ upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 const log = console.log
 const request = require('request');
 let PouchDB = require('pouchdb')
+let progress = q('#progress')
 
 initDBs()
 
@@ -37,7 +38,7 @@ export function queryRemote(query, compound) {
 
 export function initDBs(cfg) {
   if (!cfg) cfg = settings.get('cfg')
-  if (!cfg) cfg = initCfg()
+  if (!cfg || !cfg.length) cfg = initCfg()
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
   // dnames = ['wkt']
@@ -149,8 +150,8 @@ function showRemoteDicts(cfg) {
   otable = createRemoteTable()
 
   cfg.forEach(rdb=> {
-    // log('_________________________RDB', rdb)
     let otr = create('tr')
+    otr.dataset.dname = rdb.dname
     otable.appendChild(otr)
     let odt = create('td', 'dname')
     otr.appendChild(odt)
@@ -168,16 +169,18 @@ function showRemoteDicts(cfg) {
     let descr = JSON.stringify(rdb)
     oinfo.setAttribute('title', descr)
     otr.appendChild(oinfo)
-    let olink = create('td', 'link')
+    let osync = create('td', 'link')
     if (rdb.sync) {
       let check = checkmark()
-      check.dataset.unsync = rdb.dname
-      olink.appendChild(check)
+      // check.dataset._sync = rdb.dname
+      osync.appendChild(check)
     } else {
-      olink.dataset.clone = rdb.dname
-      olink.textContent = 'clone'
+      osync.dataset.sync = rdb.dname
+      let synctxt = (rdb.dname == 'local') ? '---' : 'clone'
+      osync.textContent = synctxt
     }
-    otr.appendChild(olink)
+    otr.appendChild(osync)
+
     let oact = create('td', 'link')
     if (rdb.active) {
       let check = checkmark()
@@ -185,7 +188,7 @@ function showRemoteDicts(cfg) {
       oact.appendChild(check)
     } else {
       oact.dataset.activate = rdb.dname
-      let text = (rdb.sync) ? 'activate' : '------------'
+      let text = (rdb.sync || rdb.dname == 'local') ? 'activate' : ''
       // log('ACT:', rdb, rdb.sync, text)
       oact.textContent = text
     }
@@ -236,7 +239,6 @@ export function cloneDict(dname) {
   let remoteDB = new PouchDB(remotepath)
   // localDB.info().then(function (info) {    log('LOCAL INFO', info) })
   // localDB.info().then(function (info) {    log('REMOTE INFO', info) })
-  let progress = q('#progress')
   progress.classList.remove('is-hidden')
 
   remoteDB.replicate.to(localDB).on('complete', function (res) {
@@ -279,11 +281,21 @@ export function moveDict(dname, shift) {
 
 export function activateDict(dname, on) {
   let cfg = settings.get('cfg')
+  cfg = JSON.parse(JSON.stringify(cfg))
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
   if (!dict) return
   dict.active = (on) ? true : false
-  // log('____REMOTE: ACT/DIS', dname, cfg)
+  log('____REMOTE: ACTiVATE IT:', dname, cfg)
+  let active = _.filter(cfg, dict=> { return dict.active })
+  let dnames = active.map(dict=> { return dict.dname })
+  log('____REMOTE: ACTiVATE IT:', dnames)
   settings.set('cfg', cfg)
   initDBs(cfg)
   showRemoteDicts(cfg)
+}
+
+export function delDict(dname) {
+  log('delete dict', dname)
+  progress.classList.remove('is-hidden')
+
 }

@@ -17,4 +17,5 @@
     <p><img src="../resources/check.png" class="dict-check">means remote dict already cloned and synchronized. <b>Click</b> <img src="../resources/check.png" class="dict-check">to deactivate dictionary</p>
     <p>recommended sequence of dictionaries: Terms, Wiktionary, other (LSJ, etc) </p>
     <p>look at raw data: <span class="external link">http://diglossa.org:5984/_utils/</span> (login: guest, password: guest)</p>
+    <p></p>
 </div>

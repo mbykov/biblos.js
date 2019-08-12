@@ -2,7 +2,7 @@
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
 import { initDBs, requestRemoteDicts } from './remote'
-import { createLocalChunk, editLocalDictItem, showFullLocalDict } from './local-dict'
+import { showLocalChunk, editLocalDictItem, showFullLocalDict } from './local-dict'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import { generateDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
@@ -101,12 +101,12 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
   if (!state.pars) return
   // log('nav: CTRL-D', state)
   let dname = 'local'
-  generateDictChunk(upath, dname, state, (res)=> {
+  generateDictChunk(upath, dname, state.pars, (res)=> {
     state.sec = 'local-chunk'
     log('_____________________genDictChunk:', res)
-    let data = {dicts: res}
+    // let data = {dicts: res}
     state.dicts = res
-    navigate(state, data)
+    navigate(state)
   })
 })
 
@@ -131,6 +131,7 @@ Mousetrap.bind(['ctrl+f'], function(ev) {
   log('== WILL BE DIGLOSSA FIND ==')
   let cfg = settings.get('cfg')
   let dnames = cfg.map(dict=> { return [dict.dname, dict.idx].join('-') })
+  cfg = JSON.parse(JSON.stringify(cfg))
   log('_________CFG:', cfg, 'dnames:', dnames)
   // let state = settings.get('state')
   // state.sec = 'home'
@@ -140,11 +141,12 @@ Mousetrap.bind(['ctrl+f'], function(ev) {
 Mousetrap.bind(['ctrl+z'], function(ev) {
   let state = {sec: config.defstate}
   settings.set('state', state)
-  initDBs()
+  initDBs() // +z
   // cfg = []
-  // settings.set('cfg', cfg)
+  let cfg = settings.get('cfg')
+  cfg = JSON.parse(JSON.stringify(cfg))
   // settings.set('lang', config.deflang)
-  log('== INIT STATE == ')
+  log('== INIT STATE == ', cfg)
   // navigate(state)
 })
 
@@ -223,9 +225,9 @@ export function navigate(state, data) {
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
   else if (sec == 'remote-dicts') requestRemoteDicts()
-  else if (sec == 'local-chunk') createLocalChunk(state, data)
-  else if (sec == 'local-dict') showFullLocalDict(state, data)
-  else if (sec == 'local-dict-item') editLocalDictItem(state, data)
+  else if (sec == 'local-chunk') showLocalChunk(state)
+  else if (sec == 'local-dict') showFullLocalDict(state)
+  else if (sec == 'local-dict-item') editLocalDictItem(state)
 
   let progress = q('#progress')
   progress.classList.add('is-hidden')

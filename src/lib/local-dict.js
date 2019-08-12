@@ -8,6 +8,8 @@ import { config } from '../configs/app.config'
 import path from "path";
 import { updateCurrent, readDictionary, checkConnection } from '/home/michael/a/loigos'
 import { navigate } from './nav'
+import { initDBs } from './remote'
+
 
 // UPATH
 let upath = app.getPath("userData")
@@ -61,11 +63,12 @@ function createLocalTable (dicts) {
   return otable
 }
 
-export function createLocalChunk (state, data) {
-  // if (!data) return
+export function showLocalChunk (state) {
   let dicts = state.dicts
-  // log('______________________chunk-dicts', state)
+  log('_____________NDICTS-state', state)
   if (!dicts) return
+  // let dicts = _.flatten(rdicts.map(rdict=> { return rdict.docs }))
+  // log('_____________NDICTS', dicts)
   let osection = q(state.sid)
   let otable = createLocalTable(dicts)
   osection.appendChild(otable)
@@ -78,13 +81,15 @@ export function createLocalChunk (state, data) {
     ok.setAttribute('type', 'submit')
     ok.setAttribute('value', 'merge to current local dict')
     ok.id = 'dict-table-submit-ok'
-    // log('OK', osubmitok)
+    // log('OK-FILLED', filled)
     osection.appendChild(ok)
+    let newdocs = filled.map(newdoc=> { return {_id: newdoc.plain, docs: [newdoc] } })
     ok.addEventListener('click', (ev) => {
-      updateCurrent (upath, filled)
+      updateCurrent (upath, newdocs)
         .then(res=> {
           log('MERGE-RES-update-dict', res)
           let cfg = settings.get('cfg')
+          cfg = JSON.parse(JSON.stringify(cfg))
           let locdict = _.find(cfg, dict=> { return dict.dname == 'local' })
           if (!locdict) {
             locdict = {active: true, dname: 'local', name: 'Local', idx: 0, langs: 'grc,any'}
@@ -93,7 +98,8 @@ export function createLocalChunk (state, data) {
           locdict.size = res.size
           cfg.forEach((dict, idx)=> { dict.idx = idx})
           let dnames = cfg.map(dict=> { return dict.dname })
-          log('CFG', cfg, dnames)
+          // log('CFG', cfg, dnames)
+          // initDBs(cfg)
           settings.set('cfg', cfg)
           state.sec = 'main'
           navigate(state)
@@ -105,16 +111,13 @@ export function createLocalChunk (state, data) {
   }
 }
 
-export function editLocalDictItem(state, data) {
-  // log('_______________ edit-data', data)
-  // if (!data) return
+export function editLocalDictItem(state) {
   let rdict = state.rdict
-  let dict = _.find(state.dicts, dict=> { return dict.rdict == rdict})
+  let dicts = state.dicts
+  let dict = _.find(dicts, dict=> { return dict.rdict == rdict})
   if (!dict) return
-  // log('_______________ eDICT', dict)
 
   let osection = q(state.sid)
-  // log('OSEC', osection)
   let odictitem = q('.dict-item-container')
   if (odictitem) remove(odictitem)
 
@@ -128,15 +131,13 @@ export function editLocalDictItem(state, data) {
     let oinput = q('.dict-item-input-text')
     let trns = oinput.value
     dict.trns = trns.split(';')
-    // log('_____SUBMIT OK DICT:', dict)
     state.sec = 'local-chunk'
-    navigate(state, data)
+    navigate(state)
   })
   let cancel = q('#dict-item-submit-cancel')
   cancel.addEventListener('click', (ev) => {
-    // log('_____SUBMIT CANCEL')
     state.sec = 'local-chunk'
-    navigate(state, data)
+    navigate(state)
   })
 }
 

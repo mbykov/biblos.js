@@ -189,7 +189,7 @@ function showResult(el, res) {
   let dicts = _.flatten(rdicts.map(rdict=> { return rdict.dicts }))
   // NB: непонятно, нужно ли это: δέω - дает дубли, не дает нужного из WKT
   dicts = _.uniq(dicts.map(dict=> { return JSON.stringify(dict) })).map(json=> { return JSON.parse(json) })
-  dicts = dicts.concat(res.terms)
+  dicts.push(...res.terms)
   // log('DICTS', dicts)
   showDicts(el, dicts)
 }
@@ -200,7 +200,13 @@ function showDicts(el, dicts) {
   empty(ores)
   let odictitle = dictTitle(wf)
   ores.appendChild(odictitle)
-  dicts = _.sortBy(dicts, 'weight')
+  let cfg = settings.get('cfg')
+  // dicts = _.sortBy(dicts, 'weight')
+  dicts = _.sortBy(dicts, function(dict) {
+    let cfgitem = _.find(cfg, o=> { return o.dname == dict.dname })
+    if (!cfgitem) return 100
+    return cfgitem.idx
+  })
   // let weights = dicts.map(dict=> { return dict.weight })
   dicts.forEach(dict=> {
     let odict = showDict(dict)
@@ -274,11 +280,11 @@ function parseMorphs (dict) {
     morphs = vfls.map(flex => { return [flex.tense, flex.numper].join(' ') })
     if (pfls.length) {
       let pmorphs = pfls.map(flex => { return [flex.tense, [flex.gend, flex.numcase].join('.') ].join(', ') })
-      morphs = morphs.concat(pmorphs)
+      morphs.push(...pmorphs)
     }
     if (ifls.length) {
       let imorphs = ifls.map(flex => { return flex.tense })
-      morphs = morphs.concat(imorphs)
+      morphs.push(...imorphs)
     }
   }
   else if (dict.name && dict.gends) morphs = fls.map(flex => { return [dict.gends.toString(), flex.numcase].join('.') })
@@ -289,14 +295,21 @@ function parseMorphs (dict) {
   else if (dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
   else if (dict.pos == 'part')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
 
-  if (!morphs) return false
+  // if (!morphs.length) return false
 
+  // WTF??
   if (morphs.toString() == '.') {
     let degree = fls.map(flex => { return flex.degree }).toString()
     if (degree == 'adv') morphs = ['adverb']
     else morphs = [['adverb:', degree].join(' ')]
   }
-  return morphs
+
+  let nodus = _.filter(morphs, morph=> { return !/du/.test(morph) })
+  if (nodus.length) morphs = nodus
+  let novocs = _.filter(morphs, morph=> { return !/voc/.test(morph) })
+  if (novocs.length) morphs = novocs
+
+  return morphs.sort()
 }
 
 function createMorph (morphs) {
