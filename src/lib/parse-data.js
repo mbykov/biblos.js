@@ -242,7 +242,7 @@ function showDictHeader(dict) {
 function parseMorphs (dict) {
   // log('DICT MORPHS', dict)
   let morphs
-  let fls = dict.fls || dict.morphs
+  let fls = dict.fls
   if (!fls) return
   if (dict.verb) {
     let vfls = _.filter(fls, flex=> { return flex.numper })
@@ -258,18 +258,19 @@ function parseMorphs (dict) {
       morphs.push(...imorphs)
     }
   }
+  else if (dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
   else if (dict.name && dict.gends) morphs = fls.map(flex => { return [dict.gends.toString(), flex.numcase].join('.') })
   else if (dict.name) morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
 
   else if (dict.pos == 'pron')  morphs = fls.map(flex => { return [flex.gend || '-', flex.numcase].join('.') })
   // else if (dict.pos == 'article')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
-  else if (dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
   // else if (dict.pos == 'part')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
   else morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
   // if (!morphs.length) return false
 
   // WTF??
   if (morphs.toString() == '.') {
+    log('_________________ STRANGE DOT', morphs)
     log('_________________ STRANGE DOT', dict)
     throw new Error()
     // let degree = fls.map(flex => { return flex.degree }).toString()
