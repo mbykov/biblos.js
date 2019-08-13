@@ -68,35 +68,6 @@ function createPopup(el, upper) {
   return opopup
 }
 
-// function showTerms(terms) {
-//   terms.forEach(term=> {
-//     showTerm(term)
-//   })
-// }
-
-// function showTerm(dict) {
-//   let ores = q('#result')
-//   // log('SHOW TERM:', dict)
-//   let owf = create('div', 'dict-div')
-//   ores.appendChild(owf)
-//   let oformhead = create('div', 'dict-query')
-//   oformhead.textContent = dict.term
-//   owf.appendChild(oformhead)
-//   let odict = create('div', 'dict-container')
-//   owf.appendChild(odict)
-//   let odicthead = showDictHeader(dict)
-//   odict.appendChild(odicthead)
-//   let morphs = parseMorphs(dict)
-//   if (morphs) {
-//     let oMorph = createMorph(morphs)
-//     odict.appendChild(oMorph)
-//   }
-//   if (dict.trns) {
-//     let otrns = createTrns(dict)
-//     odict.appendChild(otrns)
-//   }
-// }
-
 function showCompound(el, res) {
   if (!res.chains || !res.chains.length) return
   // log('________showCOMP', res.chains)
@@ -291,17 +262,19 @@ function parseMorphs (dict) {
   else if (dict.name) morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
 
   else if (dict.pos == 'pron')  morphs = fls.map(flex => { return [flex.gend || '-', flex.numcase].join('.') })
-  else if (dict.pos == 'art')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
+  // else if (dict.pos == 'article')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
   else if (dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
-  else if (dict.pos == 'part')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
-
+  // else if (dict.pos == 'part')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
+  else morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
   // if (!morphs.length) return false
 
   // WTF??
   if (morphs.toString() == '.') {
-    let degree = fls.map(flex => { return flex.degree }).toString()
-    if (degree == 'adv') morphs = ['adverb']
-    else morphs = [['adverb:', degree].join(' ')]
+    log('_________________ STRANGE DOT', dict)
+    throw new Error()
+    // let degree = fls.map(flex => { return flex.degree }).toString()
+    // if (degree == 'adv') morphs = ['adverb']
+    // else morphs = [['adverb:', degree].join(' ')]
   }
 
   let nodus = _.filter(morphs, morph=> { return !/du/.test(morph) })

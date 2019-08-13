@@ -10,6 +10,7 @@ import { config } from '../configs/app.config'
 import { showText, toggleResults, toggleOneResult } from "./parse-data";
 import path from "path";
 import { readDictionary } from '/home/michael/a/loigos'
+const clipboard = require('electron-clipboard-extended')
 // import { serverDicts, showActiveDicts } from "./dict";
 // import { signup } from "./auth";
 
@@ -136,6 +137,15 @@ Mousetrap.bind(['ctrl+f'], function(ev) {
   // let state = settings.get('state')
   // state.sec = 'home'
   // navigate(state)
+})
+
+Mousetrap.bind(['ctrl+c'], function(ev) {
+  let el = q('.active-form:hover')
+  if (!el) return
+  let wf = el.textContent
+  if (!wf) return
+  let zerohead = [' ', wf].join('')
+  clipboard.writeText(zerohead)
 })
 
 Mousetrap.bind(['ctrl+z'], function(ev) {

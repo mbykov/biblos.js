@@ -58,6 +58,7 @@ ipcRenderer.on('lang', function (event, lang) {
 clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
+    if (_.first(txt) == ' ') return // zerohead
     let clean = cleanStr(txt)
     let pars = sband(clean, config.code)
     if (!pars) return
