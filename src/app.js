@@ -12,7 +12,7 @@ import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
 import { config } from './configs/app.config'
 // import { showResults, showPopup, queryDBs } from "./lib/parse-data"
-import { queryDBs, showSegResult, showCognate, showTranslit, data } from "./lib/parse-data"
+import { queryDBs, showSegResult, showCognate, showTranslit } from "./lib/parse-data"
 
 const log = console.log
 const app = remote.app;
@@ -36,7 +36,6 @@ if (!lang) {
   settings.set('lang', lang)
 }
 
-log('_____DEFAULTS:', state.sec, lang)
 navigate(state)
 
 ipcRenderer.on('section', function (event, section) {

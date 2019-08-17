@@ -9,3 +9,5 @@ export const config = {
   langs: ['eng', 'deu', 'rus'],
   deflang: 'eng'
 }
+
+export const data = {}

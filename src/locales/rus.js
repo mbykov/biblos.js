@@ -25,7 +25,7 @@
   "hot keys": "горячие клавиши",
   "toggle devTools": "консоль разработчика",
   "license": "лицензия",
-  "clone from server": "клонировать с сервера",
+  "arrange and clone dicts from server": "клонировать словари с сервера",
   "clone from Github": "клонировать из репозитория",
   "import form CSV": "импортировать из CSV",
   "import from ODS": "импортировать из ODS",

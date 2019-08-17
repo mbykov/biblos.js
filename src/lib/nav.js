@@ -7,18 +7,20 @@ import { q, qs, empty, create, remove, span, p, div } from './utils'
 import { generateDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
 import { config } from '../configs/app.config'
-import { showText, toggleResults, toggleOneResult, data } from "./parse-data";
+import { showText, toggleResults, toggleOneResult } from "./parse-data"
 import path from "path";
 import { readDictionary } from '/home/michael/a/loigos'
 const clipboard = require('electron-clipboard-extended')
 import sband from "../../../../sband"
-// import { serverDicts, showActiveDicts } from "./dict";
-// import { signup } from "./auth";
+// import { serverDicts, showActiveDicts } from "./dict"
+// import { signup } from "./auth"
+
+// пытаюсь не складывать в settings лишнего
+// import { data } from "../app"
 
 
 const app = remote.app;
 const apath = app.getAppPath()
-
 // UPATH
 let upath = app.getPath("userData")
 upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
@@ -35,6 +37,7 @@ let history = []
 let hstate = 0
 let split
 // let state
+
 
 // какой смысл? Здесь прочитал, в back обратно записал. Нонсенс
 // window.onbeforeunload = function () {
@@ -230,14 +233,19 @@ function goRight() {
 }
 
 function showSection(state) {
-  if (!state.sec) throw new Error('NO SECTION!')
   let lang = settings.get('lang') || 'eng'
   const sections = qs('.section')
   Array.prototype.forEach.call(sections, (osection) => {
     osection.classList.add('is-hidden')
   })
-  let sectionId = ['#', state.sec, '_', lang].join('')
-  // log('____________ SEC ID', sectionId)
+  let section, sectionId
+  sectionId = ['#', state.sec, '_', lang].join('')
+  section = q(sectionId)
+  if (!section) {
+    sectionId = ['#', state.sec, '_', config.deflang].join('')
+    section = q(sectionId)
+  }
+  // log('____________ SEC ID', sectionId, section)
   q(sectionId).classList.remove('is-hidden')
   return sectionId
 }
@@ -250,11 +258,12 @@ export function navigate(state, data) {
     history.push(oldstate)
     hstate = history.length-1
   }
-  // log('__STATE__PARS', state, 'data:', data)
   let sec = state.sec
   let sid = showSection(state)
   if (data) data.sid = sid
   state.sid = sid
+  let st = JSON.parse(JSON.stringify(state))
+  log('__NAV__STATE__', st)
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
   else if (sec == 'remote-dicts') requestRemoteDicts()

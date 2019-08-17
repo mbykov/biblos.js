@@ -1,19 +1,30 @@
 #### Hot Keys:
+
 just copy **Crtl+C** text everywhere on a desktop, then move mouse over a word
 
 **Ctrl-H** - home page (Library)
 
 **Ctrl-Shift-R** - reload application
 
+**Ctrl-R** - clear history - only the last page remains
+
 &nbsp;
+
+**Ctrl+C** - to copy wordform with leading space (not statring analysis)
 
 **Ctrl+mouse** - allows you to move mouse freely
 
 **Click on a wordform** - further analysis
 
-**Shift + mouse hover wordform** - shows phonetic transcription
+**Click-Shift on a wordform** - shows words with a similar stem
 
-<!-- **Shift, then Control** - shows traditional cumulative phonetic transcription -->
+**Alt + mouse hover wordform** - shows phonetic transcription
+
+**Alt-Shift + mouse hover wordform** - shows gematria, i.e. isopsephy, for the Pythagoreans only
+
+&nbsp;
+
+**Ctrl+F** - search current wordform and all its nest in Diglossa.js (v. >= 0.6)
 
 &nbsp;
 
