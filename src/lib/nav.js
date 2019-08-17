@@ -7,10 +7,11 @@ import { q, qs, empty, create, remove, span, p, div } from './utils'
 import { generateDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
 import { config } from '../configs/app.config'
-import { showText, toggleResults, toggleOneResult } from "./parse-data";
+import { showText, toggleResults, toggleOneResult, data } from "./parse-data";
 import path from "path";
 import { readDictionary } from '/home/michael/a/loigos'
 const clipboard = require('electron-clipboard-extended')
+import sband from "../../../../sband"
 // import { serverDicts, showActiveDicts } from "./dict";
 // import { signup } from "./auth";
 
@@ -111,22 +112,44 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
   })
 })
 
-// show full local dict
+// new item for local dict
 Mousetrap.bind(['ctrl+shift+d'], function(ev) {
-  let progress = q('#progress')
-  progress.classList.remove('is-hidden')
-  let state = settings.get('state')
+  log('______S')
+  let el = q('.active-form:hover')
+  if (!el) return
+  let wf = el.textContent
+  if (!wf) return
+  // let progress = q('#progress')
+  // progress.classList.remove('is-hidden')
   let dname = 'local'
-  readDictionary(upath, dname)
-    .then(res=> {
-      let dicts = _.flatten(res.map(dict=> { return dict.docs }))
-      state.sec = 'local-dict'
-      log('_____________________showFullDict:', res)
-      state.dicts = dicts
-      let data = {dicts: dicts}
-      navigate(state, data)
-    })
- })
+  data.kuku = 'KUKU'
+  log('_____________________ local Dict item:', wf)
+  let pars = sband(wf, config.code)
+  if (!pars) return
+  let state = settings.get('state')
+  log('______PARS', pars)
+
+  generateDictChunk(upath, dname, pars, (res)=> {
+    state.sec = 'local-dict-item'
+    log('_____________________SINGLE FORM:', res)
+    // let data = {rdict: wf}
+    state.dicts = res
+    state.rdict = wf
+    navigate(state)
+  })
+
+  // let state = settings.get('state')
+  // let dname = 'local'
+  // readDictionary(upath, dname)
+  //   .then(res=> {
+  //     let dicts = _.flatten(res.map(dict=> { return dict.docs }))
+  //     state.sec = 'local-dict'
+  //     log('_____________________showFullDict:', res)
+  //     state.dicts = dicts
+  //     let data = {dicts: dicts}
+  //     navigate(state, data)
+  //   })
+})
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
   log('== WILL BE DIGLOSSA FIND ==')

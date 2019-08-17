@@ -170,6 +170,7 @@ function createDictEdit (dict) {
   let oinput = create('input', 'dict-item-input-text')
   oinput.id = 'dict-item-input-text'
   oinput.setAttribute('type', 'text')
+  if (dict.trns) oinput.value = dict.trns.join('; ')
   // oinput.setAttribute('size', 50)
   // log('O-TEXT', oinput)
   odictitem.appendChild(oinput)

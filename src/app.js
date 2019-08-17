@@ -12,7 +12,7 @@ import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
 import { config } from './configs/app.config'
 // import { showResults, showPopup, queryDBs } from "./lib/parse-data"
-import { queryDBs, showSegResult, showCognate, showTranslit } from "./lib/parse-data"
+import { queryDBs, showSegResult, showCognate, showTranslit, data } from "./lib/parse-data"
 
 const log = console.log
 const app = remote.app;
@@ -85,6 +85,8 @@ document.addEventListener('click', (ev) => {
     state.sec = 'dict-edit'
     navigate(state)
   }  else if (parent && parent.classList.contains('table-line')) {
+    // new local item
+    // ============================================ унести в local !!!!!!
     let ordict = parent.firstChild
     if (!ordict) return
     let rdict = ordict.textContent
@@ -97,7 +99,6 @@ document.addEventListener('click', (ev) => {
     state.sec = 'local-dict-item'
     state.dicts = dicts
     state.rdict = rdict
-    state.dicts = dicts
     navigate(state)
   }  else if (el.classList.contains('active-form')) {
     // log('WORD-FORM CLICK')

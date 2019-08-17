@@ -14,6 +14,8 @@ let progress = q('#progress')
 //   closePopups()
 // })
 
+export const data = {}
+
 export function showText(pars) {
   if (!pars || !pars.length) return
   let osource = q('#source')
@@ -172,13 +174,11 @@ function showDicts(el, dicts) {
   let odictitle = dictTitle(wf)
   ores.appendChild(odictitle)
   let cfg = settings.get('cfg')
-  // dicts = _.sortBy(dicts, 'weight')
   dicts = _.sortBy(dicts, function(dict) {
     let cfgitem = _.find(cfg, o=> { return o.dname == dict.dname })
     if (!cfgitem) return 100
     return cfgitem.idx
   })
-  // let weights = dicts.map(dict=> { return dict.weight })
   dicts.forEach(dict=> {
     let odict = showDict(dict)
     ores.appendChild(odict)
@@ -259,7 +259,7 @@ function parseMorphs (dict) {
     }
   }
   else if (dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
-  else if (dict.name && dict.gends) morphs = fls.map(flex => { return [dict.gends.toString(), flex.numcase].join('.') })
+  else if (dict.gends) morphs = fls.map(flex => { return [dict.gends.toString(), flex.numcase].join('.') })
   else if (dict.name) morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
 
   else if (dict.pos == 'pron')  morphs = fls.map(flex => { return [flex.gend || '-', flex.numcase].join('.') })
