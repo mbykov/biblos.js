@@ -148,8 +148,10 @@ function showRemoteDicts(cfg) {
   let otable = q('#table-dicts-remote')
   if (otable) remove(otable)
   otable = createRemoteTable()
+  log('_________________________________OT', otable)
 
   cfg.forEach(rdb=> {
+    // log('_______________________rdb', rdb)
     let otr = create('tr')
     otr.dataset.dname = rdb.dname
     otable.appendChild(otr)

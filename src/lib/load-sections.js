@@ -28,10 +28,11 @@ export function loadSections (config) {
         // html = fse.readFileSync(spath).toString()
         // log('HTML', html)
       } catch (err) {
-        let lang = config.deflang
-        spath = path.resolve(__dirname, '../src/sections', config.deflang, [sname, 'md'].join('.'))
-        txt = fse.readFileSync(spath).toString()
-        html = md.render(txt);
+        return
+        // let lang = config.deflang
+        // spath = path.resolve(__dirname, '../src/sections', config.deflang, [sname, 'md'].join('.'))
+        // txt = fse.readFileSync(spath).toString()
+        // html = md.render(txt);
       }
       // log('SPATH', spath)
       let osec = create('div', 'section')

@@ -22,9 +22,17 @@ just copy **Crtl+C** text everywhere on a desktop, then move mouse over a word
 
 **Alt-Shift + mouse hover wordform** - shows gematria, i.e. isopsephy, for the Pythagoreans only
 
+**Ctrl+D** - local dict chunk for a current text
+
 &nbsp;
 
-**Ctrl+F** - search current wordform and all its nest in Diglossa.js (v. >= 0.6)
+**mouse hover wordform - result in browser**: (use context menu also)
+
+**Ctrl+P** - Perseus Greek Word Study Tool
+
+**Ctrl+W** - Wiktionary
+
+**Ctrl+S** - Souda dictionary (only if Souda is in right pane)
 
 &nbsp;
 
@@ -38,4 +46,6 @@ just copy **Crtl+C** text everywhere on a desktop, then move mouse over a word
 
 **Ctrl-0** - normal font
 
-<!-- # &nbsp; -->
+&nbsp;
+
+**Ctrl+F** - search current wordform and all its nest in Diglossa.js (v. >= 0.6)
