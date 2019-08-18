@@ -6,6 +6,7 @@ export function aboutMenuTemplate() {
     label: t("About"),
     submenu: [
       { label: t("About"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'about') } },
+      { label: t("Authentic grammar"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'authentic') } },
       { label: t("code and download"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'code') } },
       { label: t("License"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'license') } },
       { label: t("Contacts"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'contacts') } },
