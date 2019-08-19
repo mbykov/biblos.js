@@ -4,11 +4,12 @@ import _ from "lodash"
 const { app } = require('electron').remote
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, insertAfter } from '../lib/utils'
 const settings = require('electron').remote.require('electron-settings')
-import { config } from '../configs/app.config'
+import { config } from '../app.config'
 import path from "path";
 import { updateCurrent, readDictionary, checkConnection, delDictionary } from '/home/michael/a/loigos'
 import { navigate } from './nav'
 import { initDBs } from './remote'
+import { generateDictChunk } from '/home/michael/greek/dictCSV'
 let progress = q('#progress')
 
 
@@ -92,7 +93,7 @@ export function showLocalChunk (state) {
           log('MERGE-RES-update-dict', res)
           let cfg = settings.get('cfg')
           cfg = JSON.parse(JSON.stringify(cfg))
-          let locdict = _.find(cfg, dict=> { return dict.dname == 'local' })
+          let locdict = _.find(cfg, dict=> { return dict.dname == config.ldname })
           if (!locdict) {
             locdict = {active: true, dname: 'local', name: 'Local', idx: 0, langs: 'grc,any'}
             cfg.unshift(locdict)
@@ -195,8 +196,8 @@ function createDictEdit (dict) {
   return odictitem
 }
 
-export function showFullLocalDict (state, data) {
-  // log('___________________showFullLocalDict', data)
+export function showFullLocalDict (state) {
+  log('___________________showFullLocalDict')
   let osection = q(state.sid)
   let dicts = state.dicts
   let omess = q('#message')
@@ -229,7 +230,7 @@ document.addEventListener('click', (ev) => {
   if (el.id != 'deldict-submit') return
   progress.classList.remove('is-hidden')
   if (el.id == 'deldict-submit') log('DEL DICT SUBM')
-  let dname = 'local'
+  let dname = config.ldname
   delDictionary(upath, dname)
     .then(res=> {
       if (!res) return
@@ -240,7 +241,7 @@ document.addEventListener('click', (ev) => {
       cfg = JSON.parse(JSON.stringify(cfg))
       // let dnames = cfg.map(dict=> { return dict.dname })
       // log('CFG', cfg, dnames)
-      cfg = _.filter(cfg, dict=> { return dict.dname != 'local' })
+      cfg = _.filter(cfg, dict=> { return dict.dname != config.ldname })
       initDBs(cfg)
       settings.set('cfg', cfg)
       progress.classList.add('is-hidden')
@@ -248,3 +249,14 @@ document.addEventListener('click', (ev) => {
       navigate(state)
     })
 })
+
+export function generateChunk (state) {
+  let dname = config.ldname
+  progress.classList.remove('is-hidden')
+  generateDictChunk(upath, dname, state.pars, (res)=> {
+    state.sec = 'local-chunk'
+    // log('_____________________genDictChunk:', res)
+    state.dicts = res
+    navigate(state)
+  })
+}

@@ -10,9 +10,10 @@ import { cloneDict, moveDict, activateDict } from './lib/remote'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
-import { config } from './configs/app.config'
+import { config } from './app.config'
 // import { showResults, showPopup, queryDBs } from "./lib/parse-data"
 import { queryDBs, showSegResult, showCognate, showTranslit } from "./lib/parse-data"
+import { generateChunk } from './lib/local-dict'
 
 const log = console.log
 const app = remote.app;
@@ -151,9 +152,12 @@ document.addEventListener('click', (ev) => {
   } else if (data.disable) {
     activateDict(data.disable, false)
   } else if (data.sync) {
-    log('___________clone click')
     if (el.textContent != 'clone') return
     cloneDict(data.clone)
+  } else if (data.createlocalchunk) {
+    log('___________create local chunk')
+    if (!state.pars) return
+    generateChunk(state)
   } else if (data.section) {
     state.sec = data.section
     navigate(state)

@@ -5,6 +5,7 @@ import { navigate } from './nav'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import path from "path";
 import { readDictionary } from '/home/michael/a/loigos'
+import { config } from '../app.config'
 
 const settings = require('electron').remote.require('electron-settings')
 const Menu = remote.Menu;
@@ -59,7 +60,7 @@ const localDict = new MenuItem({
     progress.classList.remove('is-hidden')
     let state = settings.get('state')
     if (!state.pars) return
-    let dname = 'local'
+    let dname = config.ldname
     generateDictChunk(upath, dname, state.pars, (res)=> {
       state.sec = 'local-chunk'
       state.dicts = res
@@ -76,7 +77,7 @@ const showLocalDict = new MenuItem({
     let progress = q('#progress')
     progress.classList.remove('is-hidden')
     let state = settings.get('state')
-    let dname = 'local'
+    let dname = config.ldname
 
     readDictionary(upath, dname)
       .then(res=> {

@@ -1,5 +1,5 @@
 const Menu = require('electron').Menu;
-const config = require('../configs/app.config');
+const config = require('../app.config');
 // import env from "env";
 
 import { leftMenuTemplate } from "../menu/left_menu_template";

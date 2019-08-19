@@ -2,22 +2,18 @@
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
 import { initDBs, requestRemoteDicts } from './remote'
-import { showLocalChunk, editLocalDictItem, showFullLocalDict } from './local-dict'
+import { showLocalChunk, editLocalDictItem, showFullLocalDict, generateChunk } from './local-dict'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import { generateDictChunk } from '/home/michael/greek/dictCSV'
 import Split from 'split.js'
-import { config } from '../configs/app.config'
+import { config } from '../app.config'
 import { showText, toggleResults, toggleOneResult } from "./parse-data"
 import path from "path";
 import { readDictionary } from '/home/michael/a/loigos'
 const clipboard = require('electron-clipboard-extended')
 import sband from "../../../../sband"
-// import { serverDicts, showActiveDicts } from "./dict"
+
 // import { signup } from "./auth"
-
-// пытаюсь не складывать в settings лишнего
-// import { data } from "../app"
-
 
 const app = remote.app;
 const apath = app.getAppPath()
@@ -38,13 +34,7 @@ let hstate = 0
 let split
 // let state
 
-
-// какой смысл? Здесь прочитал, в back обратно записал. Нонсенс
 // window.onbeforeunload = function () {
-//   let state = settings.get('state')
-//   let lang = settings.get('lang')
-//   // settings.set('state', state)
-//   ipcRenderer.send('unload', state, lang)
 // }
 
 ipcRenderer.on('action', function (event, action) {
@@ -99,33 +89,22 @@ Mousetrap.bind(['ctrl+j'], function(ev) {
 
 // create local chunk
 Mousetrap.bind(['ctrl+d'], function(ev) {
-  let progress = q('#progress')
-  progress.classList.remove('is-hidden')
-  let state = settings.get('state')
-  // log('_____________________D', state)
-  if (!state.pars) return
   // log('nav: CTRL-D', state)
-  let dname = 'local'
-  generateDictChunk(upath, dname, state.pars, (res)=> {
-    state.sec = 'local-chunk'
-    log('_____________________genDictChunk:', res)
-    // let data = {dicts: res}
-    state.dicts = res
-    navigate(state)
-  })
+  let state = settings.get('state')
+  if (!state.pars) return
+  generateChunk(state)
 })
 
 // new item for local dict
 Mousetrap.bind(['ctrl+shift+d'], function(ev) {
-  log('______S')
+  log('______SHIFT-d')
   let el = q('.active-form:hover')
   if (!el) return
   let wf = el.textContent
   if (!wf) return
   // let progress = q('#progress')
   // progress.classList.remove('is-hidden')
-  let dname = 'local'
-  data.kuku = 'KUKU'
+  let dname = config.ldname
   log('_____________________ local Dict item:', wf)
   let pars = sband(wf, config.code)
   if (!pars) return
@@ -141,17 +120,6 @@ Mousetrap.bind(['ctrl+shift+d'], function(ev) {
     navigate(state)
   })
 
-  // let state = settings.get('state')
-  // let dname = 'local'
-  // readDictionary(upath, dname)
-  //   .then(res=> {
-  //     let dicts = _.flatten(res.map(dict=> { return dict.docs }))
-  //     state.sec = 'local-dict'
-  //     log('_____________________showFullDict:', res)
-  //     state.dicts = dicts
-  //     let data = {dicts: dicts}
-  //     navigate(state, data)
-  //   })
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
@@ -163,6 +131,10 @@ Mousetrap.bind(['ctrl+f'], function(ev) {
   // let state = settings.get('state')
   // state.sec = 'home'
   // navigate(state)
+})
+
+Mousetrap.bind(['ctrl+r'], function(ev) {
+  log('== CTRL R ==')
 })
 
 Mousetrap.bind(['ctrl+c'], function(ev) {

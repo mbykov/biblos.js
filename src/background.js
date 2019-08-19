@@ -10,7 +10,7 @@ const settings = require('electron-settings')
 import { MenuFactory } from "./locales/menu-factory";
 const log = console.log
 
-const config = require('./configs/app.config');
+const config = require('./app.config');
 
 // Special module holding environment variables which you declared
 // in config/env_xxx.json file.

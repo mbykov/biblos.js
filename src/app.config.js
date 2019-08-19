@@ -7,7 +7,6 @@ export const config = {
   defstate: 'home',
   splitSizes: [50, 50],
   langs: ['eng', 'deu', 'rus'],
+  ldname: 'local',
   deflang: 'eng'
 }
-
-export const data = {}

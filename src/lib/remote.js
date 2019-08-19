@@ -3,7 +3,7 @@ import { ipcRenderer } from "electron";
 const { app } = require('electron').remote
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, insertAfter } from '../lib//utils'
 const settings = require('electron').remote.require('electron-settings')
-import { config } from '../configs/app.config'
+import { config } from '../app.config'
 import path from "path";
 import { antrax, checkConnection, delDictionary } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
@@ -50,7 +50,7 @@ function initCfg() {
   let dnames = fse.readdirSync(pouchpath)
   dnames = _.filter(dnames, dname=> { return dname != 'flex' })
   let cfg = dnames.map((dname, idx)=> { return {dname: dname, active: true, sync: true, idx: idx} })
-  let locdict = _.find(cfg, dict=> { return dict.dname == 'local' })
+  let locdict = _.find(cfg, dict=> { return dict.dname == config.ldname })
   if (locdict) locdict = {name: 'Local', langs: 'grc,any'}
   log('__________________________INIT CFG', cfg)
   settings.set('cfg', cfg)
@@ -178,7 +178,7 @@ function showRemoteDicts(cfg) {
       osync.appendChild(check)
     } else {
       osync.dataset.sync = rdb.dname
-      let synctxt = (rdb.dname == 'local') ? '---' : 'clone'
+      let synctxt = (rdb.dname == config.ldname) ? '---' : 'clone'
       osync.textContent = synctxt
     }
     otr.appendChild(osync)
@@ -190,7 +190,7 @@ function showRemoteDicts(cfg) {
       oact.appendChild(check)
     } else {
       oact.dataset.activate = rdb.dname
-      let text = (rdb.sync || rdb.dname == 'local') ? 'activate' : ''
+      let text = (rdb.sync || rdb.dname == config.ldname) ? 'activate' : ''
       // log('ACT:', rdb, rdb.sync, text)
       oact.textContent = text
     }
