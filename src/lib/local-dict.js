@@ -6,7 +6,7 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../app.config'
 import path from "path";
-import { updateCurrent, readDictionary, checkConnection, delDictionary } from '/home/michael/a/loigos'
+import { updateCurrent, readDictionary, delDictionary } from '/home/michael/a/loigos'
 import { navigate } from './nav'
 import { initDBs } from './remote'
 import { generateDictChunk } from '/home/michael/greek/dictCSV'

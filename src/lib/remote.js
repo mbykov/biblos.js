@@ -1,47 +1,63 @@
 import _ from "lodash"
 import { ipcRenderer } from "electron";
 const { app } = require('electron').remote
-import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, insertAfter } from '../lib//utils'
+import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, insertAfter } from '../lib/utils'
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../app.config'
 import path from "path";
 import { antrax, checkConnection, delDictionary } from '/home/michael/a/loigos'
+import { getCfg, installDBs } from '/home/michael/a/loigos/src/lib/pouch'
 const fse = require('fs-extra')
 import { navigate } from './nav'
 // UPATH
-let upath = app.getPath("userData")
-upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
+// const upath = app.getPath("userData")
+const upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
+const apath = app.getAppPath()
 
 const log = console.log
 const request = require('request');
 let PouchDB = require('pouchdb')
 let progress = q('#progress')
 
-initDBs()
+getCfg(apath, upath)
+  .then(cfg=> {
+    log('__________ GET CFG:', cfg)
+    initDBs(cfg)
+    settings.set('cfg', cfg)
+  })
+  .catch(err=> {
+    log('CFG-ERR:', err)
+  })
+
+
+// initDBs()
 
 const getopts = {
-  "url": "http://guest:guest@diglossa.org:5984/_all_dbs"
+  "url": [config.host, '_all_dbs'].join('/')
 }
 
 const postopts = {
   "method": "POST",
-  "url": "http://guest:guest@diglossa.org:5984/_dbs_info",
+  "url": [config.host, '_dbs_info'].join('/'),
   "json": true,
   "headers": {
     "Content-type": "application/json"
   }
 }
 
+log('______________INSTALL APATH', apath)
+// installDBs(apath, upath)
+
 export function queryRemote(query, compound) {
   return antrax(query, compound)
 }
 
+// cfg + connection
 export function initDBs(cfg) {
   if (!cfg) cfg = settings.get('cfg')
   if (!cfg || !cfg.length) cfg = initCfg()
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  // dnames = ['wkt']
   checkConnection(upath, dnames)
 }
 
@@ -57,6 +73,11 @@ function initCfg() {
   return cfg
 }
 
+/*
+  что должно быть:
+ */
+
+
 export function requestRemoteDicts() {
   request(getopts, function (error, response, body) {
     if (error) console.error('soket error:', error)
@@ -65,7 +86,7 @@ export function requestRemoteDicts() {
 
     let dblist = JSON.parse(body)
     let dnames = _.filter(dblist, dict=> { return dict[0] != '_' })
-    // log('__dnames:', dnames)
+    log('__remote dnames:', dnames)
     postopts.body = {keys: dnames}
 
     request(postopts, function (error, response, body) {
@@ -75,9 +96,10 @@ export function requestRemoteDicts() {
       let dbinfos = body.map(dict=> { return {dname: dict.key, size: dict.info.doc_count} })
       // console.log('dbinfos:', dbinfos)
       // console.log('dnames:', dnames)
+      dnames.push('kuku')
 
       Promise.all(dnames.map(function(dname) {
-        let remotepath = ['http://diglossa.org:5984', dname].join('/')
+        let remotepath = [config.host, dname].join('/')
         // log('info:', dname, remotepath)
         let remoteDB = new PouchDB(remotepath)
         return remoteDB.get('description')
@@ -91,7 +113,7 @@ export function requestRemoteDicts() {
           })
       }))
         .then(function(descrs) {
-          // log('info:', descrs)
+          // log('____________ remote info descrs:', descrs)
           let code = config.code
           let recode = new RegExp(code)
           descrs = _.compact(descrs)
@@ -127,9 +149,6 @@ export function requestRemoteDicts() {
           cfg = _.sortBy(descrs, 'idx')
           cfg.forEach((dict, idx)=> { dict.idx = idx }) // , dict.active = true
 
-          // cfg.forEach(dict=> { dict.sync = true })
-          // let dvr = _.find(cfg, dict=> { return dict.dname == 'dvr' })
-          // dvr.sync = false
           settings.set('cfg', cfg)
           log('DESCRS-2', cfg)
           showRemoteDicts(cfg)
@@ -236,7 +255,7 @@ function checkmark() {
 export function cloneDict(dname) {
   // log('CLONE DICT', dname)
   let localpath = path.resolve(upath, 'pouch', dname)
-  let remotepath = ['http://guest:guest@diglossa.org:5984', dname].join('/')
+  let remotepath = [config.host, dname].join('/')
   let localDB = new PouchDB(localpath)
   let remoteDB = new PouchDB(remotepath)
   // localDB.info().then(function (info) {    log('LOCAL INFO', info) })

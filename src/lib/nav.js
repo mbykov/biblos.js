@@ -135,6 +135,9 @@ Mousetrap.bind(['ctrl+f'], function(ev) {
 
 Mousetrap.bind(['ctrl+r'], function(ev) {
   log('== CTRL R ==')
+  let last = _.last(history)
+  history = [last]
+  hstate = 0
 })
 
 Mousetrap.bind(['ctrl+c'], function(ev) {
