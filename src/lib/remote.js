@@ -22,6 +22,7 @@ let progress = q('#progress')
 getCfg(apath, upath)
   .then(cfg=> {
     log('__________ GET CFG:', cfg)
+    cfg.forEach((dict, idx)=> { dict.idx = idx })
     initDBs(cfg)
     settings.set('cfg', cfg)
   })
@@ -55,27 +56,25 @@ export function queryRemote(query, compound) {
 // cfg + connection
 export function initDBs(cfg) {
   if (!cfg) cfg = settings.get('cfg')
-  if (!cfg || !cfg.length) cfg = initCfg()
+  log('__1_____cfg', cfg)
+  // if (!cfg || !cfg.length) cfg = initCfg()
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
+  log('__2_____cfg', dnames)
   checkConnection(upath, dnames)
 }
 
-function initCfg() {
-  let pouchpath = path.resolve(upath, 'pouch')
-  let dnames = fse.readdirSync(pouchpath)
-  dnames = _.filter(dnames, dname=> { return dname != 'flex' })
-  let cfg = dnames.map((dname, idx)=> { return {dname: dname, active: true, sync: true, idx: idx} })
-  let locdict = _.find(cfg, dict=> { return dict.dname == config.ldname })
-  if (locdict) locdict = {name: 'Local', langs: 'grc,any'}
-  log('__________________________INIT CFG', cfg)
-  settings.set('cfg', cfg)
-  return cfg
-}
-
-/*
-  что должно быть:
- */
+// function initCfg() {
+//   let pouchpath = path.resolve(upath, 'pouch')
+//   let dnames = fse.readdirSync(pouchpath)
+//   dnames = _.filter(dnames, dname=> { return dname != 'flex' })
+//   let cfg = dnames.map((dname, idx)=> { return {dname: dname, active: true, sync: true, idx: idx} })
+//   let locdict = _.find(cfg, dict=> { return dict.dname == config.ldname })
+//   if (locdict) locdict = {name: 'Local', langs: 'grc,any'}
+//   log('__________________________INIT CFG', cfg)
+//   settings.set('cfg', cfg)
+//   return cfg
+// }
 
 
 export function requestRemoteDicts() {

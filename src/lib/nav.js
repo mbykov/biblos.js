@@ -238,7 +238,7 @@ export function navigate(state, data) {
   if (data) data.sid = sid
   state.sid = sid
   let st = JSON.parse(JSON.stringify(state))
-  log('__NAV__STATE__', st)
+  // log('__NAV__STATE__', st)
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
   else if (sec == 'remote-dicts') requestRemoteDicts()
