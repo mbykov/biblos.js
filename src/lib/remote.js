@@ -13,25 +13,12 @@ import { navigate } from './nav'
 // const upath = app.getPath("userData")
 const upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 const apath = app.getAppPath()
+const sid = '#remote-dicts_eng'
 
 const log = console.log
 const request = require('request');
 let PouchDB = require('pouchdb')
 let progress = q('#progress')
-
-getCfg(apath, upath)
-  .then(cfg=> {
-    log('__________ GET CFG:', cfg)
-    cfg.forEach((dict, idx)=> { dict.idx = idx })
-    initDBs(cfg)
-    settings.set('cfg', cfg)
-  })
-  .catch(err=> {
-    log('CFG-ERR:', err)
-  })
-
-
-// initDBs()
 
 const getopts = {
   "url": [config.host, '_all_dbs'].join('/')
@@ -46,40 +33,36 @@ const postopts = {
   }
 }
 
-log('______________INSTALL APATH', apath)
-// installDBs(apath, upath)
-
 export function queryRemote(query, compound) {
   return antrax(query, compound)
 }
 
+getCfg(apath, upath)
+  .then(cfg=> {
+    log('__________ remote: GET CFG:', cfg)
+    initDBs(cfg)
+    settings.set('cfg', cfg)
+  })
+  .catch(err=> {
+    log('CFG-ERR:', err)
+  })
+
 // cfg + connection
 export function initDBs(cfg) {
-  if (!cfg) cfg = settings.get('cfg')
-  log('__1_____cfg', cfg)
-  // if (!cfg || !cfg.length) cfg = initCfg()
+  // if (!cfg) cfg = settings.get('cfg')
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  log('__2_____cfg', dnames)
   checkConnection(upath, dnames)
 }
 
-// function initCfg() {
-//   let pouchpath = path.resolve(upath, 'pouch')
-//   let dnames = fse.readdirSync(pouchpath)
-//   dnames = _.filter(dnames, dname=> { return dname != 'flex' })
-//   let cfg = dnames.map((dname, idx)=> { return {dname: dname, active: true, sync: true, idx: idx} })
-//   let locdict = _.find(cfg, dict=> { return dict.dname == config.ldname })
-//   if (locdict) locdict = {name: 'Local', langs: 'grc,any'}
-//   log('__________________________INIT CFG', cfg)
-//   settings.set('cfg', cfg)
-//   return cfg
-// }
-
-
 export function requestRemoteDicts() {
+  let cfg = settings.get('cfg')
+  log('__________request remore dicts', cfg)
+  showDicts(cfg)
+
   request(getopts, function (error, response, body) {
     if (error) console.error('soket error:', error)
+    if (error) return
     // log('__get response:', response)
     if (response && response.statusCode != 200)  return
 
@@ -90,12 +73,8 @@ export function requestRemoteDicts() {
 
     request(postopts, function (error, response, body) {
       if (error) console.error('post soket error:', error)
-      // log('__post response:', response)
       if (response && response.statusCode != 200) return
       let dbinfos = body.map(dict=> { return {dname: dict.key, size: dict.info.doc_count} })
-      // console.log('dbinfos:', dbinfos)
-      // console.log('dnames:', dnames)
-      dnames.push('kuku')
 
       Promise.all(dnames.map(function(dname) {
         let remotepath = [config.host, dname].join('/')
@@ -117,57 +96,40 @@ export function requestRemoteDicts() {
           let recode = new RegExp(code)
           descrs = _.compact(descrs)
           descrs = _.filter(descrs, descr=> { return recode.test(descr.langs)})
-          // let cleaninfos = []
+          let rcfg = []
+          let cfg = settings.get('cfg') || []
+          cfg = JSON.parse(JSON.stringify(cfg)) // убрать вместе с log()
+          log('FIRST CFG', cfg)
           descrs.forEach(descr=> {
             let dbinfo = _.find(dbinfos, info=> { return info.dname == descr.dname})
             if (!dbinfo) return
-            // dbinfo.descr = descr
+            let cfgdict = _.find(cfg, dict=> { return dict.dname == descr.dname})
+            if (cfgdict) cfgdict.size = dbinfo.size
+            if (cfgdict) return
             descr.size = dbinfo.size
             delete descr._id
             delete descr._rev
-            // cleaninfos.push(dbinfo)
+            rcfg.push(descr)
           })
-          // log('DBINFOS', cleaninfos)
-          // log('DESCRS', descrs)
-          let cfg = settings.get('cfg') || []
-          cfg = JSON.parse(JSON.stringify(cfg))
-          log('FIRST CFG', cfg)
-          descrs.forEach((descr, idx)=> {
-            descr.sync = true
-            cfg.forEach(dict=> {
-              if (descr.dname != dict.dname) return
-              descr.active = dict.active
-              descr.sync = true
-              descr.idx = dict.idx
-              dict.ok = true
-            })
-            if (!descr.active) descr.idx = 100 + idx // new dict on server
-          })
-          let unoks = _.filter(cfg, dict=> { return !dict.ok })
-          descrs.push(...unoks)
-          cfg = _.sortBy(descrs, 'idx')
-          cfg.forEach((dict, idx)=> { dict.idx = idx }) // , dict.active = true
-
-          settings.set('cfg', cfg)
+          log('DESCRS', descrs)
+          cfg.push(...rcfg)
+          cfg.forEach((dict, idx)=> { dict.idx  = idx })
           log('DESCRS-2', cfg)
-          showRemoteDicts(cfg)
+          settings.set('cfg', cfg)
+          showDicts(cfg)
         })
         .catch(err=> {
           log('possible, no connection', err)
         })
+
     })
   })
 }
 
-function showRemoteDicts(cfg) {
-  let obefore = q('#before-remote-table')
-  if (!obefore) return
-  obefore.textContent = ''
+function showDicts(cfg) {
+  createRemoteTable()
   let otable = q('#table-dicts-remote')
-  if (otable) remove(otable)
-  otable = createRemoteTable()
-  log('_________________________________OT', otable)
-
+  // log('_________________________________empty OT', otable)
   cfg.forEach(rdb=> {
     // log('_______________________rdb', rdb)
     let otr = create('tr')
@@ -214,11 +176,11 @@ function showRemoteDicts(cfg) {
     }
     otr.appendChild(oact)
   })
-
-  obefore.parentNode.insertBefore(otable, obefore.nextSibling);
 }
 
 function createRemoteTable() {
+  let otplace = q('#dicts-remote')
+  if (otplace) empty(otplace)
   let otable = create('table', 'dicts-table')
   otable.id = 'table-dicts-remote'
   let oheader = create('tr', 'table-header')
@@ -242,7 +204,8 @@ function createRemoteTable() {
   let oact = create('td')
   oact.textContent = 'activate:'
   oheader.appendChild(oact)
-  return otable
+  otplace.appendChild(otable)
+  // return otable
 }
 
 function checkmark() {
@@ -252,29 +215,47 @@ function checkmark() {
 }
 
 export function cloneDict(dname) {
-  // log('CLONE DICT', dname)
+  log('CLONE DICT', dname)
+  progress.classList.remove('is-hidden')
   let localpath = path.resolve(upath, 'pouch', dname)
   let remotepath = [config.host, dname].join('/')
   let localDB = new PouchDB(localpath)
   let remoteDB = new PouchDB(remotepath)
+  // log('localpath', localpath)
+  // log('remotepath', remotepath)
   // localDB.info().then(function (info) {    log('LOCAL INFO', info) })
-  // localDB.info().then(function (info) {    log('REMOTE INFO', info) })
-  progress.classList.remove('is-hidden')
+  // remoteDB.info().then(function (info) {    log('REMOTE INFO', info) })
 
-  remoteDB.replicate.to(localDB).on('complete', function (res) {
-    let cfg = settings.get('cfg')
-    let dict = _.find(cfg, dict=> { return dict.dname == dname })
-    if (!dict) return
-    dict.active = true
-    log('ok, were done!', res)
-    settings.set('cfg', cfg)
-    showRemoteDicts(cfg)
-    progress.classList.add('is-hidden')
-  }).on('error', function (err) {
-    log('boo, something went wrong!', err)
-  })
-
+  remoteDB.replicate.to(localDB, { retry: true, batch_size: 1000 })
+    .on('change', function (info) {
+      log('written', info.docs_written)
+    }).on('paused', function (res) {
+      log('paused', res)
+    })
+    .on('complete', function (res) {
+      log('ok, were done!', res)
+      let cfg = clonedCfg(dname)
+      initDBs(cfg)
+      showDicts(cfg)
+      progress.classList.add('is-hidden')
+    })
+    .on('error', function (err) {
+      log('boo, something went wrong!', err)
+    })
 }
+
+function clonedCfg(dname) {
+  let cfg = settings.get('cfg')
+  let dict = _.find(cfg, dict=> { return dict.dname == dname })
+  if (!dict) return cfg
+  dict.active = true
+  dict.sync = true
+  cfg = JSON.parse(JSON.stringify(cfg))
+  settings.set('cfg', cfg)
+  log('__________________ cloned only dict', cfg)
+  return cfg
+}
+
 
 export function moveDict(dname, shift) {
   let cfg = settings.get('cfg')
@@ -295,7 +276,7 @@ export function moveDict(dname, shift) {
   }
   cfg = _.sortBy(cfg, 'idx')
   log('_______________MOVE', cfg)
-  settings.set('cfg', cfg)
+  // settings.set('cfg', cfg)
   showRemoteDicts(cfg)
 }
 
@@ -309,8 +290,8 @@ export function activateDict(dname, on) {
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
   log('____REMOTE: ACTiVATE IT:', dnames)
-  settings.set('cfg', cfg)
-  initDBs(cfg)
+  // settings.set('cfg', cfg)
+  // initDBs(cfg)
   showRemoteDicts(cfg)
 }
 

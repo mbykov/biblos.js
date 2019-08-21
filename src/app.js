@@ -152,8 +152,8 @@ document.addEventListener('click', (ev) => {
   } else if (data.disable) {
     activateDict(data.disable, false)
   } else if (data.sync) {
-    if (el.textContent != 'clone') return
-    cloneDict(data.clone)
+    // if (el.textContent != 'clone') return // раскомментарить
+    cloneDict(data.sync)
   } else if (data.createlocalchunk) {
     log('___________create local chunk')
     if (!state.pars) return

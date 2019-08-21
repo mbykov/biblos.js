@@ -152,13 +152,10 @@ Mousetrap.bind(['ctrl+c'], function(ev) {
 Mousetrap.bind(['ctrl+z'], function(ev) {
   let state = {sec: config.defstate}
   settings.set('state', state)
-  initDBs() // +z
-  // cfg = []
   let cfg = settings.get('cfg')
   cfg = JSON.parse(JSON.stringify(cfg))
-  // settings.set('lang', config.deflang)
+  initDBs(cfg) // +z
   log('== INIT STATE == ', cfg)
-  // navigate(state)
 })
 
 Mousetrap.bind(['ctrl+shift+z'], function(ev) {
@@ -241,7 +238,7 @@ export function navigate(state, data) {
   // log('__NAV__STATE__', st)
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
-  else if (sec == 'remote-dicts') requestRemoteDicts()
+  else if (sec == 'remote-dicts') requestRemoteDicts(state)
   else if (sec == 'local-chunk') showLocalChunk(state)
   else if (sec == 'local-dict') showFullLocalDict(state)
   else if (sec == 'local-dict-item') editLocalDictItem(state)
