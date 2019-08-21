@@ -37,15 +37,29 @@ export function queryRemote(query, compound) {
   return antrax(query, compound)
 }
 
-getCfg(apath, upath)
-  .then(cfg=> {
-    log('__________ remote: GET CFG:', cfg)
-    initDBs(cfg)
-    settings.set('cfg', cfg)
-  })
-  .catch(err=> {
-    log('CFG-ERR:', err)
-  })
+// getCfg(apath, upath)
+//   .then(cfg=> {
+//     log('__________ remote: GET CFG:', cfg)
+//     initDBs(cfg)
+//     settings.set('cfg', cfg)
+//   })
+//   .catch(err=> {
+//     log('CFG-ERR:', err)
+//   })
+
+let cfg = settings.get('cfg')
+if (!cfg) {
+  getCfg(apath, upath)
+    .then(cfg=> {
+      log('__________ remote: GET CFG:', cfg)
+      initDBs(cfg)
+      settings.set('cfg', cfg)
+    })
+    .catch(err=> { log('CFG-ERR:', err) })
+} else {
+  initDBs(cfg)
+}
+
 
 // cfg + connection
 export function initDBs(cfg) {
@@ -111,10 +125,11 @@ export function requestRemoteDicts() {
             delete descr._rev
             rcfg.push(descr)
           })
-          log('DESCRS', descrs)
+          log('DESCRS-rcfg', rcfg)
           cfg.push(...rcfg)
           cfg.forEach((dict, idx)=> { dict.idx  = idx })
-          log('DESCRS-2', cfg)
+          log('DESCRS-2-cfg', cfg)
+          cfg = _.sortBy(cfg, 'idx')
           settings.set('cfg', cfg)
           showDicts(cfg)
         })
@@ -260,6 +275,8 @@ function clonedCfg(dname) {
 export function moveDict(dname, shift) {
   let cfg = settings.get('cfg')
   cfg = JSON.parse(JSON.stringify(cfg))
+  let idxs = cfg.map(dict=> { return dict.idx+dict.dname })
+  log('_______________MOVE 0', cfg, idxs)
   cfg.forEach((dict,idx)=> { dict.idx = idx })
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
   if (!dict) return
@@ -275,9 +292,10 @@ export function moveDict(dname, shift) {
     dict.idx = dict.idx - 1
   }
   cfg = _.sortBy(cfg, 'idx')
-  log('_______________MOVE', cfg)
-  // settings.set('cfg', cfg)
-  showRemoteDicts(cfg)
+  idxs = cfg.map(dict=> { return dict.idx+dict.dname })
+  log('_______________MOVE 1', cfg, idxs)
+  settings.set('cfg', cfg)
+  showDicts(cfg)
 }
 
 export function activateDict(dname, on) {
