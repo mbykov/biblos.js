@@ -308,9 +308,9 @@ export function activateDict(dname, on) {
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
   log('____REMOTE: ACTiVATE IT:', dnames)
-  // settings.set('cfg', cfg)
-  // initDBs(cfg)
-  showRemoteDicts(cfg)
+  settings.set('cfg', cfg)
+  initDBs(cfg)
+  showDicts(cfg)
 }
 
 export function delDict(dname) {
