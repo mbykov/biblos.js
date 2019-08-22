@@ -11,7 +11,6 @@ import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
 import { config } from './app.config'
-// import { showResults, showPopup, queryDBs } from "./lib/parse-data"
 import { queryDBs, showSegResult, showCognate, showTranslit } from "./lib/parse-data"
 import { generateChunk } from './lib/local-dict'
 

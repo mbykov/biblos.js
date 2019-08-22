@@ -121,13 +121,13 @@ export function showCognate(el) {
   showDict(rdict)
 }
 
-
 export function queryDBs(el, compound) {
   progress.classList.remove('is-hidden')
   let str = el.textContent.trim()
   str = enclitic(comb(str))
   queryRemote(str, compound)
     .then(res => {
+      log('_______________________________RES FROM A:', res)
       closePopups()
       progress.classList.add('is-hidden')
       if (!res) return noResult()
@@ -258,7 +258,7 @@ function parseMorphs (dict) {
       morphs.push(...imorphs)
     }
   }
-  else if (dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
+  else if (!dict.name && dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
   else if (dict.gends) morphs = fls.map(flex => { return [dict.gends.toString(), flex.numcase].join('.') })
   else if (dict.name) morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
 
