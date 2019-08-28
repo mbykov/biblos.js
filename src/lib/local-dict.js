@@ -9,7 +9,8 @@ import path from "path";
 import { updateCurrent, readDictionary, delDictionary } from '/home/michael/a/loigos'
 import { navigate } from './nav'
 import { initDBs } from './remote'
-import { generateDictChunk } from '/home/michael/greek/dictCSV'
+// import { generateDictChunk } from '/home/michael/greek/dictCSV'
+import { generateDictChunk } from './generateChunk'
 let progress = q('#progress')
 
 

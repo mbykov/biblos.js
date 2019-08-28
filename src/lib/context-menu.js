@@ -1,6 +1,7 @@
 import _ from "lodash"
 import { remote, shell } from "electron";
-import { generateDictChunk } from '/home/michael/greek/dictCSV'
+// import { generateDictChunk } from '/home/michael/greek/dictCSV'
+import { generateDictChunk } from './generateChunk'
 import { navigate } from './nav'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import path from "path";

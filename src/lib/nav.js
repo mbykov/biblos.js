@@ -4,15 +4,16 @@ import { remote, ipcRenderer, webFrame, shell } from "electron";
 import { initDBs, requestRemoteDicts } from './remote'
 import { showLocalChunk, editLocalDictItem, showFullLocalDict, generateChunk } from './local-dict'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
-import { generateDictChunk } from '/home/michael/greek/dictCSV'
+// import { generateDictChunk } from '/home/michael/greek/dictCSV'
+import { generateDictChunk } from './generateChunk'
 import Split from 'split.js'
 import { config } from '../app.config'
 import { showText, toggleResults, toggleOneResult } from "./parse-data"
 import path from "path";
 import { readDictionary } from '/home/michael/a/loigos'
 const clipboard = require('electron-clipboard-extended')
-import sband from "../../../../sband"
-
+// import sband from "../../../../sband"
+// import sband from "speckled-band"
 // import { signup } from "./auth"
 
 const app = remote.app;
@@ -22,7 +23,6 @@ let upath = app.getPath("userData")
 upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 
 const log = console.log
-// const clipboard = require('electron-clipboard-extended')
 const settings = require('electron').remote.require('electron-settings')
 const Mousetrap = require('mousetrap')
 // const slash = require('slash')
@@ -34,8 +34,7 @@ let hstate = 0
 let split
 // let state
 
-// window.onbeforeunload = function () {
-// }
+// window.onbeforeunload = function () { }
 
 ipcRenderer.on('action', function (event, action) {
   if (action == 'goleft') goLeft()
@@ -102,24 +101,26 @@ Mousetrap.bind(['ctrl+shift+d'], function(ev) {
   if (!el) return
   let wf = el.textContent
   if (!wf) return
+
+  return
+
   // let progress = q('#progress')
   // progress.classList.remove('is-hidden')
-  let dname = config.ldname
-  log('_____________________ local Dict item:', wf)
-  let pars = sband(wf, config.code)
-  if (!pars) return
-  let state = settings.get('state')
-  log('______PARS', pars)
+  // let dname = config.ldname
+  // log('_____________________ local Dict item:', wf)
+  // let pars = sband(wf, config.code)
+  // if (!pars) return
+  // let state = settings.get('state')
+  // log('______PARS', pars)
 
-  generateDictChunk(upath, dname, pars, (res)=> {
-    state.sec = 'local-dict-item'
-    log('_____________________SINGLE FORM:', res)
-    // let data = {rdict: wf}
-    state.dicts = res
-    state.rdict = wf
-    navigate(state)
-  })
-
+  // generateDictChunk(upath, dname, pars, (res)=> {
+  //   state.sec = 'local-dict-item'
+  //   log('_____________________SINGLE FORM:', res)
+  //   // let data = {rdict: wf}
+  //   state.dicts = res
+  //   state.rdict = wf
+  //   navigate(state)
+  // })
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
