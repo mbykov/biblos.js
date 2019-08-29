@@ -4,8 +4,7 @@ import { ipcRenderer } from "electron";
 import { queryRemote } from "./remote";
 // import {oxia, comb, plain, strip} from '../../../../greek/orthos'
 import {oxia, comb, plain, strip} from 'orthos'
-import { t15n } from "../../../transgript"
-// import { t15n } from "transgript"
+import { t15n } from "./transgript"
 
 // const Mousetrap = require('mousetrap')
 const settings = require('electron').remote.require('electron-settings')
@@ -129,7 +128,7 @@ export function queryDBs(el, compound) {
   str = enclitic(comb(str))
   queryRemote(str, compound)
     .then(res => {
-      log('_______________________________RES FROM A:', res)
+      // log('_______________________________RES FROM A:', res)
       closePopups()
       progress.classList.add('is-hidden')
       if (!res) return noResult()
@@ -245,6 +244,8 @@ function parseMorphs (dict) {
   // log('DICT MORPHS', dict)
   let morphs
   let fls = dict.fls
+  let advfls = _.filter(fls, flex=> { return flex.degree })
+  fls = _.filter(fls, flex=> { return !flex.degree })
   if (!fls) return
   if (dict.verb) {
     let vfls = _.filter(fls, flex=> { return flex.numper })
@@ -260,15 +261,18 @@ function parseMorphs (dict) {
       morphs.push(...imorphs)
     }
   }
-  else if (!dict.name && dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
+  else if (dict.pos == 'adv')  morphs = fls.map(flex => { return flex.degree })
   else if (dict.gends) morphs = fls.map(flex => { return [dict.gends.toString(), flex.numcase].join('.') })
   else if (dict.name) morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
 
   else if (dict.pos == 'pron')  morphs = fls.map(flex => { return [flex.gend || '-', flex.numcase].join('.') })
-  // else if (dict.pos == 'article')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
-  // else if (dict.pos == 'part')  morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
   else morphs = fls.map(flex => { return [flex.gend, flex.numcase].join('.') })
   // if (!morphs.length) return false
+
+  if (advfls.length) {
+    let advmorphs = advfls.map(flex => { return flex.degree })
+    morphs.push(...advmorphs)
+  }
 
   // WTF??
   if (morphs.toString() == '.') {

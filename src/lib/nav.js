@@ -88,7 +88,6 @@ Mousetrap.bind(['ctrl+j'], function(ev) {
 
 // create local chunk
 Mousetrap.bind(['ctrl+d'], function(ev) {
-  // log('nav: CTRL-D', state)
   let state = settings.get('state')
   if (!state.pars) return
   generateChunk(state)

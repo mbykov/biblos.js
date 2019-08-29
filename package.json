@@ -1,12 +1,13 @@
 {
-  "name": "a-template",
-  "productName": "Electron Boilerplate",
-  "description": "Starter for my Electron application",
-  "version": "1.0.0",
-  "private": true,
+  "name": "biblos.js",
+  "productName_": "Biblos, a.k.a Morpheus for Ancient Greek",
+  "productName": "MorpheusGreek",
+  "description": "Biblos for Ancient Greek based on CouchDB && Electron.js",
+  "version": "0.9.0",
   "author": "M. Bykov <m.bykov@gmail.com>",
   "copyright": "© 2017- 2019, M.Bykov",
   "homepage": "http://diglossa.org",
+  "license": "GPL-3.0",
   "main": "app/background.js",
   "build": {
     "appId": "com.example.electron-boilerplate",
@@ -71,5 +72,13 @@
     "webpack": "^4.29.6",
     "webpack-merge": "^4.2.1",
     "webpack-node-externals": "^1.7.2"
+  },
+   "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mbykov/biblos.git"
+  },
+  "bugs": {
+    "url": "https://github.com/mbykov/biblos/issues"
   }
+
 }
