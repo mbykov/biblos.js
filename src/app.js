@@ -63,6 +63,7 @@ clipboard
     if (!pars) return
     state.sec = 'main'
     state.pars = pars
+    settings.set('state', state)
     // log('_____CLIPBOARD')
     navigate(state)
   })
@@ -91,11 +92,11 @@ document.addEventListener('click', (ev) => {
     let rdict = ordict.textContent
     if (!rdict) return
 
-    // let otable = q('#table-local-chunk')
-    // if (!otable) return
-    // let dicts = JSON.parse(otable.dataset.dicts)
-    // if (!dicts.length) return
-    // state.dicts = dicts
+    let otable = q('#table-local-chunk')
+    if (!otable) return
+    let dicts = JSON.parse(otable.dataset.dicts)
+    if (!dicts.length) return
+    state.dicts = dicts
     log('____app edit-table:', rdict)
 
     state.sec = 'local-dict-item'

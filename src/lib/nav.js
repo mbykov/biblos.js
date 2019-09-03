@@ -2,7 +2,7 @@
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
 import { initDBs, requestRemoteDicts } from './remote'
-import { showLocalChunk, editLocalDictItem, showFullLocalDict, generateChunk } from './local-dict'
+import { showLocalChunk, editLocalDictItem, showFullLocalDict, generateChunk_ } from './local-dict'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 // import { generateDictChunk } from '/home/michael/greek/dictCSV'
 import { generateDictChunk } from './generateChunk'
@@ -88,9 +88,18 @@ Mousetrap.bind(['ctrl+j'], function(ev) {
 
 // create local chunk
 Mousetrap.bind(['ctrl+d'], function(ev) {
+  log('______+-d')
   let state = settings.get('state')
   if (!state.pars) return
-  generateChunk(state)
+  // generateChunk(state)
+  let dname = config.ldname
+    generateDictChunk(upath, dname, state.pars, (res)=> {
+      state.sec = 'local-chunk'
+      log('_____________________+d: genDictChunk:', res)
+      state.dicts = res
+      // settings.set('state', state)
+      navigate(state)
+    })
 })
 
 // new item for local dict

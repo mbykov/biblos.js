@@ -84,57 +84,55 @@ export function showLocalChunk (state) {
   let ok = q('#dict-table-submit-ok')
   if (ok) remove(ok)
 
-  // ok = create('input', 'submit')
-  // ok.setAttribute('type', 'submit')
-  // ok.setAttribute('value', 'merge filled to current local dict')
-  // ok.id = 'dict-table-submit-ok'
-  // osection.appendChild(ok)
+  ok = create('input', 'submit')
+  ok.setAttribute('type', 'submit')
+  ok.setAttribute('value', 'merge filled to current local dict')
+  ok.id = 'dict-table-submit-ok'
+  osection.appendChild(ok)
 
-  // let newdocs = filled.map(newdoc=> { return {_id: newdoc.plain, docs: [newdoc] } })
-  // ok.addEventListener('click', (ev) => {
-  //   log('____________click update')
-  //   updateCurrent (upath, newdocs)
-  //     .then(res=> {
-  //       log('MERGE-RES-update-dict', res)
-  //       let cfg = settings.get('cfg')
-  //       cfg = JSON.parse(JSON.stringify(cfg))
-  //       let locdict = _.find(cfg, dict=> { return dict.dname == config.ldname })
-  //       if (!locdict) {
-  //         locdict = {active: true, dname: 'local', name: 'Local', idx: 0, langs: 'grc,any'}
-  //         cfg.unshift(locdict)
-  //       }
-  //       locdict.size = res.size
-  //       cfg.forEach((dict, idx)=> { dict.idx = idx})
-  //       let dnames = cfg.map(dict=> { return dict.dname })
-  //       // log('CFG', cfg, dnames)
-  //       initDBs(cfg)
-  //       settings.set('cfg', cfg)
-  //       state.sec = 'main'
-  //       navigate(state)
-  //     })
-  //     .catch(err=> {
-  //       console.log('ERR: update local dict', err)
-  //     })
-  // })
+  let newdocs = filled.map(newdoc=> { return {_id: newdoc.plain, docs: [newdoc] } })
+  ok.addEventListener('click', (ev) => {
+    log('____________click update')
+    updateCurrent (upath, newdocs)
+      .then(res=> {
+        log('MERGE-RES-update-dict', res)
+        let cfg = settings.get('cfg')
+        cfg = JSON.parse(JSON.stringify(cfg))
+        let locdict = _.find(cfg, dict=> { return dict.dname == config.ldname })
+        if (!locdict) {
+          locdict = {active: true, dname: 'local', name: 'Local', idx: 0, langs: 'grc,any'}
+          cfg.unshift(locdict)
+        }
+        locdict.size = res.size
+        cfg.forEach((dict, idx)=> { dict.idx = idx})
+        let dnames = cfg.map(dict=> { return dict.dname })
+        // log('CFG', cfg, dnames)
+        initDBs(cfg)
+        settings.set('cfg', cfg)
+        state.sec = 'main'
+        navigate(state)
+      })
+      .catch(err=> {
+        console.log('ERR: update local dict', err)
+      })
+  })
 
 }
 
 export function editLocalDictItem(state, rdict) {
   let dicts = state.dicts
+  log('_______________________________EDIT.dicts', rdict, state.dicts.length)
   if (!dicts) return
   let rdicts = state.dicts.map(dict=> { return dict.rdict })
-  log('_______________________________EDIT', rdict, rdicts)
   let dict = _.find(dicts, dict=> { return dict.rdict == rdict})
-  log('_______________________________EDIT-dict', dict)
   if (!dict) return
-  log('_______________________________EDIT-before', dict)
 
   let osection = q(state.sid)
   let odictitem = createDictEdit(dict)
   osection.appendChild(odictitem)
   let oinput = q('.dict-item-input-text')
   oinput.focus()
-  // addEditButtons(state, rdict, odictitem)
+  addEditButtons(state, rdict, odictitem)
 }
 
 function createDictEdit (dict) {
@@ -177,21 +175,27 @@ function addEditButtons(state, rdict, odictitem) {
   log('_________ADD EDIT BUTTONS')
   let dicts = state.dicts
   let dict = _.find(dicts, dict=> { return dict.rdict == rdict})
-  let osubmitok = create('input', 'submit')
+  if (!dict) return
+
+  let osubmitok = q('#dict-item-submit-ok')
+  if (osubmitok) remove(osubmitok)
+  osubmitok = create('input', 'submit')
   osubmitok.setAttribute('type', 'submit')
   osubmitok.setAttribute('value', 'ok')
+  osubmitok.setAttribute('rdict', rdict)
   osubmitok.id = 'dict-item-submit-ok'
   // log('OK', osubmitok)
   odictitem.appendChild(osubmitok)
 
-  let osubmitcancel = create('input', 'submit')
+  let osubmitcancel = q('#dict-item-submit-cancel')
+  if (osubmitcancel) remove(osubmitok)
+  osubmitcancel = create('input', 'submit')
   osubmitcancel.setAttribute('type', 'submit')
   osubmitcancel.setAttribute('value', 'cancel')
   osubmitcancel.id = 'dict-item-submit-cancel'
   // log('OK', osubmitcancel)
   odictitem.appendChild(osubmitcancel)
 
-  // let ok = q('#dict-item-submit-ok')
   osubmitok.addEventListener('click', (ev) => {
     let oinput = q('.dict-item-input-text')
     let trns = oinput.value
@@ -199,7 +203,7 @@ function addEditButtons(state, rdict, odictitem) {
     state.sec = 'local-chunk'
     navigate(state)
   })
-  // let osubmitcancel = q('#dict-item-submit-cancel')
+
   osubmitcancel.addEventListener('click', (ev) => {
     state.sec = 'local-chunk'
     navigate(state)
@@ -261,13 +265,13 @@ document.addEventListener('click', (ev) => {
     })
 })
 
-export function generateChunk (state) {
-  let dname = config.ldname
-  progress.classList.remove('is-hidden')
-  generateDictChunk(upath, dname, state.pars, (res)=> {
-    state.sec = 'local-chunk'
-    // log('_____________________genDictChunk:', res)
-    state.dicts = res
-    navigate(state)
-  })
-}
+// export function generateChunk (state) {
+//   let dname = config.ldname
+//   progress.classList.remove('is-hidden')
+//   generateDictChunk(upath, dname, state.pars, (res)=> {
+//     state.sec = 'local-chunk'
+//     // log('_____________________genDictChunk:', res)
+//     state.dicts = res
+//     navigate(state)
+//   })
+// }

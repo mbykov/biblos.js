@@ -39,11 +39,12 @@ export function queryRemote(query, compound) {
 
 let cfg = settings.get('cfg')
 log('__________ first CFG:', cfg)
+// cfg = null
 
-if (!cfg) {
+if (!cfg || !cfg.length) {
   getCfg(apath, upath)
     .then(cfg=> {
-      log('__________ remote: GET CFG:', cfg)
+      log('__________ antrax: GET CFG:', cfg)
       initDBs(cfg)
       settings.set('cfg', cfg)
     })
