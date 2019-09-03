@@ -37,17 +37,9 @@ export function queryRemote(query, compound) {
   return antrax(query, compound)
 }
 
-// getCfg(apath, upath)
-//   .then(cfg=> {
-//     log('__________ remote: GET CFG:', cfg)
-//     initDBs(cfg)
-//     settings.set('cfg', cfg)
-//   })
-//   .catch(err=> {
-//     log('CFG-ERR:', err)
-//   })
-
 let cfg = settings.get('cfg')
+log('__________ first CFG:', cfg)
+
 if (!cfg) {
   getCfg(apath, upath)
     .then(cfg=> {
@@ -59,6 +51,7 @@ if (!cfg) {
 } else {
   initDBs(cfg)
 }
+
 
 
 // cfg + connection

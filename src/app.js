@@ -90,15 +90,17 @@ document.addEventListener('click', (ev) => {
     if (!ordict) return
     let rdict = ordict.textContent
     if (!rdict) return
-    let otable = q('#table-local-chunk')
-    if (!otable) return
-    // log('____CLICK-CHUNK-DICT-wordform:', parent)
-    let dicts = JSON.parse(otable.dataset.dicts)
-    if (!dicts.length) return
+
+    // let otable = q('#table-local-chunk')
+    // if (!otable) return
+    // let dicts = JSON.parse(otable.dataset.dicts)
+    // if (!dicts.length) return
+    // state.dicts = dicts
+    log('____app edit-table:', rdict)
+
     state.sec = 'local-dict-item'
-    state.dicts = dicts
-    state.rdict = rdict
-    navigate(state)
+    // state.rdict = rdict
+    navigate(state, rdict)
   }  else if (el.classList.contains('active-form')) {
     // log('WORD-FORM CLICK')
     if (ev.shiftKey) queryDBs(el, 'strong')
@@ -139,6 +141,7 @@ document.addEventListener('click', (ev) => {
   let el = ev.target
   let data = el.dataset
   if (!data) return
+  // log('_________DATA SECTION HREF', el, data)
   if (data.href) {
     let over = q("#new-version")
     over.classList.add('is-hidden')
@@ -157,7 +160,12 @@ document.addEventListener('click', (ev) => {
     log('___________create local chunk')
     if (!state.pars) return
     generateChunk(state)
+  // } else if (data.createlocalnew) {
+  //   log('___________create local new item')
+  //   // generateChunk(state)
+  //   return
   } else if (data.section) {
+    log('___________click_section')
     state.sec = data.section
     navigate(state)
   }
@@ -202,7 +210,8 @@ document.addEventListener("wheel", function(ev) {
 }, false)
 
 function scrollPane(ev) {
-  let oclosest = ev.target.closest('#source') || ev.target.closest('#result')
+  let oclosest = ev.target.closest('#source') || ev.target.closest('#result')  || ev.target.closest('.section')
+  // log('___________O', oclosest)
   if (!oclosest) return
   let closeid = oclosest.id
   let osource = q('#source')

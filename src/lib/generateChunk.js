@@ -37,7 +37,7 @@ export function generateDictChunk (upath, dname, pars, finish) {
   let freq = {}
   freqChunk(freq, pars)
   let freqs = _.values(freq)
-  // log('FREQ-CHUNK', chunkpath, frvalues)
+  // log('FREQ-CHUNK', freqs)
 
   createChunk(upath, dname, freqs, function(chdicts) {
     // log('index-finished-from-generate: ', chdicts.length)
@@ -54,20 +54,13 @@ export function createChunk (upath, dname, freqs, done) {
       // let rdocs = _.compact(res.rows.map(row => { return row.doc }))
       let docs = _.flatten(_.compact(rdocs.map(rdoc => { return rdoc.docs })))
       // let rdicts = docs.map(doc=> { return doc.rdict })
-      // log('________________ LOCAL DB RDICTS', docs.length, rdicts)
+      log('________________ LOCAL DB OLD RDICTS', docs)
 
       miss.pipe(
         fromFreq(freqs),
         miss.parallel(5, determineForm),
         groupResult(upath, docs, function(rdocs) {
           // log('_______________________ finish group-result', rdocs)
-          // let gdocs = {}
-          // rdocs.forEach(doc => {
-          //   let id = doc.plain
-          //   if (!gdocs[id]) gdocs[id] = {_id: id, docs: [doc]}
-          //   else gdocs[id].docs.push(doc)
-          // })
-          // let docs = _.values(gdocs)
           done(rdocs)
         })
       )
@@ -80,7 +73,6 @@ export function createChunk (upath, dname, freqs, done) {
 function determineForm (freqline, cb) {
   let wf = freqline.wf
   if (!wf) return cb(null, null)
-  // log('_________________________ determine form', wf)
 
   antrax(wf).then(res => {
     let dicts = _.flattenDeep(res.chains.map(chain=> { return chain.map(seg=> { return seg.dicts })}))
@@ -93,6 +85,8 @@ function determineForm (freqline, cb) {
       let dkey = [dict.plain, dict.key, dict.name, dict.verb].join('-')
       if (!dictkey[dkey]) uniqs.push(dict), dictkey[dkey] = true
     })
+    let urducts = uniqs.map(dict=> { return dict.rdict })
+    // log('_________________________ determine form wf - uniqs:', wf, urducts, ':end')
     cb(null, uniqs)
   }).catch(function (err) {
     console.log('CSV-ANTRAX-ERR', err)
@@ -103,7 +97,7 @@ function groupResult (upath, docs, done) {
   let dictkeys = {}
   return miss.through.obj(function (results, enc, next) {
     results.forEach(result=> {
-      // log('_____________R', result)
+      // log('_____________gr-R', result.rdict)
       // let dictkey = [comb(result.rdict), result.name, result.verb].join('-')
       // let dictkey = JSON.stringify(result)
       if (!result.key && !result.keys) return // это terms, но также и баги в словаре WKT?

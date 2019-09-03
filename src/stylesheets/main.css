@@ -651,3 +651,11 @@ ul.dict-fls {
 .section-descr {
     font-size: 0.9em;
 }
+
+#dict-table-submit-ok {
+    margin-bottom: 100px;
+}
+
+#new-dict-item-link {
+    margin-top: 25px;
+}

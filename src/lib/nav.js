@@ -101,25 +101,6 @@ Mousetrap.bind(['ctrl+shift+d'], function(ev) {
   let wf = el.textContent
   if (!wf) return
 
-  return
-
-  // let progress = q('#progress')
-  // progress.classList.remove('is-hidden')
-  // let dname = config.ldname
-  // log('_____________________ local Dict item:', wf)
-  // let pars = sband(wf, config.code)
-  // if (!pars) return
-  // let state = settings.get('state')
-  // log('______PARS', pars)
-
-  // generateDictChunk(upath, dname, pars, (res)=> {
-  //   state.sec = 'local-dict-item'
-  //   log('_____________________SINGLE FORM:', res)
-  //   // let data = {rdict: wf}
-  //   state.dicts = res
-  //   state.rdict = wf
-  //   navigate(state)
-  // })
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
@@ -217,8 +198,8 @@ function showSection(state) {
     sectionId = ['#', state.sec, '_', config.deflang].join('')
     section = q(sectionId)
   }
-  // log('____________ SEC ID', sectionId, section)
-  q(sectionId).classList.remove('is-hidden')
+  if (!section) log('____________ NO SEC ID !!!!', sectionId)
+  section.classList.remove('is-hidden')
   return sectionId
 }
 
@@ -232,16 +213,16 @@ export function navigate(state, data) {
   }
   let sec = state.sec
   let sid = showSection(state)
-  if (data) data.sid = sid
+  // if (data) data.sid = sid
   state.sid = sid
-  let st = JSON.parse(JSON.stringify(state))
+  // let st = JSON.parse(JSON.stringify(state))
   // log('__NAV__STATE__', st)
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
   else if (sec == 'remote-dicts') requestRemoteDicts(state)
   else if (sec == 'local-chunk') showLocalChunk(state)
   else if (sec == 'local-dict') showFullLocalDict(state)
-  else if (sec == 'local-dict-item') editLocalDictItem(state)
+  else if (sec == 'local-dict-item') editLocalDictItem(state, data)
 
   let progress = q('#progress')
   progress.classList.add('is-hidden')

@@ -147,6 +147,11 @@ export function enclitic(str) {
   return clean.join('')
 }
 
+// https://stackoverflow.com/questions/4793604/how-to-insert-an-element-after-another-element-in-javascript-without-using-a-lib
+export function insertAfter(newNode, referenceNode) {
+  referenceNode.parentNode.insertBefore(newNode, referenceNode.nextSibling);
+}
+
 // export function stressed(str) {
 //   let syms = str.split('')
 //   let stress = false
