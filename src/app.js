@@ -20,6 +20,11 @@ const clipboard = require('electron-clipboard-extended')
 const settings = require('electron').remote.require('electron-settings')
 const axios = require('axios')
 
+// import path from "path";
+// let upath = app.getPath("userData")
+// upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
+// import { readDictionary } from '/home/michael/a/loigos'
+
 loadSections(config)
 
 document.onmousedown = mouseMenu
@@ -158,23 +163,33 @@ document.addEventListener('click', (ev) => {
   } else if (data.sync) {
     // if (el.textContent != 'clone') return // раскомментарить
     cloneDict(data.sync)
-  } else if (data.createlocalchunk) {
-    log('___________create local chunk')
-    if (!state.pars) return
-    let dname = config.ldname
-    generateDictChunk(upath, dname, state.pars, (res)=> {
-      state.sec = 'local-chunk'
-      log('_____________________+d: genDictChunk:', res)
-      // state.dicts = res
-      // settings.set('state', state)
-      navigate(state, res)
-    })
-
-    generateChunk(state)
-  // } else if (data.createlocalnew) {
-  //   log('___________create local new item')
+  // } else if (data.createlocalchunk) {
+  //   log('___________create local chunk')
+  //   if (!state.pars) return
+  //   let dname = config.ldname
+  //   generateDictChunk(upath, dname, state.pars, (res)=> {
+  //     state.sec = 'local-chunk'
+  //     log('_____________________+d: genDictChunk:', res)
+  //     // state.dicts = res
+  //     // settings.set('state', state)
+  //     navigate(state, res)
+  //   })
   //   // generateChunk(state)
-  //   return
+  //   // } else if (data.createlocalnew) {
+  //   //   log('___________create local new item')
+  //   //   // generateChunk(state)
+  //   //   return
+  // } else if (data.localdictfull) {
+  //   log('___________read local dict full')
+  //   let dname = config.ldname
+  //   readDictionary(upath, dname)
+  //     .then(res=> {
+  //       let dicts = _.flatten(res.map(dict=> { return dict.docs }))
+  //       state.sec = 'local-dict-full'
+  //       // state.dicts = dicts
+  //       log('_____________________showFullDict:', res)
+  //       navigate(state, dicts)
+  //     })
   } else if (data.section) {
     log('___________click_section')
     state.sec = data.section

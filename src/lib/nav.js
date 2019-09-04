@@ -10,7 +10,7 @@ import Split from 'split.js'
 import { config } from '../app.config'
 import { showText, toggleResults, toggleOneResult } from "./parse-data"
 import path from "path";
-import { readDictionary } from '/home/michael/a/loigos'
+// import { readDictionary } from '/home/michael/a/loigos'
 const clipboard = require('electron-clipboard-extended')
 // import sband from "../../../../sband"
 // import sband from "speckled-band"
@@ -87,31 +87,31 @@ Mousetrap.bind(['ctrl+j'], function(ev) {
   log('START  MENU')
 })
 
-// create local chunk
-Mousetrap.bind(['ctrl+d'], function(ev) {
-  log('______+-d')
-  let state = settings.get('state')
-  if (!state.pars) return
-  // generateChunk(state)
-  let dname = config.ldname
-  generateDictChunk(upath, dname, state.pars, (res)=> {
-    state.sec = 'local-chunk'
-    log('_____________________+d: genDictChunk:', res)
-    // state.dicts = res
-    // settings.set('state', state)
-    navigate(state, res)
-  })
-})
+// // create local chunk
+// Mousetrap.bind(['ctrl+d'], function(ev) {
+//   log('______+-d')
+//   let state = settings.get('state')
+//   if (!state.pars) return
+//   // generateChunk(state)
+//   let dname = config.ldname
+//   generateDictChunk(upath, dname, state.pars, (res)=> {
+//     state.sec = 'local-chunk'
+//     log('_____________________+d: genDictChunk:', res)
+//     // state.dicts = res
+//     // settings.set('state', state)
+//     navigate(state, res)
+//   })
+// })
 
-// new item for local dict
-Mousetrap.bind(['ctrl+shift+d'], function(ev) {
-  log('______SHIFT-d')
-  let el = q('.active-form:hover')
-  if (!el) return
-  let wf = el.textContent
-  if (!wf) return
+// // new item for local dict
+// Mousetrap.bind(['ctrl+shift+d'], function(ev) {
+//   log('______SHIFT-d')
+//   let el = q('.active-form:hover')
+//   if (!el) return
+//   let wf = el.textContent
+//   if (!wf) return
 
-})
+// })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
   log('== WILL BE DIGLOSSA FIND ==')

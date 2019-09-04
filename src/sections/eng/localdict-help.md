@@ -6,9 +6,9 @@
 
 **Используйте контекстное меню**, либо:
 
-создать <span data-section="local-chunk" class="link">часть локального словаря</span> для имен и глаголов из текущего текста. Также **Ctrl-D**
+создать <span data-createlocalchunk="local-chunk" class="link">часть локального словаря</span> для имен и глаголов из текущего текста. Также **Ctrl-D**
 
-посмотреть <span data-section="local-dict-full" class="link">полный локальный словарь</span>. Также **Ctrl-Shift-D**
+посмотреть <span data-localdictfull="local-dict-full" class="link">полный локальный словарь</span>. Также **Ctrl-Shift-D**
 
 экспортировать <span data-section="home" class="link">локальный словарь</span> в CSV или JSON
 

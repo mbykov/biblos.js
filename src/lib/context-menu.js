@@ -13,6 +13,7 @@ const Menu = remote.Menu;
 const MenuItem = remote.MenuItem;
 const log = console.log
 const app = remote.app;
+let progress = q('#progress')
 
 // UPATH
 let upath = app.getPath("userData")
@@ -57,7 +58,6 @@ const souda = new MenuItem({
 const localDict = new MenuItem({
   label: "create local dictionary for current text",
   click: () => {
-    let progress = q('#progress')
     progress.classList.remove('is-hidden')
     let state = settings.get('state')
     if (!state.pars) return
@@ -74,19 +74,16 @@ const localDict = new MenuItem({
 const showLocalDict = new MenuItem({
   label: "show full local dictionary",
   click: () => {
-    document.execCommand("copy");
-    let progress = q('#progress')
     progress.classList.remove('is-hidden')
     let state = settings.get('state')
     let dname = config.ldname
-
     readDictionary(upath, dname)
       .then(res=> {
         let dicts = _.flatten(res.map(dict=> { return dict.docs }))
         state.sec = 'local-dict-full'
-        state.dicts = dicts
+        // state.dicts = dicts
         log('_____________________showFullDict:', res)
-        navigate(state)
+        navigate(state, dicts)
       })
   }
 });

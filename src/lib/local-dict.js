@@ -10,6 +10,7 @@ import { updateCurrent, readDictionary, delDictionary } from '/home/michael/a/lo
 import { navigate } from './nav'
 import { initDBs } from './remote'
 import { generateDictChunk } from './generateChunk'
+const Mousetrap = require('mousetrap')
 let progress = q('#progress')
 
 
@@ -303,13 +304,61 @@ document.addEventListener('click', (ev) => {
     })
 })
 
-// export function generateChunk (state) {
-//   let dname = config.ldname
-//   progress.classList.remove('is-hidden')
-//   generateDictChunk(upath, dname, state.pars, (res)=> {
-//     state.sec = 'local-chunk'
-//     // log('_____________________genDictChunk:', res)
-//     state.dicts = res
-//     navigate(state)
-//   })
-// }
+document.addEventListener('click', (ev) => {
+  let el = ev.target
+  let data = el.dataset
+  if (!data) return
+  let dname = config.ldname
+  let state = settings.get('state')
+  if (data.localdictfull) {
+    log('___________click read local dict full')
+    readDictionary(upath, dname)
+      .then(res=> {
+        let dicts = _.flatten(res.map(dict=> { return dict.docs }))
+        state.sec = 'local-dict-full'
+        log('_____________________showFullDict:', res)
+        navigate(state, dicts)
+      })
+  } else if (data.createlocalchunk) {
+    log('___________click create local chunk')
+    if (!state.pars) return
+    generateDictChunk(upath, dname, state.pars, (res)=> {
+      state.sec = 'local-chunk'
+      log('_____________________: genDictChunk:', res)
+      navigate(state, res)
+    })
+  }
+})
+
+// create local chunk
+Mousetrap.bind(['ctrl+d'], function(ev) {
+  log('______+-d')
+  let state = settings.get('state')
+  if (!state.pars) return
+  // generateChunk(state)
+  let dname = config.ldname
+  generateDictChunk(upath, dname, state.pars, (res)=> {
+    state.sec = 'local-chunk'
+    log('_____________________+d: genDictChunk:', res)
+    // state.dicts = res
+    // settings.set('state', state)
+    navigate(state, res)
+  })
+})
+
+// new item for local dict
+Mousetrap.bind(['ctrl+shift+d'], function(ev) {
+  log('______SHIFT-d')
+  progress.classList.remove('is-hidden')
+  let state = settings.get('state')
+  let dname = config.ldname
+  readDictionary(upath, dname)
+    .then(res=> {
+      let dicts = _.flatten(res.map(dict=> { return dict.docs }))
+      state.sec = 'local-dict-full'
+      // state.dicts = dicts
+      log('_____________________showFullDict:', res)
+      navigate(state, dicts)
+    })
+
+})
