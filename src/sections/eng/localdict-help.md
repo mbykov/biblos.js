@@ -4,15 +4,13 @@
 
 &nbsp;
 
-**Используйте контекстное меню**:
+**Используйте контекстное меню**, либо:
 
-создать <a href="#" data-section="createLocalChunk">часть локального словаря</a> для имен и глаголов из текущего текста. Также **Ctrl-D**
+создать <span data-section="local-chunk" class="link">часть локального словаря</span> для имен и глаголов из текущего текста. Также **Ctrl-D**
 
-мышь над словом  - добавить текущую словоформу, как неизменяемую, в локальный словарь.
+посмотреть <span data-section="local-dict-full" class="link">полный локальный словарь</span>. Также **Ctrl-Shift-D**
 
-посмотреть <a href="#" data-section="remote-dicts">полный локальный словарь</a>
-
-экспортировать <a href="#" data-section="remote-dicts">локальный словарь</a> в CSV или JSON
+экспортировать <span data-section="home" class="link">локальный словарь</span> в CSV или JSON
 
 
 &nbsp;

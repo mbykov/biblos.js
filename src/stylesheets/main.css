@@ -659,3 +659,12 @@ ul.dict-fls {
 #new-dict-item-link {
     margin-top: 25px;
 }
+
+.local-item-pos {
+    margin-left: 15px;
+    margin-right: 5px;
+}
+
+.banner {
+    margin-top: 15px;
+}

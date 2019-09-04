@@ -12,7 +12,7 @@ import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
 import { config } from './app.config'
 import { queryDBs, showSegResult, showCognate, showTranslit } from "./lib/parse-data"
-import { generateChunk } from './lib/local-dict'
+import { generateDictChunk } from './lib/generateChunk'
 
 const log = console.log
 const app = remote.app;
@@ -97,7 +97,8 @@ document.addEventListener('click', (ev) => {
     let dicts = JSON.parse(otable.dataset.dicts)
     if (!dicts.length) return
     state.dicts = dicts
-    log('____app edit-table:', rdict)
+    settings.set('state', state)
+    log('____app edit-table:', rdict, )
 
     state.sec = 'local-dict-item'
     // state.rdict = rdict
@@ -160,6 +161,15 @@ document.addEventListener('click', (ev) => {
   } else if (data.createlocalchunk) {
     log('___________create local chunk')
     if (!state.pars) return
+    let dname = config.ldname
+    generateDictChunk(upath, dname, state.pars, (res)=> {
+      state.sec = 'local-chunk'
+      log('_____________________+d: genDictChunk:', res)
+      // state.dicts = res
+      // settings.set('state', state)
+      navigate(state, res)
+    })
+
     generateChunk(state)
   // } else if (data.createlocalnew) {
   //   log('___________create local new item')
@@ -238,3 +248,11 @@ function cleanStr(row) {
   clean = clean.replace(/\' /g, '᾽ ').replace(/\’ /g, '᾽ ')
   return clean
 }
+
+// document.addEventListener('keypress', (ev) => {
+//   log('______________________document.addEventListener', ev.key)
+// })
+
+// document.onkeydown = function(ev) {
+  // document.activeElement.blur()
+// }

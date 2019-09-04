@@ -2,7 +2,7 @@
 import _ from "lodash"
 import { remote, ipcRenderer, webFrame, shell } from "electron";
 import { initDBs, requestRemoteDicts } from './remote'
-import { showLocalChunk, editLocalDictItem, showFullLocalDict, generateChunk_ } from './local-dict'
+import { showLocalChunk, editLocalDictItem, showFullLocalDict } from './local-dict'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 // import { generateDictChunk } from '/home/michael/greek/dictCSV'
 import { generateDictChunk } from './generateChunk'
@@ -67,6 +67,7 @@ Mousetrap.bind(['ctrl+1', 'ctrl+2'], function(ev) {
 
 Mousetrap.bind(['esc'], function(ev) {
   closePopups()
+  // document.activeElement.blur() // does not work
 })
 
 // arrows
@@ -93,13 +94,13 @@ Mousetrap.bind(['ctrl+d'], function(ev) {
   if (!state.pars) return
   // generateChunk(state)
   let dname = config.ldname
-    generateDictChunk(upath, dname, state.pars, (res)=> {
-      state.sec = 'local-chunk'
-      log('_____________________+d: genDictChunk:', res)
-      state.dicts = res
-      // settings.set('state', state)
-      navigate(state)
-    })
+  generateDictChunk(upath, dname, state.pars, (res)=> {
+    state.sec = 'local-chunk'
+    log('_____________________+d: genDictChunk:', res)
+    // state.dicts = res
+    // settings.set('state', state)
+    navigate(state, res)
+  })
 })
 
 // new item for local dict
@@ -229,8 +230,8 @@ export function navigate(state, data) {
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
   else if (sec == 'remote-dicts') requestRemoteDicts(state)
-  else if (sec == 'local-chunk') showLocalChunk(state)
-  else if (sec == 'local-dict') showFullLocalDict(state)
+  else if (sec == 'local-chunk') showLocalChunk(state, data)
+  else if (sec == 'local-dict-full') showFullLocalDict(state)
   else if (sec == 'local-dict-item') editLocalDictItem(state, data)
 
   let progress = q('#progress')

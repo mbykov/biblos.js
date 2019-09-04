@@ -83,7 +83,7 @@ const showLocalDict = new MenuItem({
     readDictionary(upath, dname)
       .then(res=> {
         let dicts = _.flatten(res.map(dict=> { return dict.docs }))
-        state.sec = 'local-dict'
+        state.sec = 'local-dict-full'
         state.dicts = dicts
         log('_____________________showFullDict:', res)
         navigate(state)
