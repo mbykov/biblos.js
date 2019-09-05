@@ -93,7 +93,7 @@ export function showLocalChunk (state, dicts) {
   okmerge.id = 'dict-table-submit-ok'
   osection.appendChild(okmerge)
 
-  let newdocs = filled.map(newdoc=> { return {_id: newdoc.plain, docs: [newdoc] } })
+  let newdocs = filled.map(newdoc=> { return {_id: newdoc.plain || newdoc.term, docs: [newdoc] } })
   log('____newdocs:', newdocs)
   okmerge.addEventListener('click', (ev) => {
     // log('____________click update')
@@ -226,11 +226,13 @@ function addEditButtons(dicts, dict, odictitem) {
     if (dict.new) {
       // let dpos = q('[name = "dictpos"]:checked')
       // log('______________________osubmitok -dpos', dpos)
+      dict.rdict = oinputnewf.value.trim()
+      dict.dict = comb(dict.rdict)
       let pos = q('[name = "dictpos"]:checked').value
       if (pos == 'verb') dict.verb = true
       else if (pos == 'name') dict.name = true
-      dict.rdict = oinputnewf.value.trim()
-      dict.plain = plain(dict.rdict)
+      if (pos) dict.plain = plain(dict.rdict)
+      else dict.term = dict.dict, dict.pos = 'indecl'
       dict.trns = oinputnewt.value.split(';')
       log('______________________osubmitok -dicts-new', pos, dict)
       dicts.push(dict)

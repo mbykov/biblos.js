@@ -4,7 +4,7 @@
     <div id="choose-item-pos">
         <input type="radio" class="local-item-pos" name="dictpos" value="name">name
         <input type="radio" class="local-item-pos" name="dictpos" value="verb" checked=true>verb
-        <input type="radio" class="local-item-pos" name="dictpos" value="indeclinable">term (indeclinable)
+        <input type="radio" class="local-item-pos" name="dictpos" value="">term (indeclinable)
         <br>
         new wordform:
         <br>

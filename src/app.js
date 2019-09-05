@@ -96,14 +96,6 @@ document.addEventListener('click', (ev) => {
     if (!ordict) return
     let rdict = ordict.textContent
     if (!rdict) return
-
-    // let otable = q('#table-local-chunk')
-    // if (!otable) return
-    // let dicts = JSON.parse(otable.dataset.dicts)
-    // if (!dicts.length) return
-    // state.dicts = dicts
-    // settings.set('state', state)
-
     log('____app edit-table-rdict:', rdict)
     state.sec = 'local-dict-item'
     navigate(state, rdict)

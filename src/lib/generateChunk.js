@@ -78,6 +78,11 @@ function determineForm (freqline, cb) {
     let dicts = _.flattenDeep(res.chains.map(chain=> { return chain.map(seg=> { return seg.dicts })}))
     dicts = _.filter(dicts, dict=> { return dict.name || dict.verb })
     dicts = _.filter(dicts, dict=> { return !dict.possible })
+
+    let terms = _.flatten(res.terms)
+    dicts.push(...terms)
+    // log('_______________NOW TERMS', terms, dicts)
+
     dicts.forEach(dict=> { delete dict.reg, delete dict.trns, delete dict.dname, delete dict.keys, delete dict.fls, delete dict.weight })
     let dictkey = {}
     let uniqs = []
@@ -85,7 +90,7 @@ function determineForm (freqline, cb) {
       let dkey = [dict.plain, dict.key, dict.name, dict.verb].join('-')
       if (!dictkey[dkey]) uniqs.push(dict), dictkey[dkey] = true
     })
-    let urducts = uniqs.map(dict=> { return dict.rdict })
+    // let urducts = uniqs.map(dict=> { return dict.rdict })
     // log('_________________________ determine form wf - uniqs:', wf, urducts, ':end')
     cb(null, uniqs)
   }).catch(function (err) {
@@ -98,17 +103,14 @@ function groupResult (upath, docs, done) {
   return miss.through.obj(function (results, enc, next) {
     results.forEach(result=> {
       // log('_____________gr-R', result.rdict)
-      // let dictkey = [comb(result.rdict), result.name, result.verb].join('-')
-      // let dictkey = JSON.stringify(result)
-      if (!result.key && !result.keys) return // это terms, но также и баги в словаре WKT?
+      // if (!result.key && !result.keys) return // это terms, но также и баги в словаре WKT?
       let dict = {rdict: result.rdict, dict: comb(result.rdict), plain: result.plain}
       if (result.verb) dict.verb = true
       if (result.name) dict.name = true
-      if (dict.verb && result.augs) dict.augs = _.compact([result.augs.sort()[0]])
+      if (dict.verb && result.aug) dict.aug = result.aug
       if (result.key) dict.key = result.key.split('-')[0]
       else if (result.keys) dict.key = result.keys.split('-')[0]
 
-      // let dictkey = JSON.stringify(dict)
       let dictkey = [result.dict, result.name, result.verb].join('-')
       if (!dictkeys[dictkey]) dictkeys[dictkey] = dict
     })
