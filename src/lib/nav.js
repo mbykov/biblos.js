@@ -87,41 +87,11 @@ Mousetrap.bind(['ctrl+j'], function(ev) {
   log('START  MENU')
 })
 
-// // create local chunk
-// Mousetrap.bind(['ctrl+d'], function(ev) {
-//   log('______+-d')
-//   let state = settings.get('state')
-//   if (!state.pars) return
-//   // generateChunk(state)
-//   let dname = config.ldname
-//   generateDictChunk(upath, dname, state.pars, (res)=> {
-//     state.sec = 'local-chunk'
-//     log('_____________________+d: genDictChunk:', res)
-//     // state.dicts = res
-//     // settings.set('state', state)
-//     navigate(state, res)
-//   })
-// })
-
-// // new item for local dict
-// Mousetrap.bind(['ctrl+shift+d'], function(ev) {
-//   log('______SHIFT-d')
-//   let el = q('.active-form:hover')
-//   if (!el) return
-//   let wf = el.textContent
-//   if (!wf) return
-
-// })
-
 Mousetrap.bind(['ctrl+f'], function(ev) {
-  log('== WILL BE DIGLOSSA FIND ==')
   let cfg = settings.get('cfg')
-  let dnames = cfg.map(dict=> { return [dict.dname, dict.idx].join('-') })
+  let dnames = cfg.map(dict=> { return [dict.dname, dict.idx, dict.active].join('-') })
   cfg = JSON.parse(JSON.stringify(cfg))
-  log('_________CFG:', cfg, 'dnames:', dnames)
-  // let state = settings.get('state')
-  // state.sec = 'home'
-  // navigate(state)
+  log('_________F-CFG:', cfg, 'dnames:', dnames)
 })
 
 Mousetrap.bind(['ctrl+r'], function(ev) {
@@ -136,7 +106,7 @@ Mousetrap.bind(['ctrl+c'], function(ev) {
   if (!el) return
   let wf = el.textContent
   if (!wf) return
-  let zerohead = [' ', wf].join('')
+  let zerohead = [wf, ' '].join('')
   clipboard.writeText(zerohead)
 })
 
@@ -231,7 +201,7 @@ export function navigate(state, data) {
   if (sec == 'main') twoPanes(state), showText(state.pars)
   else if (sec == 'remote-dicts') requestRemoteDicts(state)
   else if (sec == 'local-chunk') showLocalChunk(state, data)
-  else if (sec == 'local-dict-full') showFullLocalDict(state)
+  else if (sec == 'local-dict-full') showFullLocalDict(state, data)
   else if (sec == 'local-dict-item') editLocalDictItem(state, data)
 
   let progress = q('#progress')

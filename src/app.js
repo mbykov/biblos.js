@@ -62,7 +62,7 @@ ipcRenderer.on('lang', function (event, lang) {
 clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
-    if (_.first(txt) == ' ') return // zerohead
+    if (_.last(txt) == ' ') return // zerohead
     let clean = cleanStr(txt)
     let pars = sband(clean, config.code)
     if (!pars) return
@@ -97,16 +97,15 @@ document.addEventListener('click', (ev) => {
     let rdict = ordict.textContent
     if (!rdict) return
 
-    let otable = q('#table-local-chunk')
-    if (!otable) return
-    let dicts = JSON.parse(otable.dataset.dicts)
-    if (!dicts.length) return
-    state.dicts = dicts
-    settings.set('state', state)
-    log('____app edit-table:', rdict, )
+    // let otable = q('#table-local-chunk')
+    // if (!otable) return
+    // let dicts = JSON.parse(otable.dataset.dicts)
+    // if (!dicts.length) return
+    // state.dicts = dicts
+    // settings.set('state', state)
 
+    log('____app edit-table-rdict:', rdict)
     state.sec = 'local-dict-item'
-    // state.rdict = rdict
     navigate(state, rdict)
   }  else if (el.classList.contains('active-form')) {
     // log('WORD-FORM CLICK')
@@ -163,35 +162,8 @@ document.addEventListener('click', (ev) => {
   } else if (data.sync) {
     // if (el.textContent != 'clone') return // раскомментарить
     cloneDict(data.sync)
-  // } else if (data.createlocalchunk) {
-  //   log('___________create local chunk')
-  //   if (!state.pars) return
-  //   let dname = config.ldname
-  //   generateDictChunk(upath, dname, state.pars, (res)=> {
-  //     state.sec = 'local-chunk'
-  //     log('_____________________+d: genDictChunk:', res)
-  //     // state.dicts = res
-  //     // settings.set('state', state)
-  //     navigate(state, res)
-  //   })
-  //   // generateChunk(state)
-  //   // } else if (data.createlocalnew) {
-  //   //   log('___________create local new item')
-  //   //   // generateChunk(state)
-  //   //   return
-  // } else if (data.localdictfull) {
-  //   log('___________read local dict full')
-  //   let dname = config.ldname
-  //   readDictionary(upath, dname)
-  //     .then(res=> {
-  //       let dicts = _.flatten(res.map(dict=> { return dict.docs }))
-  //       state.sec = 'local-dict-full'
-  //       // state.dicts = dicts
-  //       log('_____________________showFullDict:', res)
-  //       navigate(state, dicts)
-  //     })
   } else if (data.section) {
-    log('___________click_section')
+    // log('___________click_section')
     state.sec = data.section
     navigate(state)
   }

@@ -38,6 +38,7 @@ export function queryRemote(query, compound) {
 }
 
 let cfg = settings.get('cfg')
+cfg = JSON.parse(JSON.stringify(cfg)) // убрать вместе с log()
 log('__________ first CFG:', cfg)
 // cfg = null
 

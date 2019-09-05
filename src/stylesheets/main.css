@@ -620,6 +620,10 @@ li.cognate-line:hover {
     font-weight: bold;
 }
 
+#dict-item-pos {
+    color: green;
+}
+
 .dict-item-input-text {
     width: 80%;
 }

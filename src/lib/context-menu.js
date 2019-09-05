@@ -29,7 +29,7 @@ const perseus = new MenuItem({
     let href = ['http://www.perseus.tufts.edu/hopper/morph?l=', wf , '&la=greek#lexicon'].join('')
     shell.openExternal(href)
   }
-});
+})
 
 const wiktionary = new MenuItem({
   label: "Wiktionary (esp. for particles)",
@@ -39,7 +39,7 @@ const wiktionary = new MenuItem({
     let href = ['https://en.wiktionary.org/wiki/', wf , '#Ancient_Greek'].join('')
     shell.openExternal(href)
   }
-});
+})
 
 const souda = new MenuItem({
   label: "Souda dictionary",
@@ -53,7 +53,7 @@ const souda = new MenuItem({
     let href = ['https://www.cs.uky.edu/~raphael/sol/sol-entries/', adler].join('')
     shell.openExternal(href)
   }
-});
+})
 
 const localDict = new MenuItem({
   label: "create local dictionary for current text",
@@ -69,7 +69,7 @@ const localDict = new MenuItem({
     })
 
   }
-});
+})
 
 const showLocalDict = new MenuItem({
   label: "show full local dictionary",
@@ -81,8 +81,7 @@ const showLocalDict = new MenuItem({
       .then(res=> {
         let dicts = _.flatten(res.map(dict=> { return dict.docs }))
         state.sec = 'local-dict-full'
-        // state.dicts = dicts
-        log('_____________________showFullDict:', res)
+        log('_____________________context-read showFullDict:', res)
         navigate(state, dicts)
       })
   }
