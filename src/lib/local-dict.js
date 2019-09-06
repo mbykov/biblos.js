@@ -2,6 +2,8 @@
 
 import _ from "lodash"
 const { app } = require('electron').remote
+const {dialog, getCurrentWindow} = require('electron').remote
+const fse = require('fs-extra')
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, insertAfter } from '../lib/utils'
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../app.config'
@@ -17,6 +19,7 @@ let progress = q('#progress')
 
 
 // UPATH
+let apath = app.getAppPath()
 let upath = app.getPath("userData")
 upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 
@@ -329,8 +332,60 @@ document.addEventListener('click', (ev) => {
         navigate(state)
       })
 
+  } else if (data.exportlocaldict) {
+    let options = {title: 'save local dict' }
+    // let options = {title: 'save local dict', filters: [{ name: 'local-dict', extensions: ['csv', 'json'] }]  }
+    // let options = {title: 'save local dict', defaultPath: apath, filters: [{name: 'localdict', extensions: ['csv'] }] }
+
+    dialog.showSaveDialog(null, options, (filepath)=> {
+      console.log('R-fpath=>', filepath)
+      let ext = path.extname(filepath)
+      log('EXT', ext)
+      if (!ext) ext = '.json', filepath = [filepath, ext].join('')
+      if (!['.json', '.csv'].includes(ext)) return
+      readDictionary(upath, dname)
+        .then(res=> {
+          let dicts = _.flatten(res.map(dict=> { return dict.docs }))
+          log('_____________________ before save:', dicts)
+          let cleans = dicts.map(dict=> {
+            if (!dict.trns) return
+            let pos = (dict.verb) ? 'verb' : (dict.name) ? 'name' : '-'
+            let clean = {dict: dict.rdict, pos: pos, key: dict.key, trns: dict.trns.join(';')}
+            return clean
+          })
+          // log('_____________________ cleans:', cleans)
+          cleans = _.compact(cleans)
+
+          let content
+          if (ext == '.json') content = JSON.stringify(cleans, null, 2)
+          else if (ext == '.csv') {
+            let csvs = cleans.map(dict=> { return _.values(dict).map(val=> { return JSON.stringify(val)} ) })
+            csvs = csvs.map(arr=> { return arr.join(', ') })
+            content = csvs.join('\n')
+            // log('_csvs', content)
+          }
+          fse.writeFile(filepath, content)
+            .then(() => {
+              console.log('file save success!', filepath)
+            })
+            .catch(err => {
+              console.error(err)
+            })
+        })
+    })
   }
 })
+
+function saveJSON(fpath) {
+  fse.writeJson(fpath, {name: 'JSON'})
+    .then(() => {
+      console.log('success!')
+    })
+    .catch(err => {
+      console.error(err)
+    })
+}
+
 
 // create local chunk
 Mousetrap.bind(['ctrl+d'], function(ev) {
