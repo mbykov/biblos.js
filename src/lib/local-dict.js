@@ -237,6 +237,7 @@ function addEditButtons(dicts, dict, odictitem) {
       log('______________________osubmitok -dicts-new', pos, dict)
       dicts.push(dict)
     } else {
+      if (!dict.verb && !dict.name) dict.term = comb(dict.rdict)
       dict.trns = oinput.value.split(';')
     }
     // πρόσωπον
