@@ -1,16 +1,15 @@
 #### локальный словарь:
 
-словарь для вашего текущего текста. Имена и глаголы будут определены, вам нужно добавить лишь перевод нужного слова.
+a dictionary for current text. Names and verbs will be defined, you only need to add the translation of the desired word.
 
 &nbsp;
 
-**Используйте контекстное меню**, либо:
+**Use the context menu**, or:
 
-создать <span data-createlocalchunk="local-chunk" class="link">часть локального словаря</span> для имен и глаголов из текущего текста. Также **Ctrl-D**
+create the <span data-createlocalchunk = "local-chunk" class = "link"> part of the local dictionary </span> for names and verbs from the current text. Also **Ctrl-D**
 
-посмотреть <span data-localdictfull="local-dict-full" class="link">полный локальный словарь</span>. Также **Ctrl-Shift-D**
+<span data-localdictfull = "local-dict-full" class = "link"> full local dictionary </span>. Also **Ctrl-Shift-D**
 
-экспортировать <span data-section="home" class="link">локальный словарь</span> в CSV или JSON
-
+export <span data-section = "home" class = "link"> local dictionary </span> to CSV or JSON - specify the appropriate file extension
 
 &nbsp;

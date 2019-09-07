@@ -334,26 +334,19 @@ document.addEventListener('click', (ev) => {
 
   } else if (data.exportlocaldict) {
     let options = {title: 'save local dict' }
-    // let options = {title: 'save local dict', filters: [{ name: 'local-dict', extensions: ['csv', 'json'] }]  }
-    // let options = {title: 'save local dict', defaultPath: apath, filters: [{name: 'localdict', extensions: ['csv'] }] }
-
     dialog.showSaveDialog(null, options, (filepath)=> {
-      console.log('R-fpath=>', filepath)
       let ext = path.extname(filepath)
-      log('EXT', ext)
       if (!ext) ext = '.json', filepath = [filepath, ext].join('')
       if (!['.json', '.csv'].includes(ext)) return
       readDictionary(upath, dname)
         .then(res=> {
           let dicts = _.flatten(res.map(dict=> { return dict.docs }))
-          log('_____________________ before save:', dicts)
           let cleans = dicts.map(dict=> {
             if (!dict.trns) return
             let pos = (dict.verb) ? 'verb' : (dict.name) ? 'name' : '-'
             let clean = {dict: dict.rdict, pos: pos, key: dict.key, trns: dict.trns.join(';')}
             return clean
           })
-          // log('_____________________ cleans:', cleans)
           cleans = _.compact(cleans)
 
           let content
@@ -362,7 +355,6 @@ document.addEventListener('click', (ev) => {
             let csvs = cleans.map(dict=> { return _.values(dict).map(val=> { return JSON.stringify(val)} ) })
             csvs = csvs.map(arr=> { return arr.join(', ') })
             content = csvs.join('\n')
-            // log('_csvs', content)
           }
           fse.writeFile(filepath, content)
             .then(() => {
@@ -376,36 +368,19 @@ document.addEventListener('click', (ev) => {
   }
 })
 
-function saveJSON(fpath) {
-  fse.writeJson(fpath, {name: 'JSON'})
-    .then(() => {
-      console.log('success!')
-    })
-    .catch(err => {
-      console.error(err)
-    })
-}
-
-
 // create local chunk
 Mousetrap.bind(['ctrl+d'], function(ev) {
-  log('______+-d')
   let state = settings.get('state')
   if (!state.pars) return
-  // generateChunk(state)
   let dname = config.ldname
   generateDictChunk(upath, dname, state.pars, (res)=> {
     state.sec = 'local-chunk'
-    log('_____________________+d: genDictChunk:', res)
-    // state.dicts = res
-    // settings.set('state', state)
     navigate(state, res)
   })
 })
 
 // new item for local dict
 Mousetrap.bind(['ctrl+shift+d'], function(ev) {
-  log('______SHIFT-d')
   progress.classList.remove('is-hidden')
   let state = settings.get('state')
   let dname = config.ldname
@@ -413,8 +388,6 @@ Mousetrap.bind(['ctrl+shift+d'], function(ev) {
     .then(res=> {
       let dicts = _.flatten(res.map(dict=> { return dict.docs }))
       state.sec = 'local-dict-full'
-      // state.dicts = dicts
-      log('_____________________showFullDict:', res)
       navigate(state, dicts)
     })
 
