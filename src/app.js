@@ -11,7 +11,7 @@ import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
 import { config } from './app.config'
-import { queryDBs, showSegResult, showCognate, showTranslit } from "./lib/parse-data"
+import { queryDBs, showSegResult, showCognate, createCognateList, showTranslit } from "./lib/parse-data"
 import { generateDictChunk } from './lib/generateChunk'
 
 const log = console.log
@@ -99,9 +99,10 @@ document.addEventListener('click', (ev) => {
     log('____app edit-table-rdict:', rdict)
     state.sec = 'local-dict-item'
     navigate(state, rdict)
-  }  else if (el.classList.contains('active-form')) {
-    // log('WORD-FORM CLICK')
-    if (ev.shiftKey) queryDBs(el, 'strong')
+  }  else if (el.classList.contains('active-form') || el.classList.contains('active-dict')) {
+    log('WORD-FORM CLICK', ev.ctrlKey)
+    // if (ev.shiftKey) queryDBs(el, 'strong')
+    if (ev.ctrlKey) createCognateList(el)
     else queryDBs(el, true)
   } else if (el.classList.contains('dict-query')) {
     let odictCont = el.nextSibling
@@ -173,7 +174,7 @@ document.addEventListener("mouseover", function(ev) {
   } else if (el.classList.contains('active-dict')) {
     showSegResult(el)
   } else if (el.classList.contains('cognate-line')) {
-    showCognate(el)
+    showCognate(el) // mouseover
   }
 }, false)
 

@@ -1,5 +1,5 @@
 import _ from 'lodash'
-import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, getInnermostHovered, enclitic } from './utils'
+import { q, qs, empty, create, remove, removeAll, span, p, div, getCoords, placePopup, getInnermostHovered, enclitic } from './utils'
 import { ipcRenderer } from "electron";
 import { queryRemote } from "./remote";
 // import {oxia, comb, plain, strip} from '../../../../greek/orthos'
@@ -48,17 +48,18 @@ export function showText(pars) {
   }
 }
 
-function closePopups() {
-  let opopup = q('#popup')
-  if (opopup) remove(opopup)
-  let oetyrels = q('#etyrels')
-  if (oetyrels) remove(oetyrels)
+export function closePopups() {
+  log('________________________ CLOSE POP')
+  removeAll('.popup')
+  // let opopup = q('#popup')
+  // if (opopup) remove(opopup)
+  // let oetyrels = q('#etyrels')
+  // if (oetyrels) remove(oetyrels)
 }
 
 function createPopup(el, upper) {
   let opopup = create('div', 'popup')
-  opopup.id = 'popup'
-  // opopup.classList.add('upper')
+  // opopup.id = 'popup'
   document.body.appendChild(opopup)
 
   let coords = getCoords(el)
@@ -73,13 +74,12 @@ function createPopup(el, upper) {
 
 function showCompound(el, res) {
   if (!res.chains || !res.chains.length) return
-  // log('________showCOMP', res.chains)
+  log('________showCOMP', res.chains)
   if (res.chains.length == 1 && res.chains[0].length == 1) return
   let opopup = createPopup(el)
   let oul = opopup.querySelector('.compound-list')
   res.chains.forEach((chain, idx)=> {
     let oline = create('li', 'comp-line')
-    // oline.dataset.chain = JSON.stringify(res.chains[idx])
     oul.appendChild(oline)
     chain.forEach((sec, idy)=> {
       let ospan
@@ -91,18 +91,22 @@ function showCompound(el, res) {
       if (sec.connector) ospan.classList.add('comp-connector')
       else if (sec.dicts) ospan.classList.add('active-dict')
       ospan.dataset.segdicts = JSON.stringify(res.chains[idx][idy].dicts)
+      ospan.dataset.cogns = JSON.stringify(res.chains[idx][idy].cogns)
       oline.appendChild(ospan)
     })
   })
 }
 
-function showCognateList(el, dicts) {
-  // log('COGNATES', dicts)
+export function createCognateList(el) {
+  log('COGNATE LIST', el.dataset)
+  if (!el.dataset.cogns || !el.dataset.cogns.length) return
+  let cognates = JSON.parse(el.dataset.cogns)
+  log('COGNATE LIST', cognates)
   let opopup = createPopup(el)
   let oul = opopup.querySelector('.compound-list')
   oul.classList.add('cognate-list')
 
-  let gdicts = _.groupBy(dicts, 'rdict' )
+  let gdicts = _.groupBy(cognates, 'rdict' )
   for (let rdict in gdicts) {
     let dicts = gdicts[rdict]
     let oline = create('li', 'cognate-line')
@@ -128,7 +132,7 @@ export function queryDBs(el, compound) {
   str = enclitic(comb(str))
   queryRemote(str, compound)
     .then(res => {
-      // log('_______________________________RES FROM A:', res)
+      log('_______________________________RES FROM A:', res)
       closePopups()
       progress.classList.add('is-hidden')
       if (!res) return noResult()

@@ -8,7 +8,7 @@ import { q, qs, empty, create, remove, span, p, div } from './utils'
 import { generateDictChunk } from './generateChunk'
 import Split from 'split.js'
 import { config } from '../app.config'
-import { showText, toggleResults, toggleOneResult } from "./parse-data"
+import { showText, toggleResults, toggleOneResult, closePopups } from "./parse-data"
 import path from "path";
 // import { readDictionary } from '/home/michael/a/loigos'
 const clipboard = require('electron-clipboard-extended')
@@ -210,9 +210,9 @@ export function navigate(state, data) {
   settings.set('state', state)
 }
 
-function closePopups() {
-  let opopup = q('#popup')
-  if (opopup) remove(opopup)
-  let oetyrels = q('#etyrels')
-  if (oetyrels) remove(oetyrels)
-}
+// function closePopups() {
+//   let opopup = q('#popup')
+//   if (opopup) remove(opopup)
+//   let oetyrels = q('#etyrels')
+//   if (oetyrels) remove(oetyrels)
+// }
