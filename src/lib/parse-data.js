@@ -49,21 +49,15 @@ export function showText(pars) {
 }
 
 export function closePopups() {
-  log('________________________ CLOSE POP')
   removeAll('.popup')
-  // let opopup = q('#popup')
-  // if (opopup) remove(opopup)
-  // let oetyrels = q('#etyrels')
-  // if (oetyrels) remove(oetyrels)
 }
 
 function createPopup(el, upper) {
   let opopup = create('div', 'popup')
-  // opopup.id = 'popup'
   document.body.appendChild(opopup)
+  opopup.classList.remove('is-hidden')
 
   let coords = getCoords(el)
-  opopup.classList.remove('is-hidden')
   let ncoords = {top: coords.top+24, left: coords.left}
   if (upper) ncoords = {top: coords.top-32, left: coords.left}
   placePopup(ncoords, opopup)
@@ -74,7 +68,7 @@ function createPopup(el, upper) {
 
 function showCompound(el, res) {
   if (!res.chains || !res.chains.length) return
-  log('________showCOMP', res.chains)
+  // log('________showCOMP', res.chains)
   if (res.chains.length == 1 && res.chains[0].length == 1) return
   let opopup = createPopup(el)
   let oul = opopup.querySelector('.compound-list')
@@ -98,10 +92,8 @@ function showCompound(el, res) {
 }
 
 export function createCognateList(el) {
-  log('COGNATE LIST', el.dataset)
-  if (!el.dataset.cogns || !el.dataset.cogns.length) return
+  if (el.dataset.cogns == 'undefined' || !el.dataset.cogns || !el.dataset.cogns.length) return
   let cognates = JSON.parse(el.dataset.cogns)
-  log('COGNATE LIST', cognates)
   let opopup = createPopup(el)
   let oul = opopup.querySelector('.compound-list')
   oul.classList.add('cognate-list')
@@ -117,13 +109,15 @@ export function createCognateList(el) {
 }
 
 export function showCognate(el) {
+  // log('__________________________________SHOW COGN', el.textContent)
   let ores = q('#result')
   empty(ores)
+  if (!el.dataset.dicts) return
   let segdicts = JSON.parse(el.dataset.dicts)
-  // log('segdicts', segdicts)
+  log('segdicts', segdicts)
   if (!segdicts.length) return
-  let rdict = {seg: el.textContent, dicts: segdicts}
-  showDict(rdict)
+  // let rdict = {seg: el.textContent, dicts: segdicts}
+  showDicts(el, segdicts)
 }
 
 export function queryDBs(el, compound) {
@@ -132,8 +126,7 @@ export function queryDBs(el, compound) {
   str = enclitic(comb(str))
   queryRemote(str, compound)
     .then(res => {
-      log('_______________________________RES FROM A:', res)
-      closePopups()
+      // closePopups() // - can NOT be closed here!!
       progress.classList.add('is-hidden')
       if (!res) return noResult()
       if (compound) showCompound(el, res)
@@ -147,10 +140,9 @@ export function queryDBs(el, compound) {
 export function showSegResult(el) {
   let ores = q('#result')
   empty(ores)
+  if (!el.dataset.segdicts) return
   let segdicts = JSON.parse(el.dataset.segdicts)
-  // log('segdicts', segdicts)
   if (!segdicts.length) return
-  // let rdict = {seg: el.textContent, dicts: segdicts}
   showDicts(el, segdicts)
 }
 

@@ -11,7 +11,7 @@ import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
 import { config } from './app.config'
-import { queryDBs, showSegResult, showCognate, createCognateList, showTranslit } from "./lib/parse-data"
+import { queryDBs, showSegResult, showCognate, createCognateList, showTranslit, closePopups } from "./lib/parse-data"
 import { generateDictChunk } from './lib/generateChunk'
 
 const log = console.log
@@ -100,8 +100,7 @@ document.addEventListener('click', (ev) => {
     state.sec = 'local-dict-item'
     navigate(state, rdict)
   }  else if (el.classList.contains('active-form') || el.classList.contains('active-dict')) {
-    log('WORD-FORM CLICK', ev.ctrlKey)
-    // if (ev.shiftKey) queryDBs(el, 'strong')
+    log('WORD-FORM CLICK')
     if (ev.ctrlKey) createCognateList(el)
     else queryDBs(el, true)
   } else if (el.classList.contains('dict-query')) {
@@ -170,6 +169,7 @@ document.addEventListener("mouseover", function(ev) {
     if (!el.classList.contains('active-form')) return
     showTranslit(el, ev.shiftKey)
   } else if (el.classList.contains('active-form')) {
+    if (el.classList.contains('active-form')) closePopups()
     queryDBs(el)
   } else if (el.classList.contains('active-dict')) {
     showSegResult(el)

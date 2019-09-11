@@ -110,7 +110,6 @@ export function setStore(name, obj) {
 export function getCoords (el) {
   let rect = el.getBoundingClientRect()
   return rect
-  // return {top: rect.top, left: rect.left}
 }
 
 export function placePopup (coords, el) {

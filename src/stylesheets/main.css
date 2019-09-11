@@ -584,16 +584,19 @@ ul.info-table {
 
 .cognate-list {
     padding: 5px;
-    /* background-color: #E9FED6; */
+    background-color: #E9FED6;
 }
 
 li.cognate-line {
-    padding-right: 15px;
-    padding-left: 15px;
+    padding-right: 5px;
+    padding-left: 5px;
 }
 
 li.cognate-line:hover {
-    background-color: #E9FED6;
+    /* background-color: #E9FED6; */
+    padding-right: 5px;
+    padding-left: 5px;
+    background-color: white;
 }
 
 .table-chunk-header {
