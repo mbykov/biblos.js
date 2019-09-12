@@ -83,19 +83,14 @@ Mousetrap.bind(['ctrl+p'], function(ev) {
   shell.openExternal(href)
 })
 
-Mousetrap.bind(['ctrl+j'], function(ev) {
-  log('START  MENU')
-})
-
 Mousetrap.bind(['ctrl+f'], function(ev) {
   let cfg = settings.get('cfg')
   let dnames = cfg.map(dict=> { return [dict.dname, dict.idx, dict.active].join('-') })
   cfg = JSON.parse(JSON.stringify(cfg))
-  log('_________F-CFG:', cfg, 'dnames:', dnames)
+  console.log('_________F-CFG:', cfg, 'dnames:', dnames)
 })
 
 Mousetrap.bind(['ctrl+r'], function(ev) {
-  log('== CTRL R ==')
   let last = _.last(history)
   history = [last]
   hstate = 0
@@ -193,10 +188,7 @@ export function navigate(state, data) {
   }
   let sec = state.sec
   let sid = showSection(state)
-  // if (data) data.sid = sid
   state.sid = sid
-  // let st = JSON.parse(JSON.stringify(state))
-  // log('__NAV__STATE__', st)
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
   else if (sec == 'remote-dicts') requestRemoteDicts(state)
@@ -209,10 +201,3 @@ export function navigate(state, data) {
 
   settings.set('state', state)
 }
-
-// function closePopups() {
-//   let opopup = q('#popup')
-//   if (opopup) remove(opopup)
-//   let oetyrels = q('#etyrels')
-//   if (oetyrels) remove(oetyrels)
-// }

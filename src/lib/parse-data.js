@@ -6,14 +6,9 @@ import { queryRemote } from "./remote";
 import {oxia, comb, plain, strip} from 'orthos'
 import { t15n } from "./transgript"
 
-// const Mousetrap = require('mousetrap')
 const settings = require('electron').remote.require('electron-settings')
 const log = console.log
 let progress = q('#progress')
-
-// Mousetrap.bind(['esc'], function(ev) {
-//   closePopups()
-// })
 
 export const data = {}
 
@@ -43,7 +38,6 @@ export function showText(pars) {
   let actives = qs('span.active-form')
   if (actives.length == 1) {
     let mono = actives[0]
-    // log('MONO', mono)
     if (mono) queryDBs(mono)
   }
 }
@@ -68,7 +62,6 @@ function createPopup(el, upper) {
 
 function showCompound(el, res) {
   if (!res.chains || !res.chains.length) return
-  // log('________showCOMP', res.chains)
   if (res.chains.length == 1 && res.chains[0].length == 1) return
   let opopup = createPopup(el)
   let oul = opopup.querySelector('.compound-list')
@@ -109,14 +102,11 @@ export function createCognateList(el) {
 }
 
 export function showCognate(el) {
-  // log('__________________________________SHOW COGN', el.textContent)
   let ores = q('#result')
   empty(ores)
   if (!el.dataset.dicts) return
   let segdicts = JSON.parse(el.dataset.dicts)
-  log('segdicts', segdicts)
   if (!segdicts.length) return
-  // let rdict = {seg: el.textContent, dicts: segdicts}
   showDicts(el, segdicts)
 }
 
@@ -153,14 +143,12 @@ function noResult() {
 }
 
 function showResult(el, res) {
-  // log('analyze-CHAINS:', res.chains)
   let singlechains = _.filter(res.chains, chain=> { return chain.length == 1 })
   let rdicts = singlechains.map(chain=> { return chain[0] })
   let dicts = _.flatten(rdicts.map(rdict=> { return rdict.dicts }))
   // NB: непонятно, нужно ли это: δέω - дает дубли, не дает нужного из WKT
   dicts = _.uniq(dicts.map(dict=> { return JSON.stringify(dict) })).map(json=> { return JSON.parse(json) })
   dicts.push(...res.terms)
-  // log('DICTS', dicts)
   showDicts(el, dicts)
 }
 
@@ -237,7 +225,6 @@ function showDictHeader(dict) {
 }
 
 function parseMorphs (dict) {
-  // log('DICT MORPHS', dict)
   let morphs
   let fls = dict.fls
   let advfls = _.filter(fls, flex=> { return flex.degree })
@@ -268,16 +255,6 @@ function parseMorphs (dict) {
   if (advfls.length) {
     let advmorphs = advfls.map(flex => { return flex.degree })
     morphs.push(...advmorphs)
-  }
-
-  // WTF??
-  if (morphs.toString() == '.') {
-    log('_________________ STRANGE DOT', morphs)
-    log('_________________ STRANGE DOT', dict)
-    throw new Error()
-    // let degree = fls.map(flex => { return flex.degree }).toString()
-    // if (degree == 'adv') morphs = ['adverb']
-    // else morphs = [['adverb:', degree].join(' ')]
   }
 
   let nodus = _.filter(morphs, morph=> { return !/du/.test(morph) })

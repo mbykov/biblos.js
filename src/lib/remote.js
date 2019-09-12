@@ -5,7 +5,8 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../app.config'
 import path from "path";
-import { antrax, checkConnection, delDictionary } from '/home/michael/a/loigos'
+import { antrax, checkConnection, readDictionary } from 'antrax'
+// import { antrax, checkConnection, delDictionary } from '/home/michael/a/loigos'
 import { getCfg, installDBs } from '/home/michael/a/loigos/src/lib/pouch'
 const fse = require('fs-extra')
 import { navigate } from './nav'
@@ -38,14 +39,11 @@ export function queryRemote(query, compound) {
 }
 
 let cfg = settings.get('cfg')
-cfg = JSON.parse(JSON.stringify(cfg)) // убрать вместе с log()
-log('__________ first CFG:', cfg)
 // cfg = null
 
 if (!cfg || !cfg.length) {
   getCfg(apath, upath)
     .then(cfg=> {
-      log('__________ antrax: GET CFG:', cfg)
       initDBs(cfg)
       settings.set('cfg', cfg)
     })
@@ -58,27 +56,23 @@ if (!cfg || !cfg.length) {
 
 // cfg + connection
 export function initDBs(cfg) {
-  // if (!cfg) cfg = settings.get('cfg')
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  log('____check conn:', dnames)
+  // log('____check conn:', dnames)
   checkConnection(upath, dnames)
 }
 
 export function requestRemoteDicts() {
   let cfg = settings.get('cfg')
-  log('__________request remore dicts', cfg)
   showDicts(cfg)
 
   request(getopts, function (error, response, body) {
     if (error) console.error('soket error:', error)
     if (error) return
-    // log('__get response:', response)
     if (response && response.statusCode != 200)  return
 
     let dblist = JSON.parse(body)
     let dnames = _.filter(dblist, dict=> { return dict[0] != '_' })
-    log('__remote dnames:', dnames)
     postopts.body = {keys: dnames}
 
     request(postopts, function (error, response, body) {
@@ -88,7 +82,6 @@ export function requestRemoteDicts() {
 
       Promise.all(dnames.map(function(dname) {
         let remotepath = [config.host, dname].join('/')
-        // log('info:', dname, remotepath)
         let remoteDB = new PouchDB(remotepath)
         return remoteDB.get('description')
           .then(descr=> {
@@ -101,7 +94,6 @@ export function requestRemoteDicts() {
           })
       }))
         .then(function(descrs) {
-          // log('____________ remote info descrs:', descrs)
           let code = config.code
           let recode = new RegExp(code)
           descrs = _.compact(descrs)
@@ -109,7 +101,6 @@ export function requestRemoteDicts() {
           let rcfg = []
           let cfg = settings.get('cfg') || []
           cfg = JSON.parse(JSON.stringify(cfg)) // убрать вместе с log()
-          log('FIRST CFG', cfg)
           descrs.forEach(descr=> {
             let dbinfo = _.find(dbinfos, info=> { return info.dname == descr.dname})
             if (!dbinfo) return
@@ -121,10 +112,8 @@ export function requestRemoteDicts() {
             delete descr._rev
             rcfg.push(descr)
           })
-          log('DESCRS-rcfg', rcfg)
           cfg.push(...rcfg)
           cfg.forEach((dict, idx)=> { dict.idx  = idx })
-          log('DESCRS-2-cfg', cfg)
           cfg = _.sortBy(cfg, 'idx')
           settings.set('cfg', cfg)
           showDicts(cfg)
@@ -140,9 +129,7 @@ export function requestRemoteDicts() {
 function showDicts(cfg) {
   createRemoteTable()
   let otable = q('#table-dicts-remote')
-  // log('_________________________________empty OT', otable)
   cfg.forEach(rdb=> {
-    // log('_______________________rdb', rdb)
     let otr = create('tr')
     otr.dataset.dname = rdb.dname
     otable.appendChild(otr)
@@ -182,7 +169,6 @@ function showDicts(cfg) {
     } else {
       oact.dataset.activate = rdb.dname
       let text = (rdb.sync || rdb.dname == config.ldname) ? 'activate' : ''
-      // log('ACT:', rdb, rdb.sync, text)
       oact.textContent = text
     }
     otr.appendChild(oact)
@@ -226,16 +212,11 @@ function checkmark() {
 }
 
 export function cloneDict(dname) {
-  log('CLONE DICT', dname)
   progress.classList.remove('is-hidden')
   let localpath = path.resolve(upath, 'pouch', dname)
   let remotepath = [config.host, dname].join('/')
   let localDB = new PouchDB(localpath)
   let remoteDB = new PouchDB(remotepath)
-  // log('localpath', localpath)
-  // log('remotepath', remotepath)
-  // localDB.info().then(function (info) {    log('LOCAL INFO', info) })
-  // remoteDB.info().then(function (info) {    log('REMOTE INFO', info) })
 
   remoteDB.replicate.to(localDB, { retry: true, batch_size: 1000 })
     .on('change', function (info) {
@@ -263,7 +244,6 @@ function clonedCfg(dname) {
   dict.sync = true
   cfg = JSON.parse(JSON.stringify(cfg))
   settings.set('cfg', cfg)
-  log('__________________ cloned only dict', cfg)
   return cfg
 }
 
@@ -272,7 +252,6 @@ export function moveDict(dname, shift) {
   let cfg = settings.get('cfg')
   cfg = JSON.parse(JSON.stringify(cfg))
   let idxs = cfg.map(dict=> { return dict.idx+dict.dname })
-  log('_______________MOVE 0', cfg, idxs)
   cfg.forEach((dict,idx)=> { dict.idx = idx })
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
   if (!dict) return
@@ -289,7 +268,6 @@ export function moveDict(dname, shift) {
   }
   cfg = _.sortBy(cfg, 'idx')
   idxs = cfg.map(dict=> { return dict.idx+dict.dname })
-  log('_______________MOVE 1', cfg, idxs)
   settings.set('cfg', cfg)
   showDicts(cfg)
 }
@@ -300,17 +278,13 @@ export function activateDict(dname, on) {
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
   if (!dict) return
   dict.active = (on) ? true : false
-  log('____REMOTE: ACTiVATE IT:', dname, cfg)
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  log('____REMOTE: ACTiVATE IT:', dnames)
   settings.set('cfg', cfg)
   initDBs(cfg)
   showDicts(cfg)
 }
 
 export function delDict(dname) {
-  log('delete dict', dname)
   progress.classList.remove('is-hidden')
-
 }

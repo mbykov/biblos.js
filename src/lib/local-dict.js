@@ -79,7 +79,6 @@ function createLocalTable (dicts, key) {
 
 export function showLocalChunk (state, dicts) {
   if (!dicts) return
-  // log('_________ show-local-chunk-dicts', dicts)
   let osection = q(state.sid)
   let onewitem = q('#new-dict-item-link')
   let otable = createLocalTable(dicts)
@@ -97,12 +96,10 @@ export function showLocalChunk (state, dicts) {
   osection.appendChild(okmerge)
 
   let newdocs = filled.map(newdoc=> { return {_id: newdoc.plain || newdoc.term, docs: [newdoc] } })
-  log('____newdocs:', newdocs)
   okmerge.addEventListener('click', (ev) => {
-    // log('____________click update')
     updateCurrent (upath, newdocs)
       .then(res=> {
-        log('MERGE-DICT', res)
+        // log('MERGE-DICT', res)
         let cfg = settings.get('cfg')
         // cfg = JSON.parse(JSON.stringify(cfg))
         let locdict = _.find(cfg, dict=> { return dict.dname == config.ldname })
@@ -110,8 +107,6 @@ export function showLocalChunk (state, dicts) {
           locdict = {active: true, dname: 'local', name: 'Local', idx: 0, langs: 'grc,any'}
           cfg.unshift(locdict)
           cfg.forEach((dict, idx)=> { dict.idx = idx})
-          // let dnames = cfg.map(dict=> { return dict.dname })
-          // log('CFG', cfg, dnames)
           initDBs(cfg)
         }
         locdict.size = res.size
@@ -127,7 +122,6 @@ export function showLocalChunk (state, dicts) {
 }
 
 export function editLocalDictItem(state, rdict) {
-  log('_____________________________ editLocalDictItem', rdict)
   let otable = q('#table-local-chunk')
   if (!otable) return
   let dicts = JSON.parse(otable.dataset.dicts)
@@ -144,11 +138,7 @@ export function editLocalDictItem(state, rdict) {
 }
 
 function createDictEdit (dict) {
-  log('_____________________________ CREATE EDIT DICT', dict)
   let odictcontaiter = q('#dict-item-container')
-  // if (odictitem) remove(odictitem)
-  // odictitem = create('div')
-  // odictitem.id = 'dict-item-container'
 
   let choosepos = q('#choose-item-pos')
   let itemdict = q('#item-dict')
@@ -161,31 +151,24 @@ function createDictEdit (dict) {
     let opos = q('#dict-item-pos')
     let pos = (dict.verb) ? 'verb' : (dict.name) ? 'name' : dict.pos
     opos.textContent = pos
-    log('______________dict exists, pos', opos, dict.rdict, pos)
     let oinput = q('#dict-item-input-text')
     oinput.value = ''
-    // log('______________oinput', oinput)
     if (dict.trns) oinput.value = dict.trns.join('; ')
   } else {
     choosepos.classList.remove('is-hidden')
     itemdict.classList.add('is-hidden')
   }
 
-  // let obr = create('p', '')
-  // odictitem.appendChild(obr)
-
   return odictcontaiter
 }
 
 function addEditButtons(dicts, dict, odictitem) {
-  log('_________ADD EDIT BUTTONS-dict', dict)
   let state = settings.get('state')
 
   if (!dict) {
     dict = {new: true}
     let oinputnew = q('#new-item-input-wf')
     oinputnew.focus()
-    // log('________________NEW DICT')
   }
 
   let osubmitok = q('#dict-item-submit-ok')
@@ -193,9 +176,7 @@ function addEditButtons(dicts, dict, odictitem) {
   osubmitok = create('input', 'submit')
   osubmitok.setAttribute('type', 'submit')
   osubmitok.setAttribute('value', 'ok')
-  // osubmitok.setAttribute('rdict', rdict)
   osubmitok.id = 'dict-item-submit-ok'
-  // log('OK', osubmitok)
   odictitem.appendChild(osubmitok)
 
   let osubmitcancel = q('#dict-item-submit-cancel')
@@ -204,7 +185,6 @@ function addEditButtons(dicts, dict, odictitem) {
   osubmitcancel.setAttribute('type', 'submit')
   osubmitcancel.setAttribute('value', 'cancel')
   osubmitcancel.id = 'dict-item-submit-cancel'
-  // log('OK', osubmitcancel)
   odictitem.appendChild(osubmitcancel)
 
   let oinput = q('#dict-item-input-text')
@@ -227,8 +207,6 @@ function addEditButtons(dicts, dict, odictitem) {
 
   osubmitok.addEventListener('click', (ev) => {
     if (dict.new) {
-      // let dpos = q('[name = "dictpos"]:checked')
-      // log('______________________osubmitok -dpos', dpos)
       dict.rdict = oinputnewf.value.trim()
       dict.dict = comb(dict.rdict)
       let pos = q('[name = "dictpos"]:checked').value
@@ -237,14 +215,11 @@ function addEditButtons(dicts, dict, odictitem) {
       if (pos) dict.plain = plain(dict.rdict)
       else dict.term = dict.dict, dict.pos = 'indecl'
       dict.trns = oinputnewt.value.split(';')
-      log('______________________osubmitok -dicts-new', pos, dict)
       dicts.push(dict)
     } else {
       if (!dict.verb && !dict.name) dict.term = comb(dict.rdict)
       dict.trns = oinput.value.split(';')
     }
-    // πρόσωπον
-    log('______________________osubmitok-dict', dicts)
     state.sec = 'local-chunk'
     navigate(state, dicts)
   })
@@ -256,7 +231,6 @@ function addEditButtons(dicts, dict, odictitem) {
 }
 
 export function showFullLocalDict (state, dicts) {
-  log('___________________show: showFullLocalDict', dicts)
   if (!dicts) return
   let osection = q(state.sid)
   let obanner = q('#full-local-dict-banner')
@@ -269,18 +243,12 @@ document.addEventListener('click', (ev) => {
   let el = ev.target
   if (!el || el.id != 'deldict-submit') return
   progress.classList.remove('is-hidden')
-  if (el.id == 'deldict-submit') log('DEL DICT SUBM')
   let dname = config.ldname
   delDictionary(upath, dname)
     .then(res=> {
       if (!res) return
-      log('del result complete', res)
       let state = settings.get('state')
-      // state.dicts = []
       let cfg = settings.get('cfg')
-      // cfg = JSON.parse(JSON.stringify(cfg))
-      // let dnames = cfg.map(dict=> { return dict.dname })
-      // log('CFG', cfg, dnames)
       cfg = _.filter(cfg, dict=> { return dict.dname != config.ldname })
       initDBs(cfg)
       settings.set('cfg', cfg)
@@ -288,7 +256,6 @@ document.addEventListener('click', (ev) => {
       state.sec = 'main'
       navigate(state)
     })
-
 })
 
 document.addEventListener('click', (ev) => {
@@ -298,29 +265,23 @@ document.addEventListener('click', (ev) => {
   let dname = config.ldname
   let state = settings.get('state')
   if (data.localdictfull) {
-    log('___________click read local dict full')
     readDictionary(upath, dname)
       .then(res=> {
         let dicts = _.flatten(res.map(dict=> { return dict.docs }))
         state.sec = 'local-dict-full'
-        log('_____________________click-read showFullDict:', res)
         navigate(state, dicts)
       })
   } else if (data.createlocalchunk) {
-    log('___________click create local chunk')
     if (!state.pars) return
     generateDictChunk(upath, dname, state.pars, (res)=> {
       state.sec = 'local-chunk'
-      log('_____________________: genDictChunk:', res)
       navigate(state, res)
     })
   } else if (data.deletelocaldict) {
-    log('DEL DICT START')
     let dname = config.ldname
     delDictionary(upath, dname)
       .then(res=> {
         if (!res) return
-        log('del result complete', res)
         let state = settings.get('state')
         let cfg = settings.get('cfg')
         cfg = _.filter(cfg, dict=> { return dict.dname != config.ldname })
@@ -328,7 +289,6 @@ document.addEventListener('click', (ev) => {
         settings.set('cfg', cfg)
         progress.classList.add('is-hidden')
         state.sec = 'main'
-        log('DEL DICT END')
         navigate(state)
       })
 

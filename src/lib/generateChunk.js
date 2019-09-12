@@ -4,13 +4,10 @@ let log = console.log
 // let glob = require('glob-fs')({ gitignore: true })
 let fse = require('fs-extra')
 let path = require('path')
-// import sband from '../../../sband'
-// import sband from 'speckled-band'
 import {comb, plain, oxia} from 'orthos'
 // import {oxia, comb, plain} from '../../../greek/orthos'
-// import { iu } from './data'
-
-import { antrax, checkConnection, readDictionary } from '/home/michael/a/loigos/'
+import { antrax, checkConnection, readDictionary } from 'antrax'
+// import { antrax, checkConnection, readDictionary } from '/home/michael/a/loigos/'
 let miss = require('mississippi')
 // let split = require('split')
 // let parse = require('csv-parse')
@@ -37,10 +34,8 @@ export function generateDictChunk (upath, dname, pars, finish) {
   let freq = {}
   freqChunk(freq, pars)
   let freqs = _.values(freq)
-  // log('FREQ-CHUNK', freqs)
 
   createChunk(upath, dname, freqs, function(chdicts) {
-    // log('index-finished-from-generate: ', chdicts.length)
     finish(chdicts)
   })
 }
@@ -48,19 +43,16 @@ export function generateDictChunk (upath, dname, pars, finish) {
 // MAIN
 // run.js
 export function createChunk (upath, dname, freqs, done) {
-  // log('________________ LOCAL FREQS', freqs)
   readDictionary(upath, dname)
     .then(rdocs=> {
       // let rdocs = _.compact(res.rows.map(row => { return row.doc }))
       let docs = _.flatten(_.compact(rdocs.map(rdoc => { return rdoc.docs })))
       // let rdicts = docs.map(doc=> { return doc.rdict })
-      log('________________ LOCAL DB OLD RDICTS', docs)
 
       miss.pipe(
         fromFreq(freqs),
         miss.parallel(5, determineForm),
         groupResult(upath, docs, function(rdocs) {
-          // log('_______________________ finish group-result', rdocs)
           done(rdocs)
         })
       )
@@ -81,7 +73,6 @@ function determineForm (freqline, cb) {
 
     let terms = _.flatten(res.terms)
     dicts.push(...terms)
-    // log('_______________NOW TERMS', terms, dicts)
 
     dicts.forEach(dict=> { delete dict.reg, delete dict.trns, delete dict.dname, delete dict.keys, delete dict.fls, delete dict.weight })
     let dictkey = {}
@@ -91,7 +82,6 @@ function determineForm (freqline, cb) {
       if (!dictkey[dkey]) uniqs.push(dict), dictkey[dkey] = true
     })
     // let urducts = uniqs.map(dict=> { return dict.rdict })
-    // log('_________________________ determine form wf - uniqs:', wf, urducts, ':end')
     cb(null, uniqs)
   }).catch(function (err) {
     console.log('CSV-ANTRAX-ERR', err)
@@ -102,7 +92,6 @@ function groupResult (upath, docs, done) {
   let dictkeys = {}
   return miss.through.obj(function (results, enc, next) {
     results.forEach(result=> {
-      // log('_____________gr-R', result.rdict)
       // if (!result.key && !result.keys) return // это terms, но также и баги в словаре WKT?
       let dict = {rdict: result.rdict, dict: comb(result.rdict), plain: result.plain}
       if (result.verb) dict.verb = true
@@ -152,32 +141,3 @@ function cleanStr(row) {
   clean = clean.replace(/ᾰ/gi, 'α').replace(/ᾱ/gi, 'α').replace(/ῑ/gi, 'ι').replace(/ῐ/gi, 'ι').replace(/ῠ/gi, 'υ').replace(/ῡ/gi, 'υ')
   return clean
 }
-
-
-// FREQs
-
-// export function freq (datapath) {
-//   let freq = {}
-//   let files = fse.readdirSync(datapath)
-//   d('Fs', files.length)
-//   let file = path.resolve(datapath, 'periSyntaxeos.txt')
-//   files = [file]
-
-//   files.forEach(file => {
-//     let fpath = path.resolve(datapath, file)
-//     let text = fse.readFileSync(fpath,'utf8').trim()
-//     let rows = text.split('\n')
-//     rows = _.compact(rows)
-//     rows = rows.slice(3, 4)
-//     rows.forEach((row, idx)=> {
-//       let clean = cleanStr(row)
-//       let pars = sband(clean, code)
-//       if (!pars) return
-//       freqChunk (freq, pars)
-//     })
-//   })
-
-//   let values = _.values(freq)
-//   let sorted = _.sortBy(values, 'wf')
-//   return sorted
-// }

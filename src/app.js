@@ -100,7 +100,6 @@ document.addEventListener('click', (ev) => {
     state.sec = 'local-dict-item'
     navigate(state, rdict)
   }  else if (el.classList.contains('active-form') || el.classList.contains('active-dict')) {
-    log('WORD-FORM CLICK')
     if (ev.ctrlKey) createCognateList(el)
     else queryDBs(el, true)
   } else if (el.classList.contains('dict-query')) {
