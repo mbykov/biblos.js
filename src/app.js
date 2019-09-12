@@ -180,7 +180,7 @@ document.addEventListener("mouseover", function(ev) {
 
 
 ipcRenderer.on('version', function (event, oldver) {
-  axios.get('https://api.github.com/repos/mbykov/pecha.js/releases/latest')
+  axios.get('https://api.github.com/repos/mbykov/biblos.js/releases/latest')
     .then(function (response) {
       if (!response || !response.data) return
       let newver = response.data.name
