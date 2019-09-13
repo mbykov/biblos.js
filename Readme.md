@@ -6,7 +6,7 @@ Simple practical Ancient Greek analizer on a top of [electron.js](https://electr
 
 Morpheus is the collective name and technology for applications for several ancient languages, including Ancient Greek, Tibetan, Chinese and in future Sanskrit.
 
-#### About Morpheus for Ancient Greek:
+#### about Morpheus for Ancient Greek:
 
 - Morpheus is a desktop web application for Windows, MacOS, Linux. Works offline, synchronizes dictionaries when online. It is a free software (license is **GNU GPL**)
 - instantly displays and analyzes any amount of text (just copy **Ctrl-C** Ancient Greek text anywhere on a desktop)
