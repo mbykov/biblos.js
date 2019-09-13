@@ -6,7 +6,7 @@ Simple practical Ancient Greek analizer on a top of [electron.js](https://electr
 
 Morpheus is the collective name and technology for applications for several ancient languages, including Ancient Greek, Tibetan, Chinese and in future Sanskrit.
 
-![biblos.js in use](blob/master/resources/biblos-0.9.png)
+![biblos-0 9](https://user-images.githubusercontent.com/47331/64867999-2a2b1780-d647-11e9-8411-7dbb5c9f1438.png)
 
 #### about Morpheus for Ancient Greek:
 
