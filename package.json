@@ -1,9 +1,8 @@
 {
+  "version": "0.9.0",
   "name": "biblos.js",
-  "productName_": "Biblos, a.k.a Morpheus for Ancient Greek",
   "productName": "Biblos.js",
   "description": "Biblos, a.k.a Morpheus for Ancient Greek based on CouchDB && Electron.js",
-  "version": "0.9.0",
   "author": "M. Bykov <m.bykov@gmail.com>",
   "copyright": "© 2017- 2019, M.Bykov",
   "homepage": "http://diglossa.org",

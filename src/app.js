@@ -20,11 +20,6 @@ const clipboard = require('electron-clipboard-extended')
 const settings = require('electron').remote.require('electron-settings')
 const axios = require('axios')
 
-// import path from "path";
-// let upath = app.getPath("userData")
-// upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
-// import { readDictionary } from '/home/michael/a/loigos'
-
 loadSections(config)
 
 document.onmousedown = mouseMenu

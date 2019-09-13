@@ -4,25 +4,14 @@ import { remote, ipcRenderer, webFrame, shell } from "electron";
 import { initDBs, requestRemoteDicts } from './remote'
 import { showLocalChunk, editLocalDictItem, showFullLocalDict } from './local-dict'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
-// import { generateDictChunk } from '/home/michael/greek/dictCSV'
-import { generateDictChunk } from './generateChunk'
 import Split from 'split.js'
 import { config } from '../app.config'
 import { showText, toggleResults, toggleOneResult, closePopups } from "./parse-data"
 import path from "path";
-// import { readDictionary } from '/home/michael/a/loigos'
 const clipboard = require('electron-clipboard-extended')
-// import sband from "../../../../sband"
-// import sband from "speckled-band"
+const log = console.log
 // import { signup } from "./auth"
 
-const app = remote.app;
-const apath = app.getAppPath()
-// UPATH
-let upath = app.getPath("userData")
-upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
-
-const log = console.log
 const settings = require('electron').remote.require('electron-settings')
 const Mousetrap = require('mousetrap')
 // const slash = require('slash')

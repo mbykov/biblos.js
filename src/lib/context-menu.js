@@ -1,6 +1,5 @@
 import _ from "lodash"
 import { remote, shell } from "electron";
-// import { generateDictChunk } from '/home/michael/greek/dictCSV'
 import { generateDictChunk } from './generateChunk'
 import { navigate } from './nav'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
@@ -17,7 +16,7 @@ let progress = q('#progress')
 
 // UPATH
 let upath = app.getPath("userData")
-upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
+// upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 
 let target
 

@@ -1,7 +1,8 @@
+//
+
 let _ = require('lodash')
 let d = require('debug')('csv')
 let log = console.log
-// let glob = require('glob-fs')({ gitignore: true })
 let fse = require('fs-extra')
 let path = require('path')
 import {comb, plain, oxia} from 'orthos'
@@ -9,7 +10,6 @@ import {comb, plain, oxia} from 'orthos'
 import { antrax, checkConnection, readDictionary } from 'antrax'
 // import { antrax, checkConnection, readDictionary } from '/home/michael/a/loigos/'
 let miss = require('mississippi')
-// let split = require('split')
 // let parse = require('csv-parse')
 
 let code = 'grc'
@@ -25,8 +25,6 @@ function fromFreq(freqs) {
     next(null, chunk)
   })
 }
-
-// freq не нужен
 
 // from nav.js
 export function generateDictChunk (upath, dname, pars, finish) {
