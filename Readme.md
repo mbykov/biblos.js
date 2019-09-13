@@ -21,6 +21,17 @@ Morpheus is the collective name and technology for applications for several anci
 
 &nbsp;
 
+#### dictionaries
+
+just now you can use:
+
+- <b>wkt</b>, dictionary created by data from https://www.wiktionary.org/,
+- <b>terms</b>, special dictionary for indeclinables (terms), i.e. articles, particles, all forms of pronouns, some adverbs, etc
+- <b>lsj</b>, Liddell-Scott-Jones Greek-English (https://github.com/perseids-project/lsj-js)
+- <b>dvr</b>, Древнегреческо-русский словарь Дворецкого (https://wiki.lingvoforum.net/wiki/index.php)
+- <b>Souda</b>, Λεξικὸν Σουίδα ἤ Σοῦδα (http://users.ntua.gr/dimour/ilias_odysseia/Lexiko/souida.html)
+- you can create your own <b>Local</b> dictionary, just translate a wordform step by step
+
 #### catch sight of a water:
 
 Morpheus is <b>not</b> a linguistic program. Morpheus is intended to help in reading and understanding the ancient text, but not to study the very questionable  theoretical construction of "language".
