@@ -10,11 +10,9 @@ import { antrax, checkConnection, readDictionary } from 'antrax'
 import { getCfg, installDBs } from '/home/michael/a/loigos/src/lib/pouch'
 const fse = require('fs-extra')
 import { navigate } from './nav'
-// UPATH
+
 const upath = app.getPath("userData")
-// const upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 const apath = app.getAppPath()
-// const sid = '#remote-dicts_eng'
 
 const log = console.log
 const request = require('request');

@@ -17,11 +17,7 @@ import {oxia, comb, plain, strip} from 'orthos'
 const Mousetrap = require('mousetrap')
 let progress = q('#progress')
 
-
-// UPATH
-// let apath = app.getAppPath()
 let upath = app.getPath("userData")
-// upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
 
 const log = console.log
 

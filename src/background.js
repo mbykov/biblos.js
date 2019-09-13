@@ -77,11 +77,6 @@ app.on("ready", () => {
     settings.set('winBounds', win.getBounds())
   })
 
-  // const apath = app.getAppPath()
-  // const upath = app.getPath("userData")
-  // settings.set('apath', apath)
-  // settings.set('upath', upath)
-
 });
 
 // ipcMain.on('unload', (event, state, lang) => {

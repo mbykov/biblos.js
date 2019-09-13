@@ -39,20 +39,15 @@ if (!lang) {
 navigate(state)
 
 ipcRenderer.on('section', function (event, section) {
-  log('---------------------------------section', state.sec)
   state.sec = section
   navigate(state)
 })
 
 ipcRenderer.on('lang', function (event, lang) {
-  log('---------------------------------LANG', lang)
   settings.set('lang', lang)
   ipcRenderer.send('lang', lang)
   remote.getCurrentWindow().reload()
 })
-
-// let coronis = "᾽"
-// let rscm = "’"
 
 clipboard
   .on('text-changed', () => {
@@ -64,7 +59,6 @@ clipboard
     state.sec = 'main'
     state.pars = pars
     settings.set('state', state)
-    // log('_____CLIPBOARD')
     navigate(state)
   })
   .startWatching()
@@ -81,7 +75,6 @@ document.addEventListener('click', (ev) => {
     ev.preventDefault()
     shell.openExternal(href)
   } else if (el.classList.contains('dict-dname')) {
-    log('D-DNAME', el)
     state.sec = 'dict-edit'
     navigate(state)
   }  else if (parent && parent.classList.contains('table-line')) {
@@ -91,7 +84,6 @@ document.addEventListener('click', (ev) => {
     if (!ordict) return
     let rdict = ordict.textContent
     if (!rdict) return
-    log('____app edit-table-rdict:', rdict)
     state.sec = 'local-dict-item'
     navigate(state, rdict)
   }  else if (el.classList.contains('active-form') || el.classList.contains('active-dict')) {
@@ -133,7 +125,6 @@ document.addEventListener('click', (ev) => {
   let el = ev.target
   let data = el.dataset
   if (!data) return
-  // log('_________DATA SECTION HREF', el, data)
   if (data.href) {
     let over = q("#new-version")
     over.classList.add('is-hidden')
@@ -149,7 +140,6 @@ document.addEventListener('click', (ev) => {
     // if (el.textContent != 'clone') return // раскомментарить
     cloneDict(data.sync)
   } else if (data.section) {
-    // log('___________click_section')
     state.sec = data.section
     navigate(state)
   }
@@ -196,7 +186,6 @@ document.addEventListener("wheel", function(ev) {
 
 function scrollPane(ev) {
   let oclosest = ev.target.closest('#source') || ev.target.closest('#result')  || ev.target.closest('.section')
-  // log('___________O', oclosest)
   if (!oclosest) return
   let closeid = oclosest.id
   let osource = q('#source')
@@ -222,11 +211,3 @@ function cleanStr(row) {
   clean = clean.replace(/\' /g, '᾽ ').replace(/\’ /g, '᾽ ')
   return clean
 }
-
-// document.addEventListener('keypress', (ev) => {
-//   log('______________________document.addEventListener', ev.key)
-// })
-
-// document.onkeydown = function(ev) {
-  // document.activeElement.blur()
-// }

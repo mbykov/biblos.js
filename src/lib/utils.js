@@ -77,12 +77,6 @@ export function removeAll (sel) {
   els.forEach(el => { el.parentElement.removeChild(el) })
 }
 
-// function closeAll() {
-//     words = null
-//     // window.close()
-//     ipcRenderer.send('sync', 'window-hide')
-// }
-
 export function findAncestor (el, cls) {
   while ((el = el.parentElement) && !el.classList.contains(cls)) {
     return el
@@ -141,7 +135,6 @@ export function enclitic(str) {
   syms.forEach(sym => {
     if (!stresses.includes(sym)) clean.push(sym)
     else if (!stress) clean.push(sym), stress = true
-    // console.log('---------------------------', sym, stress)
   })
   return clean.join('')
 }

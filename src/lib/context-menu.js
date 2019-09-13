@@ -14,10 +14,7 @@ const log = console.log
 const app = remote.app;
 let progress = q('#progress')
 
-// UPATH
 let upath = app.getPath("userData")
-// upath = path.resolve(process.env.HOME, '.config/MorpheusGreek (development)')
-
 let target
 
 const perseus = new MenuItem({
