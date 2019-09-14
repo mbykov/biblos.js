@@ -17,7 +17,7 @@ Morpheus is the collective name and technology for applications for several anci
 - Morpheus recursively creates chains of segments, and then selects the best from them. So it analyzes the parts of the compound Greek word (just **click** on a wordform), so allows in-depth analysis - prefixes, suffixes, words with several stems, etc. **Disclamer**: the reverse side of this power - if there is no obvious correct result, Morpheus can find a chain of segments that is formally correct, but do not make sense as a whole
 - user can easily create a local dictionary for a selected text, created in a seconds by his own hands. Just type **Ctrl-D** and add the translation for the desired word
 - Morpheus integrated with <span class="external" href="http://diglossa.org/diglossa.js">Diglossa.js</span> (v >= 0.6), so user can find the translations of a word in question just with **Ctrl-F**.
-- it can show phonetic transliteration (Wictionary style) **Alt-Mouse** , or gematria **Alt-Shift-Mouse** over a wordform
+- it can show phonetic transliteration (Wictionary style) with **Alt-Mouse** , or gematria with **Alt-Shift-Mouse** over a wordform
 
 #### see screencast at <span class="external" href="http://diglossa.org/greek">http://diglossa.org/greek</span>
 
@@ -25,7 +25,7 @@ Morpheus is the collective name and technology for applications for several anci
 
 just now you can use:
 
-- <b>wkt</b>, dictionary created by data from https://www.wiktionary.org/,
+- <b>wkt</b>, dictionary created by data from https://en.wiktionary.org/wiki/Category:Ancient_Greek_language
 - <b>terms</b>, special dictionary for indeclinables (terms), i.e. articles, particles, all forms of pronouns, some adverbs, etc
 - <b>lsj</b>, Liddell-Scott-Jones Greek-English (https://github.com/perseids-project/lsj-js)
 - <b>dvr</b>, Древнегреческо-русский словарь Дворецкого (https://wiki.lingvoforum.net/wiki/index.php)
@@ -33,13 +33,13 @@ just now you can use:
 
 #### local dictionary
 
-- you can create your own <b>Local</b> dictionary, just translate the wordforms step by step while reading text
+- you can create your own <b>Local</b> dictionary, just translate the wordforms step by step while reading a text
 
 #### catch sight of a water:
 
 Morpheus is <b>not</b> a linguistic program. Morpheus is intended to help in reading and understanding the ancient text, but not to study the very questionable  theoretical construction of "language".
 
-Linguistics is a science. Science refers to what it studies as an object. But that what "means," "wants to say," "strives", etc - is not an object. The language and the word are not objects. The word is part of an overheard conversation. A word taken out of context is a many-voiced chorus in which we do not hear individual voices. To speak a word is not an object, but an act, to understand a word is also an act. “There can be no science about an act” (Aristotle).
+Linguistics is a science. Science refers to what it studies as an object. But that what "means," "wants to say," "strives", etc - is not an object. The language and the word are not objects. The word is part of an overheard conversation. A word taken out of context is a many-voiced chorus in which we do not hear individual voices. Speaking a word is not an object, but a deed, act, action, and to understand a word is also a deed. “There can be no science about a deed” (Aristotle).
 
 The ancient and foreign cultural authors do not know the concept of "language". Do not know about nouns and adjectives. The word of the ancient language is the unity of knowledge and emotions, of all that we carefully distinguish, considering this distinction to be a scientific method. But we are thereby changing the meaning of the ancient word. For example, an impossible translation of the word τὸ ἐπιθετικός appears as "adjective", and so on. It is clear that modern science should be put "out of brackets" - ἐποχή -  if you want to understand the ancient author. The motivation for epoche is not an anti-scientific orientation. It's just another, additional direction of attention - another ἕξῐς. It does not contradict in any way, and cannot contradict the results of the science of linguistics. I'm interested in reading the text as if this reading is a conversation with the author, and not studying him, or not studying his language.
 
