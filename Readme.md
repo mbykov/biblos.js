@@ -14,7 +14,7 @@ Morpheus is the collective name and technology for applications for several anci
 - instantly displays and analyzes any amount of text (just copy **Ctrl-C** Ancient Greek text anywhere on a desktop)
 - uses a data from <span class="external" href="https://en.wiktionary.org/w/index.php?title=Category:Ancient_Greek_language">https://wiktionary.org</span> for creating the paradigms and the tests, so has several hundred thousands tests
 - many other dictionaries (including LSJ) can be installed from <span class="external" href="http://diglossa.org:5984/_utils/#">http://diglossa.org:5984/_utils/#</span> (login: **guest**, password: **guest**) or from CSV files
-- Morpheus recursively creates chains of segments, and then selects the best from them. So it analyzes the parts of the compound Greek word (just **click** on a wordform), so allows in-depth analysis - prefixes, suffixes, words with several stems, etc. **Disclamer**: the reverse side of this power - if there is no obvious correct result, Morpheus can find a chain of segments that is formally correct, but do not make sense as a whole
+- Morpheus recursively creates chains of segments for a given wordform, and then selects the best from them. So it analyzes the parts of the compound Greek word (just **click** on a wordform), so allows in-depth analysis - prefixes, suffixes, words with several stems, etc. **Disclamer**: the reverse side of this power - if there is no obvious correct result, Morpheus can find a chain of segments that is formally correct, but do not make sense as a whole
 - user can easily create a local dictionary for a selected text, created in a seconds by his own hands. Just type **Ctrl-D** and add the translation for the desired word
 - Morpheus integrated with <span class="external" href="http://diglossa.org/diglossa.js">Diglossa.js</span> (v >= 0.6), so user can find the translations of a word in question just with **Ctrl-F**.
 - it can show phonetic transliteration (Wictionary style) with **Alt-Mouse** , or gematria with **Alt-Shift-Mouse** over a wordform
@@ -26,14 +26,14 @@ Morpheus is the collective name and technology for applications for several anci
 just now you can use:
 
 - <b>wkt</b>, dictionary created by data from https://en.wiktionary.org/wiki/Category:Ancient_Greek_language
-- <b>terms</b>, special dictionary for indeclinables (terms), i.e. articles, particles, all forms of pronouns, some adverbs, etc
+- <b>terms</b>, special dictionary for indeclinables (terms), i.e. articles, particles, all forms of pronouns, some adverbs, irregulars,etc
 - <b>lsj</b>, Liddell-Scott-Jones Greek-English (https://github.com/perseids-project/lsj-js)
 - <b>dvr</b>, Древнегреческо-русский словарь Дворецкого (https://wiki.lingvoforum.net/wiki/index.php)
 - <b>Souda</b>, Λεξικὸν Σουίδα ἤ Σοῦδα (http://users.ntua.gr/dimour/ilias_odysseia/Lexiko/souida.html)
 
 #### local dictionary
 
-- you can create your own <b>Local</b> dictionary, just translate the wordforms step by step while reading a text
+- you can create your own <b>local</b> dictionary, just translate the wordforms step by step while reading a text
 
 #### catch sight of a water:
 
