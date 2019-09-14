@@ -18,7 +18,8 @@ Morpheus is the collective name and technology for applications for several anci
 - user can easily create a local dictionary for a selected text, created in a seconds by his own hands. Just type **Ctrl-D** and add the translation for the desired word
 - Morpheus integrated with <span class="external" href="http://diglossa.org/diglossa.js">Diglossa.js</span> (v >= 0.6), so user can find the translations of a word in question just with **Ctrl-F**.
 - it can show phonetic transliteration (Wictionary style) **Alt-Mouse** , or gematria **Alt-Shift-Mouse** over a wordform
-- see screencast at <span class="external" href="http://diglossa.org/greek">http://diglossa.org/greek</span>
+
+#### see screencast at <span class="external" href="http://diglossa.org/greek">http://diglossa.org/greek</span>
 
 &nbsp;
 
