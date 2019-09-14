@@ -21,8 +21,6 @@ Morpheus is the collective name and technology for applications for several anci
 
 #### see screencast at <span class="external" href="http://diglossa.org/greek">http://diglossa.org/greek</span>
 
-&nbsp;
-
 #### dictionaries
 
 just now you can use:
@@ -33,7 +31,7 @@ just now you can use:
 - <b>dvr</b>, Древнегреческо-русский словарь Дворецкого (https://wiki.lingvoforum.net/wiki/index.php)
 - <b>Souda</b>, Λεξικὸν Σουίδα ἤ Σοῦδα (http://users.ntua.gr/dimour/ilias_odysseia/Lexiko/souida.html)
 
-#### Local dictionary
+#### local dictionary
 
 - you can create your own <b>Local</b> dictionary, just translate the wordforms step by step while reading text
 
