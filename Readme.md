@@ -32,7 +32,10 @@ just now you can use:
 - <b>lsj</b>, Liddell-Scott-Jones Greek-English (https://github.com/perseids-project/lsj-js)
 - <b>dvr</b>, Древнегреческо-русский словарь Дворецкого (https://wiki.lingvoforum.net/wiki/index.php)
 - <b>Souda</b>, Λεξικὸν Σουίδα ἤ Σοῦδα (http://users.ntua.gr/dimour/ilias_odysseia/Lexiko/souida.html)
-- you can create your own <b>Local</b> dictionary, just translate a wordform step by step
+
+#### Local dictionary
+
+- you can create your own <b>Local</b> dictionary, just translate the wordforms step by step while reading text
 
 #### catch sight of a water:
 
