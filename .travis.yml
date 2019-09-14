@@ -18,7 +18,7 @@ env:
     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
 install:
-  - npm install -g webpack-cli
+  - npm install -D webpack-cli
   - npm install
   # - yarn install
 

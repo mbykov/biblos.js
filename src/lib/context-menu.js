@@ -4,7 +4,8 @@ import { generateDictChunk } from './generateChunk'
 import { navigate } from './nav'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import path from "path";
-import { readDictionary } from '/home/michael/a/loigos'
+// import { readDictionary } from '/home/michael/a/loigos'
+import { readDictionary } from 'antrax'
 import { config } from '../app.config'
 
 const settings = require('electron').remote.require('electron-settings')

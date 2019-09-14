@@ -7,7 +7,8 @@ import { config } from '../app.config'
 import path from "path";
 import { antrax, checkConnection, readDictionary } from 'antrax'
 // import { antrax, checkConnection, delDictionary } from '/home/michael/a/loigos'
-import { getCfg, installDBs } from '/home/michael/a/loigos/src/lib/pouch'
+// import { getCfg, installDBs } from '/home/michael/a/loigos/src/lib/pouch'
+import { getCfg, installDBs } from 'antrax'
 const fse = require('fs-extra')
 import { navigate } from './nav'
 
