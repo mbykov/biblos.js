@@ -18,12 +18,12 @@ env:
     - ELECTRON_BUILDER_CACHE=$HOME/.cache/electron-builder
 
 install:
-  # - npm install
-  - yarn install
+  - npm install
+  # - yarn install
 
 script:
-  # - npm run rebuild
-  - yarn run release
+  - npm run release
+  # - yarn run release
 
 cache:
   directories:
