@@ -57,7 +57,7 @@ if (!cfg || !cfg.length) {
 export function initDBs(cfg) {
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  // log('____check conn:', dnames)
+  log('____check conn:', dnames)
   checkConnection(upath, dnames)
 }
 
