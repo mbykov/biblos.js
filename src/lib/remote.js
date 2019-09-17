@@ -4,7 +4,7 @@ const { app } = require('electron').remote
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, insertAfter } from '../lib/utils'
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../app.config'
-import path from "path";
+import path from "path"
 import { antrax, checkConnection, readDictionary } from 'antrax'
 // import { antrax, checkConnection, delDictionary } from '/home/michael/a/loigos'
 // import { getCfg, installDBs } from '/home/michael/a/loigos/src/lib/pouch'
@@ -57,7 +57,7 @@ if (!cfg || !cfg.length) {
 export function initDBs(cfg) {
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  log('____check conn:', dnames)
+  // log('____check conn:', dnames)
   checkConnection(upath, dnames)
 }
 

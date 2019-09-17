@@ -6,7 +6,7 @@ ein Wörterbuch für den aktuellen Text. Nomina und Verben werden definiert, Sie
 
 **Verwenden Sie das Kontextmenü** oder:
 
-Erstellen <span data-createlocalchunk="local-chunk" class="link">Sie ein teilweises lokales Wörterbuch</span> für Nomina und Verben aus dem aktuellen Text. Auch **Ctrl-D**
+Erstellen <span data-createlocalchunk="local-chunk" class="link">Sie ein teilweises lokales Wörterbuch</span> für Nomina und Verben aus dem aktuellen Text. Auch **Strg-D**
 
 <span data-localdictfull="local-dict-full" class="link">Sie vollständiges lokales Wörterbuch.</span>. Auch **Strg-Umschalt-D**
 
