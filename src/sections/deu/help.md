@@ -1,51 +1,51 @@
-#### Hot Keys:
+#### Hotkeys:
 
-just copy **Crtl+C** text everywhere on a desktop, then move mouse over a word
+Kopieren Sie einfach mit **Strg+C** einen Textblock von irgendwo auf Ihrem Desktop und bewegen Sie danach die Maus über ein Wort.
 
-**Ctrl-H** - home page (Library)
+**Strg-H** - Startseite
 
-**Ctrl-Shift-R** - reload application
+**Strg-Shift-R** - Anwendung neu laden
 
-**Ctrl-R** - clear history - only the last page remains
-
-&nbsp;
-
-**Ctrl+C** - to copy wordform with leading space (not statring analysis)
-
-**Ctrl+mouse** - allows you to move mouse freely
-
-**Click on a wordform** - further analysis
-
-**Click-Shift on a wordform** - shows words with a similar stem
-
-**Alt + mouse hover wordform** - shows phonetic transcription
-
-**Alt-Shift + mouse hover wordform** - shows gematria, i.e. isopsephy, for the Pythagoreans only
-
-**Ctrl+D** - local dict chunk for a current text
+**Strg-R** - Verlauf löschen - nur die letzte Seite bleibt übrig
 
 &nbsp;
 
-**mouse hover wordform - result in browser**: (use context menu also)
+**Strg+C** - zum Kopieren einer Wortform mit vorangestelltem Leerzeichen (keine Statring-Analyse)
 
-**Ctrl+P** - Perseus Greek Word Study Tool
+**Strg+mouse** - damit können Sie die Maus frei bewegen
 
-**Ctrl+W** - Wiktionary
+**Klicken Sie auf eine Wortform** -  weitere Analyse
 
-**Ctrl+S** - Souda dictionary (only if Souda is in right pane)
+**Klick-Umschalt auf einer Wortform** -  zeigt Wörter mit einem ähnlichen Wortstamm an
 
-&nbsp;
+**Alt+Mausbewegung über einer Wortform** - zeigt die phonetische Transkription
 
-**Alt-Arrows** - pressing the left arrow will go back a page and pressing the right arrow will move forward a page, like in browsers
+**Alt-Umschalt+Mausbewegung über einer Wortform** - zeigt Gematria, d.h. Isopsephie (nur für Pythagoräer!)
 
-&nbsp;
-
-**Ctrl-+** - increase font
-
-**Ctrl--** - decrease font
-
-**Ctrl-0** - normal font
+**Strg+D** - Textblock im lokalen Wörterbuch für einen aktuellen Text
 
 &nbsp;
 
-**Ctrl+F** - search current wordform and all its nest in Diglossa.js (v. >= 0.6)
+**Mausbewegung über einer Wordform - Ergebnis im Browser: (verwenden Sie auch das Kontextmenü)**::
+
+**Strg+P** - Perseus Greek Word Study Tool
+
+**Strg+W** - Wiktionary
+
+**Strg+S** - Souda Dictionary (nur wenn Souda sich im rechten Feld befindet)
+
+&nbsp;
+
+**Alt-Pfeiltasten** - Drücken Sie die linke Pfeiltaste, um eine Seite zurück zu gehen, und die rechte Pfeiltaste, um eine Seite vorwärts zu gehen, wie dies in Browsern der Fall ist
+
+&nbsp;
+
+**Strg-+** - Schrift vergrößern
+
+**Strg--** - Schrift verkleinern
+
+**Strg-0** - normale Schriftart
+
+&nbsp;
+
+**Strg+F** - Suchen Sie die aktuelle Wortform und ihre Vernestung in Diglossa.js (v. >= 0.6)

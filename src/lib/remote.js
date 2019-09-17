@@ -99,12 +99,12 @@ export function requestRemoteDicts() {
           descrs = _.filter(descrs, descr=> { return recode.test(descr.langs)})
           let rcfg = []
           let cfg = settings.get('cfg') || []
-          cfg = JSON.parse(JSON.stringify(cfg)) // убрать вместе с log()
+          // cfg = JSON.parse(JSON.stringify(cfg)) // убрать вместе с log()
           descrs.forEach(descr=> {
             let dbinfo = _.find(dbinfos, info=> { return info.dname == descr.dname})
             if (!dbinfo) return
             let cfgdict = _.find(cfg, dict=> { return dict.dname == descr.dname})
-            if (cfgdict) cfgdict.size = dbinfo.size
+            if (cfgdict) cfgdict.name = descr.name, cfgdict.langs = descr.langs
             if (cfgdict) return
             descr.size = dbinfo.size
             delete descr._id
@@ -118,7 +118,7 @@ export function requestRemoteDicts() {
           showDicts(cfg)
         })
         .catch(err=> {
-          log('possible, no connection', err)
+          console.log('ERR: possible, no connection', err)
         })
 
     })

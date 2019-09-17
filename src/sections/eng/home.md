@@ -2,10 +2,10 @@
 
 <!-- <div id="text"> -->
 
- After first installation Biblos.js has no dictionaries.
+After first installation Biblos.js has several dictionaries. They are already synchronized with server.
 
-<a href="#" data-section="remote-dicts">Replicate</a> dictionaries from server,
-or <a href="#" data-section="csv">import</a> dictionary from CSV file.
+<a href="#" data-section="remote-dicts">Clone</a> copy additional dictionaries from server, create your own local dictionary or import dictionary from CSV files.
+or <a href="#" data-section="csv">import</a> dictionary from CSV files.
 
 <a href="#" data-section="arrange-dicts">Arrage, activate, delete</a> them as you like.
 
