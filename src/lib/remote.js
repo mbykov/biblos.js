@@ -99,7 +99,6 @@ export function requestRemoteDicts() {
           descrs = _.filter(descrs, descr=> { return recode.test(descr.langs)})
           let rcfg = []
           let cfg = settings.get('cfg') || []
-          // cfg = JSON.parse(JSON.stringify(cfg)) // убрать вместе с log()
           descrs.forEach(descr=> {
             let dbinfo = _.find(dbinfos, info=> { return info.dname == descr.dname})
             if (!dbinfo) return
@@ -114,6 +113,7 @@ export function requestRemoteDicts() {
           cfg.push(...rcfg)
           cfg.forEach((dict, idx)=> { dict.idx  = idx })
           cfg = _.sortBy(cfg, 'idx')
+          cfg = JSON.parse(JSON.stringify(cfg)) // убрать вместе с log()
           settings.set('cfg', cfg)
           showDicts(cfg)
         })
@@ -219,19 +219,19 @@ export function cloneDict(dname) {
 
   remoteDB.replicate.to(localDB, { retry: true, batch_size: 1000 })
     .on('change', function (info) {
-      log('written', info.docs_written)
+      console.log('written', info.docs_written)
     }).on('paused', function (res) {
-      log('paused', res)
+      console.log('paused', res)
     })
     .on('complete', function (res) {
-      log('ok, were done!', res)
+      console.log('ok, were done!', res)
       let cfg = clonedCfg(dname)
       initDBs(cfg)
       showDicts(cfg)
       progress.classList.add('is-hidden')
     })
     .on('error', function (err) {
-      log('boo, something went wrong!', err)
+      console.log('boo, something went wrong!', err)
     })
 }
 
@@ -250,7 +250,6 @@ function clonedCfg(dname) {
 export function moveDict(dname, shift) {
   let cfg = settings.get('cfg')
   cfg = JSON.parse(JSON.stringify(cfg))
-  let idxs = cfg.map(dict=> { return dict.idx+dict.dname })
   cfg.forEach((dict,idx)=> { dict.idx = idx })
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
   if (!dict) return
@@ -266,7 +265,6 @@ export function moveDict(dname, shift) {
     dict.idx = dict.idx - 1
   }
   cfg = _.sortBy(cfg, 'idx')
-  idxs = cfg.map(dict=> { return dict.idx+dict.dname })
   settings.set('cfg', cfg)
   showDicts(cfg)
 }

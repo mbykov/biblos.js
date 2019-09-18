@@ -1,7 +1,7 @@
 import _ from "lodash"
 import { remote, shell } from "electron";
 import { generateDictChunk } from './generateChunk'
-import { navigate } from './nav'
+import { navigate, goLeft, goRight } from './nav'
 import { q, qs, empty, create, remove, span, p, div } from './utils'
 import path from "path";
 // import { readDictionary } from '/home/michael/a/loigos'
@@ -81,15 +81,33 @@ const showLocalDict = new MenuItem({
   }
 });
 
+const goLeftMenu = new MenuItem({
+  label: "back in history",
+  click: () => {
+    goLeft()
+  }
+});
+
+const goRightMenu = new MenuItem({
+  label: "forward in history",
+  click: () => {
+    goRight()
+  }
+});
+
 export function mouseMenu(ev) {
   if (ev.button != 2) return
   const normalMenu = new Menu();
 
-  target = ev.target
-  if (target.classList.contains('active-form')) normalMenu.append(perseus), normalMenu.append(wiktionary), normalMenu.append(souda)
-
+  normalMenu.append(goLeftMenu)
+  normalMenu.append(goRightMenu)
+  normalMenu.append(new MenuItem({ type: 'separator' }))
   normalMenu.append(localDict)
   normalMenu.append(showLocalDict)
+  normalMenu.append(new MenuItem({ type: 'separator' }))
+
+  target = ev.target
+  if (target.classList.contains('active-form')) normalMenu.append(perseus), normalMenu.append(wiktionary), normalMenu.append(souda)
 
   ev.preventDefault()
   normalMenu.popup(remote.getCurrentWindow());

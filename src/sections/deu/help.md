@@ -22,7 +22,11 @@ Kopieren Sie einfach mit **Strg+C** einen Textblock von irgendwo auf Ihrem Deskt
 
 **Alt-Umschalt+Mausbewegung über einer Wortform** - zeigt Gematria, d.h. Isopsephie (nur für Pythagoräer!)
 
-**Strg+D** - Textblock im lokalen Wörterbuch für einen aktuellen Text
+**Strg+D** - Textblock im lokalen Wörterbuch für einen aktuellen Text (Verwenden Sie auch das Kontextmenü)
+
+**space** - Ergebnisse im rechten Fensterbereich umschalten
+
+**tab** - Erweitern Sie eines der Ergebnisse im rechten Bereich schrittweise
 
 &nbsp;
 
@@ -36,7 +40,7 @@ Kopieren Sie einfach mit **Strg+C** einen Textblock von irgendwo auf Ihrem Deskt
 
 &nbsp;
 
-**Alt-Pfeiltasten** - Drücken Sie die linke Pfeiltaste, um eine Seite zurück zu gehen, und die rechte Pfeiltaste, um eine Seite vorwärts zu gehen, wie dies in Browsern der Fall ist
+**Alt-Pfeiltasten** - Drücken Sie die linke Pfeiltaste, um eine Seite zurück zu gehen, und die rechte Pfeiltaste, um eine Seite vorwärts zu gehen, wie dies in Browsern der Fall ist (Verwenden Sie auch das Kontextmenü)
 
 &nbsp;
 

@@ -22,7 +22,11 @@ just copy **Crtl+C** text everywhere on a desktop, then move mouse over a word
 
 **Alt-Shift + mouse hover wordform** - shows gematria, i.e. isopsephy, for the Pythagoreans only
 
-**Ctrl+D** - local dict chunk for a current text
+**Ctrl+D** - local dict chunk for a current text - (use context menu also)
+
+**space** - toggle results in right pane
+
+**tab** - expand one of the results in the right pane, step by staep
 
 &nbsp;
 
@@ -36,7 +40,7 @@ just copy **Crtl+C** text everywhere on a desktop, then move mouse over a word
 
 &nbsp;
 
-**Alt-Arrows** - pressing the left arrow will go back a page and pressing the right arrow will move forward a page, like in browsers
+**Alt-Arrows** - pressing the left arrow will go back a page and pressing the right arrow will move forward a page, like in browsers, (use context menu also)
 
 &nbsp;
 

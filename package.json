@@ -1,6 +1,6 @@
 {
-  "version": "0.9.111",
-  "name": "biblos.js" ,
+  "version": "0.9.113",
+  "name": "biblos.js",
   "productName": "Biblos.js",
   "description": "Biblos, a.k.a Morpheus for Ancient Greek based on CouchDB && Electron.js",
   "author": "M. Bykov <m.bykov@gmail.com>",
@@ -67,7 +67,7 @@
     "release": "webpack --config=build/webpack.app.config.js --env=production && electron-builder"
   },
   "dependencies": {
-    "antrax": "^0.9.17",
+    "antrax": "^0.9.100",
     "axios": "^0.18.0",
     "electron-clipboard-extended": "^1.1.1",
     "electron-settings": "^3.2.0",

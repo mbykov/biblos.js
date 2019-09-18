@@ -1,6 +1,5 @@
 import _ from 'lodash'
 import { q, qs, empty, create, remove, removeAll, span, p, div, getCoords, placePopup, getInnermostHovered, enclitic } from './utils'
-import { ipcRenderer } from "electron";
 import { queryRemote } from "./remote";
 // import {oxia, comb, plain, strip} from '../../../../greek/orthos'
 import {oxia, comb, plain, strip} from 'orthos'

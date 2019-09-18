@@ -136,14 +136,13 @@ Mousetrap.bind(['ctrl+0'], function(ev) {
   webFrame.setZoomFactor(1)
 })
 
-
-function goLeft() {
+export function goLeft() {
   if (hstate <= 0) return
   else hstate--
   navigate()
 }
 
-function goRight() {
+export function goRight() {
   if (hstate >= history.length-1) return
   else hstate++
   navigate()
@@ -170,11 +169,14 @@ function showSection(state) {
 export function navigate(state, data) {
   if (!state) state = history[hstate]
   else {
-    // if (pars && pars.length == 1  && pars[0].length == 1) pars = false // an only wordform
     let oldstate = _.clone(state)
     history.push(oldstate)
     hstate = history.length-1
   }
+
+  // if (data == 'goleft') goLeft()
+  // else if (data == 'gorigth') goRight()
+
   let sec = state.sec
   let sid = showSection(state)
   state.sid = sid
