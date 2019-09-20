@@ -10,7 +10,7 @@ Kopieren Sie einfach mit **Strg+C** einen Textblock von irgendwo auf Ihrem Deskt
 
 &nbsp;
 
-**Strg+C** - zum Kopieren einer Wortform mit vorangestelltem Leerzeichen (keine Statring-Analyse)
+**Strg+C** - zum Kopieren einer Wortform mit nachgestelltem Leerzeichen (keine Statring-Analyse)
 
 **Strg+mouse** - damit können Sie die Maus frei bewegen
 
@@ -24,9 +24,9 @@ Kopieren Sie einfach mit **Strg+C** einen Textblock von irgendwo auf Ihrem Deskt
 
 **Strg+D** - Textblock im lokalen Wörterbuch für einen aktuellen Text (Verwenden Sie auch das Kontextmenü)
 
-**space** - Ergebnisse im rechten Fensterbereich umschalten
+**Leertaste** - Ergebnisse im rechten Fenster umschalten
 
-**tab** - Erweitern Sie eines der Ergebnisse im rechten Bereich schrittweise
+**Tab-Taste** - eines der Ergebnisse im rechten Fenster schrittweise erweitern
 
 &nbsp;
 

@@ -10,7 +10,7 @@ just copy **Crtl+C** text everywhere on a desktop, then move mouse over a word
 
 &nbsp;
 
-**Ctrl+C** - to copy wordform with leading space (not statring analysis)
+**Ctrl+C** - to copy wordform with space after it (not statring analysis)
 
 **Ctrl+mouse** - allows you to move mouse freely
 
@@ -26,7 +26,7 @@ just copy **Crtl+C** text everywhere on a desktop, then move mouse over a word
 
 **space** - toggle results in right pane
 
-**tab** - expand one of the results in the right pane, step by staep
+**tab** - expand one of the results in the right pane, step by step
 
 &nbsp;
 

@@ -22,7 +22,7 @@
   "acknowledgements": "Danke schön",
   "morpheus": "Morpheus",
   "home": "Startseite",
-  "dictionary": "Wörterbüch",
+  "dictionary": "Wörterbuch",
   "active": "Active",
   "install": "installieren",
   "cleanup": "entfernen",

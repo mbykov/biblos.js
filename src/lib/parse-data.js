@@ -145,6 +145,8 @@ function showResult(el, res) {
   let singlechains = _.filter(res.chains, chain=> { return chain.length == 1 })
   let rdicts = singlechains.map(chain=> { return chain[0] })
   let dicts = _.flatten(rdicts.map(rdict=> { return rdict.dicts }))
+  let cogns = _.flatten(rdicts.map(rdict=> { return rdict.cogns }))
+  el.dataset.cogns = JSON.stringify(cogns)
   // NB: непонятно, нужно ли это: δέω - дает дубли, не дает нужного из WKT
   dicts = _.uniq(dicts.map(dict=> { return JSON.stringify(dict) })).map(json=> { return JSON.parse(json) })
   dicts.push(...res.terms)
