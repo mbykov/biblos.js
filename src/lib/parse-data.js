@@ -86,6 +86,7 @@ function showCompound(el, res) {
 export function createCognateList(el) {
   if (el.dataset.cogns == 'undefined' || !el.dataset.cogns || !el.dataset.cogns.length) return
   let cognates = JSON.parse(el.dataset.cogns)
+  if (!cognates.length) return
   let opopup = createPopup(el)
   let oul = opopup.querySelector('.compound-list')
   oul.classList.add('cognate-list')

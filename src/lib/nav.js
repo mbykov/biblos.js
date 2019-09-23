@@ -80,8 +80,8 @@ Mousetrap.bind(['ctrl+f'], function(ev) {
 })
 
 Mousetrap.bind(['ctrl+r'], function(ev) {
-  let last = _.last(history)
-  history = [last]
+  let current = history[hstate]
+  history = [current]
   hstate = 0
 })
 
@@ -100,15 +100,16 @@ Mousetrap.bind(['ctrl+z'], function(ev) {
   let cfg = settings.get('cfg')
   cfg = JSON.parse(JSON.stringify(cfg))
   initDBs(cfg) // +z
-  log('== INIT STATE == ', cfg)
+  console.log('== INIT STATE == ', cfg)
 })
 
+// use with caution !
 Mousetrap.bind(['ctrl+shift+z'], function(ev) {
   let state = {sec: config.defstate}
   settings.set('state', state)
   let cfg = []
   settings.set('cfg', cfg)
-  log('== ZERO STATE CFG == ', cfg)
+  console.log('== ZERO STATE CFG == ', cfg)
 })
 
 Mousetrap.bind(['space'], function(ev) {
@@ -119,7 +120,6 @@ Mousetrap.bind(['tab'], function(ev) {
   toggleOneResult()
 })
 
-// TODO - здесь плохо
 Mousetrap.bind(['ctrl+='], function(ev) {
   let zf = webFrame.getZoomFactor()
   let newzf = zf + 0.1
@@ -173,9 +173,6 @@ export function navigate(state, data) {
     history.push(oldstate)
     hstate = history.length-1
   }
-
-  // if (data == 'goleft') goLeft()
-  // else if (data == 'gorigth') goRight()
 
   let sec = state.sec
   let sid = showSection(state)
