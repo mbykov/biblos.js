@@ -1,5 +1,5 @@
 {
-  "version": "0.9.116",
+  "version": "0.9.117",
   "name": "biblos.js",
   "productName": "Biblos.js",
   "description": "Biblos.js, a.k.a Morpheus for Ancient Greek based on CouchDB && Electron.js",
@@ -9,7 +9,7 @@
   "license": "GPL-3.0",
   "main": "app/background.js",
   "build": {
-    "appId": "org.diglossa.morpheus-greek",
+    "appId": "org.diglossa.biblos-js",
     "files": [
       "app/**/*",
       "src/**/*",
