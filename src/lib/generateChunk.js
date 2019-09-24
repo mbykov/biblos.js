@@ -8,7 +8,7 @@ let path = require('path')
 import {comb, plain, oxia} from 'orthos'
 // import {oxia, comb, plain} from '../../../greek/orthos'
 import { antrax, checkConnection, readDictionary } from 'antrax'
-// import { antrax, checkConnection, readDictionary } from '/home/michael/a/loigos/'
+// import { antrax, checkConnection, readDictionary } from '/home/michael/a/loigos'
 let miss = require('mississippi')
 // let parse = require('csv-parse')
 
