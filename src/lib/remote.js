@@ -51,9 +51,6 @@ if (!cfg || !cfg.length) {
   initDBs(cfg)
 }
 
-
-
-// cfg + connection
 export function initDBs(cfg) {
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
@@ -285,3 +282,11 @@ export function activateDict(dname, on) {
 export function delDict(dname) {
   progress.classList.remove('is-hidden')
 }
+
+// function getCfg (apath, upath) {
+//   let pouchpath = path.resolve(upath, 'pouch')
+//   fse.ensureDirSync(pouchpath)
+//   let dnames = fse.readdirSync(pouchpath)
+//   // if (!dnames.length) return installDBs(apath, upath)
+//   // else return checkCfg(apath, upath, dnames)
+// }
