@@ -5,7 +5,7 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../app.config'
 import path from "path"
-import { antrax, checkConnection, readDictionary } from 'antrax'
+import { antrax, getCfg, checkConnection, readDictionary } from 'antrax'
 // import { antrax, getCfg, checkConnection, delDictionary } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
 import { navigate } from './nav'
