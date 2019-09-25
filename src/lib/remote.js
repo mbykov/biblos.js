@@ -5,8 +5,8 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../app.config'
 import path from "path"
-import { antrax, getCfg, checkConnection, readDictionary } from 'antrax'
-// import { antrax, getCfg, checkConnection, delDictionary } from '/home/michael/a/loigos'
+import { antrax, checkConnection, readDictionary } from 'antrax'
+// import { antrax, checkConnection, delDictionary } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
 import { navigate } from './nav'
 
@@ -38,7 +38,7 @@ export function queryRemote(query, compound) {
 export function initDBs(cfg) {
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  // log('____check conn:', dnames)
+  log('____check conn:', dnames)
   checkConnection(upath, dnames)
 }
 
@@ -266,11 +266,3 @@ export function activateDict(dname, on) {
 export function delDict(dname) {
   progress.classList.remove('is-hidden')
 }
-
-// function getCfg (apath, upath) {
-//   let pouchpath = path.resolve(upath, 'pouch')
-//   fse.ensureDirSync(pouchpath)
-//   let dnames = fse.readdirSync(pouchpath)
-//   // if (!dnames.length) return installDBs(apath, upath)
-//   // else return checkCfg(apath, upath, dnames)
-// }

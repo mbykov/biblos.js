@@ -214,15 +214,19 @@ function initState() {
 
   let cfg = settings.get('cfg')
   if (!cfg) {
-    getCfg(apath, upath)
-      .then(cfg=> {
-        // initDBs(cfg)
-        log('____________biblos - cfg:', cfg)
-        settings.set('cfg', cfg)
-      })
-  } else {
-    initDBs(cfg)
+    cfg = getCfg(apath, upath)
+    settings.set('cfg', cfg)
+
+    // getCfg(apath, upath)
+    //   .then(cfg=> {
+    //     // initDBs(cfg)
+    //     log('____________biblos - cfg:', cfg)
+    //     settings.set('cfg', cfg)
+    //   })
+  // } else {
+    // initDBs(cfg)
   }
+  initDBs(cfg)
 
   let lang = settings.get('lang')
   if (!lang) {
