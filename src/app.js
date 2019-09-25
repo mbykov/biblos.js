@@ -216,7 +216,7 @@ function initState() {
   if (!cfg) {
     getCfg(apath, upath)
       .then(cfg=> {
-        initDBs(cfg)
+        // initDBs(cfg)
         log('__________________cfg:', cfg)
         settings.set('cfg', cfg)
       })
