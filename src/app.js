@@ -22,6 +22,8 @@ const app = remote.app;
 const clipboard = require('electron-clipboard-extended')
 const settings = require('electron').remote.require('electron-settings')
 const axios = require('axios')
+const upath = app.getPath("userData")
+const apath = app.getAppPath()
 
 loadSections(config)
 
@@ -29,11 +31,11 @@ document.onmousedown = mouseMenu
 
 let state = settings.get('state')
 if (!state) {
-  const upath = app.getPath("userData")
-  const apath = app.getAppPath()
+  log('____________________GET CFG ____', getCfg)
   getCfg(apath, upath)
     .then(cfg=> {
-      initDBs(cfg)
+      log('____________________GET CFG ', cfg)
+      // initDBs(cfg)
       settings.set('cfg', cfg)
     })
   state = {sec: config.defstate}
