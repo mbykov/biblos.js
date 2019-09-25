@@ -35,19 +35,19 @@ export function queryRemote(query, compound) {
   return antrax(query, compound)
 }
 
-let cfg = settings.get('cfg')
-// cfg = null
+// let cfg = settings.get('cfg')
+// // cfg = null
 
-if (!cfg || !cfg.length) {
-  getCfg(apath, upath)
-    .then(cfg=> {
-      initDBs(cfg)
-      settings.set('cfg', cfg)
-    })
-    .catch(err=> { log('CFG-ERR:', err) })
-} else {
-  initDBs(cfg)
-}
+// if (!cfg || !cfg.length) {
+//   getCfg(apath, upath)
+//     .then(cfg=> {
+//       initDBs(cfg)
+//       settings.set('cfg', cfg)
+//     })
+//     .catch(err=> { log('CFG-ERR:', err) })
+// } else {
+//   initDBs(cfg)
+// }
 
 export function initDBs(cfg) {
   let active = _.filter(cfg, dict=> { return dict.active })

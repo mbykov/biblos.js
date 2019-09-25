@@ -13,6 +13,9 @@ import { mouseMenu } from './lib/context-menu'
 import { config } from './app.config'
 import { queryDBs, showSegResult, showCognate, createCognateList, showTranslit, closePopups } from "./lib/parse-data"
 import { generateDictChunk } from './lib/generateChunk'
+import { getCfg } from 'antrax'
+import { initDBs } from './lib/remote'
+
 
 const log = console.log
 const app = remote.app;
@@ -26,6 +29,13 @@ document.onmousedown = mouseMenu
 
 let state = settings.get('state')
 if (!state) {
+  const upath = app.getPath("userData")
+  const apath = app.getAppPath()
+  getCfg(apath, upath)
+    .then(cfg=> {
+      initDBs(cfg)
+      settings.set('cfg', cfg)
+    })
   state = {sec: config.defstate}
   settings.set('state', state)
 }
