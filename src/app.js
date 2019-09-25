@@ -26,28 +26,9 @@ const upath = app.getPath("userData")
 const apath = app.getAppPath()
 
 loadSections(config)
-
 document.onmousedown = mouseMenu
 
-let state = settings.get('state')
-if (!state) {
-  log('____________________GET CFG ____', getCfg)
-  getCfg(apath, upath)
-    .then(cfg=> {
-      log('____________________GET CFG ', cfg)
-      initDBs(cfg)
-      settings.set('cfg', cfg)
-    })
-  state = {sec: config.defstate}
-  settings.set('state', state)
-}
-
-let lang = settings.get('lang')
-if (!lang) {
-  lang = config.deflang
-  settings.set('lang', lang)
-}
-
+let state = initState()
 navigate(state)
 
 ipcRenderer.on('section', function (event, section) {
@@ -222,4 +203,30 @@ function cleanStr(row) {
   clean = clean.replace(/-/g, '')
   clean = clean.replace(/\' /g, '᾽ ').replace(/\’ /g, '᾽ ')
   return clean
+}
+
+function initState() {
+  let state = settings.get('state')
+  if (!state) {
+    state = {sec: config.defstate}
+    settings.set('state', state)
+  }
+
+  let cfg = settings.get('cfg')
+  if (!cfg) {
+    getCfg(apath, upath)
+      .then(cfg=> {
+        initDBs(cfg)
+        settings.set('cfg', cfg)
+      })
+  } else {
+    initDBs(cfg)
+  }
+
+  let lang = settings.get('lang')
+  if (!lang) {
+    lang = config.deflang
+    settings.set('lang', lang)
+  }
+  return state
 }
