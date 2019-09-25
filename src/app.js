@@ -217,7 +217,7 @@ function initState() {
     getCfg(apath, upath)
       .then(cfg=> {
         // initDBs(cfg)
-        log('__________________cfg:', cfg)
+        log('____________biblos - cfg:', cfg)
         settings.set('cfg', cfg)
       })
   } else {
@@ -229,6 +229,6 @@ function initState() {
     lang = config.deflang
     settings.set('lang', lang)
   }
-  log('__________________state:', state.sec)
+  log('__________biblos-state:', state.sec)
   return state
 }
