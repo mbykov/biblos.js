@@ -12,10 +12,8 @@ import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
 import { config } from './app.config'
 import { queryDBs, showSegResult, showCognate, createCognateList, showTranslit, closePopups } from "./lib/parse-data"
-import { generateDictChunk } from './lib/generateChunk'
 import { getCfg } from 'antrax'
 import { initDBs } from './lib/remote'
-
 
 const log = console.log
 const app = remote.app;
@@ -39,13 +37,15 @@ ipcRenderer.on('section', function (event, section) {
 ipcRenderer.on('lang', function (event, lang) {
   settings.set('lang', lang)
   ipcRenderer.send('lang', lang)
-  remote.getCurrentWindow().reload()
+  let state = settings.get('state')
+  navigate(state)
+  // remote.getCurrentWindow().reload()
 })
 
 clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
-    if (_.last(txt) == ' ') return // zerohead
+    if (_.last(txt) == ' ') return // zerotail
     let clean = cleanStr(txt)
     let pars = sband(clean, config.code)
     if (!pars) return
@@ -217,6 +217,7 @@ function initState() {
     getCfg(apath, upath)
       .then(cfg=> {
         initDBs(cfg)
+        log('__________________cfg:', cfg)
         settings.set('cfg', cfg)
       })
   } else {
@@ -228,5 +229,6 @@ function initState() {
     lang = config.deflang
     settings.set('lang', lang)
   }
+  log('__________________state:', state.sec)
   return state
 }

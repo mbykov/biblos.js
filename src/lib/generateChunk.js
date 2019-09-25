@@ -40,7 +40,7 @@ export function generateDictChunk (upath, dname, pars, finish) {
 
 // MAIN
 // run.js
-export function createChunk (upath, dname, freqs, done) {
+function createChunk (upath, dname, freqs, done) {
   readDictionary(upath, dname)
     .then(rdocs=> {
       // let rdocs = _.compact(res.rows.map(row => { return row.doc }))
