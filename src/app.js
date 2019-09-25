@@ -35,7 +35,7 @@ if (!state) {
   getCfg(apath, upath)
     .then(cfg=> {
       log('____________________GET CFG ', cfg)
-      // initDBs(cfg)
+      initDBs(cfg)
       settings.set('cfg', cfg)
     })
   state = {sec: config.defstate}
