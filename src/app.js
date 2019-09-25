@@ -213,8 +213,10 @@ function initState() {
   }
 
   let cfg = settings.get('cfg')
+  log('____________biblos - old cfg:', cfg)
   if (!cfg) {
     cfg = getCfg(apath, upath)
+    log('____________biblos - new cfg:', cfg)
     settings.set('cfg', cfg)
 
     // getCfg(apath, upath)
