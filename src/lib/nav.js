@@ -78,14 +78,11 @@ Mousetrap.bind(['ctrl+p'], function(ev) {
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
   let cfg = settings.get('cfg')
-  // let dnames = cfg.map(dict=> { return [dict.dname, dict.idx, dict.active].join('-') })
-  // cfg = JSON.parse(JSON.stringify(cfg))
-  // console.log('_________old-CFG:', cfg, 'dnames:', dnames)
   cfg = getCfg(apath, upath)
   cfg = JSON.parse(JSON.stringify(cfg))
   settings.set('cfg', cfg)
   let dnames = cfg.map(dict=> { return [dict.dname, dict.idx, dict.active].join('-') })
-  console.log('_________new-CFG:', cfg, 'dnames:', dnames)
+  console.log('_________+F-CFG:', cfg, 'dnames:', dnames)
 })
 
 Mousetrap.bind(['ctrl+r'], function(ev) {

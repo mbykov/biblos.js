@@ -9,6 +9,7 @@ import { antrax, checkConnection, readDictionary, getCfgInfos } from 'antrax'
 // import { antrax, checkConnection, delDictionary } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
 import { navigate } from './nav'
+const Mousetrap = require('mousetrap')
 
 const upath = app.getPath("userData")
 const apath = app.getAppPath()
@@ -41,6 +42,23 @@ export function initDBs(cfg) {
   // log('____check conn:', dnames)
   checkConnection(upath, dnames)
 }
+
+Mousetrap.bind(['ctrl+g'], function(ev) {
+  let cfg = settings.get('cfg')
+  cfg = JSON.parse(JSON.stringify(cfg))
+  let dnames = cfg.map(dict=> { return [dict.dname, dict.idx, dict.active].join('-') })
+  log('_________+G-CFG:', cfg, 'dnames:', dnames)
+  getCfgInfos(upath)
+    .then(infos=> {
+      cfg.forEach(dict=> {
+        let info = _.find(infos, info=> { return dict.dname == info.dname })
+        if (!info) return
+        dict.name = info.name, dict.langs = info.langs, dict.size = info.size
+      })
+      log('_________+G-2:', cfg)
+    })
+})
+
 
 export function requestRemoteDicts() {
   let cfg = settings.get('cfg')
