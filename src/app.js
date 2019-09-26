@@ -213,21 +213,13 @@ function initState() {
   }
 
   let cfg = settings.get('cfg')
-  log('____________biblos - old cfg:', cfg)
+  // log('____________biblos - old cfg:', cfg)
   if (!cfg) {
     cfg = getCfg(apath, upath)
-    log('____________biblos - new cfg:', cfg)
     settings.set('cfg', cfg)
-
-    // getCfg(apath, upath)
-    //   .then(cfg=> {
-    //     // initDBs(cfg)
-    //     log('____________biblos - cfg:', cfg)
-    //     settings.set('cfg', cfg)
-    //   })
-  // } else {
-    // initDBs(cfg)
   }
+  cfg = JSON.parse(JSON.stringify(cfg))
+  // log('____________biblos - new cfg:', cfg)
   initDBs(cfg)
 
   let lang = settings.get('lang')
@@ -235,6 +227,6 @@ function initState() {
     lang = config.deflang
     settings.set('lang', lang)
   }
-  log('__________biblos-state:', state.sec)
+  // log('__________biblos-state:', state.sec)
   return state
 }

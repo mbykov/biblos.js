@@ -5,7 +5,7 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../app.config'
 import path from "path"
-import { antrax, checkConnection, readDictionary } from 'antrax'
+import { antrax, checkConnection, readDictionary, getCfgInfos } from 'antrax'
 // import { antrax, checkConnection, delDictionary } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
 import { navigate } from './nav'
@@ -44,66 +44,23 @@ export function initDBs(cfg) {
 
 export function requestRemoteDicts() {
   let cfg = settings.get('cfg')
-  showDicts(cfg)
+  cfg = JSON.parse(JSON.stringify(cfg))
+  log('____remote cfg', cfg)
 
-  request(getopts, function (error, response, body) {
-    if (error) console.error('soket error:', error)
-    if (error) return
-    if (response && response.statusCode != 200)  return
-
-    let dblist = JSON.parse(body)
-    let dnames = _.filter(dblist, dict=> { return dict[0] != '_' })
-    postopts.body = {keys: dnames}
-
-    request(postopts, function (error, response, body) {
-      if (error) console.error('post soket error:', error)
-      if (response && response.statusCode != 200) return
-      let dbinfos = body.map(dict=> { return {dname: dict.key, size: dict.info.doc_count} })
-
-      Promise.all(dnames.map(function(dname) {
-        let remotepath = [config.host, dname].join('/')
-        let remoteDB = new PouchDB(remotepath)
-        return remoteDB.get('description')
-          .then(descr=> {
-            descr.dname = dname
-            return descr
-          })
-          .catch(err=> {
-            if (err.reason == 'missing') return
-            log('REMOTE-ERR:', err.reason)
-          })
-      }))
-        .then(function(descrs) {
-          let code = config.code
-          let recode = new RegExp(code)
-          descrs = _.compact(descrs)
-          descrs = _.filter(descrs, descr=> { return recode.test(descr.langs)})
-          let rcfg = []
-          let cfg = settings.get('cfg') || []
-          descrs.forEach(descr=> {
-            let dbinfo = _.find(dbinfos, info=> { return info.dname == descr.dname})
-            if (!dbinfo) return
-            let cfgdict = _.find(cfg, dict=> { return dict.dname == descr.dname})
-            if (cfgdict) cfgdict.name = descr.name, cfgdict.langs = descr.langs
-            if (cfgdict) return
-            descr.size = dbinfo.size
-            delete descr._id
-            delete descr._rev
-            rcfg.push(descr)
-          })
-          cfg.push(...rcfg)
-          cfg.forEach((dict, idx)=> { dict.idx  = idx })
-          cfg = _.sortBy(cfg, 'idx')
-          cfg = JSON.parse(JSON.stringify(cfg)) // убрать вместе с log()
-          settings.set('cfg', cfg)
-          showDicts(cfg)
-        })
-        .catch(err=> {
-          console.log('ERR: possible, no connection', err)
-        })
-
+  getCfgInfos(upath)
+    .then(infos=> {
+      log('___db-infos', infos)
+      // let idnames = infos.map(info=> { return info.dname })
+      // log('___db-infos', cfg)
+      cfg.forEach(dict=> {
+        let info = _.find(infos, info=> { return dict.dname == info.dname })
+        // log('________DN', dict.dname, info )
+        if (!info) return
+        dict.name = info.name, dict.langs = info.langs, dict.size = info.size
+      })
+      // log('___db-cfg', cfg)
+      showDicts(cfg)
     })
-  })
 }
 
 function showDicts(cfg) {
@@ -265,4 +222,68 @@ export function activateDict(dname, on) {
 
 export function delDict(dname) {
   progress.classList.remove('is-hidden')
+}
+
+export function requestRemoteDicts_() {
+  let cfg = settings.get('cfg')
+  showDicts(cfg)
+
+  request(getopts, function (error, response, body) {
+    if (error) console.error('soket error:', error)
+    if (error) return
+    if (response && response.statusCode != 200)  return
+
+    let dblist = JSON.parse(body)
+    let dnames = _.filter(dblist, dict=> { return dict[0] != '_' })
+    postopts.body = {keys: dnames}
+
+    request(postopts, function (error, response, body) {
+      if (error) console.error('post soket error:', error)
+      if (response && response.statusCode != 200) return
+      let dbinfos = body.map(dict=> { return {dname: dict.key, size: dict.info.doc_count} })
+
+      Promise.all(dnames.map(function(dname) {
+        let remotepath = [config.host, dname].join('/')
+        let remoteDB = new PouchDB(remotepath)
+        return remoteDB.get('description')
+          .then(descr=> {
+            descr.dname = dname
+            return descr
+          })
+          .catch(err=> {
+            if (err.reason == 'missing') return
+            log('REMOTE-ERR:', err.reason)
+          })
+      }))
+        .then(function(descrs) {
+          let code = config.code
+          let recode = new RegExp(code)
+          descrs = _.compact(descrs)
+          descrs = _.filter(descrs, descr=> { return recode.test(descr.langs)})
+          let rcfg = []
+          let cfg = settings.get('cfg') || []
+          descrs.forEach(descr=> {
+            let dbinfo = _.find(dbinfos, info=> { return info.dname == descr.dname})
+            if (!dbinfo) return
+            let cfgdict = _.find(cfg, dict=> { return dict.dname == descr.dname})
+            if (cfgdict) cfgdict.name = descr.name, cfgdict.langs = descr.langs
+            if (cfgdict) return
+            descr.size = dbinfo.size
+            delete descr._id
+            delete descr._rev
+            rcfg.push(descr)
+          })
+          cfg.push(...rcfg)
+          cfg.forEach((dict, idx)=> { dict.idx  = idx })
+          cfg = _.sortBy(cfg, 'idx')
+          cfg = JSON.parse(JSON.stringify(cfg)) // убрать вместе с log()
+          settings.set('cfg', cfg)
+          showDicts(cfg)
+        })
+        .catch(err=> {
+          console.log('ERR: possible, no connection', err)
+        })
+
+    })
+  })
 }

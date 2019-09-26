@@ -7,6 +7,7 @@ import { q, qs, empty, create, remove, span, p, div } from './utils'
 import Split from 'split.js'
 import { config } from '../app.config'
 import { showText, toggleResults, toggleOneResult, closePopups } from "./parse-data"
+import { getCfg } from 'antrax'
 import path from "path";
 const clipboard = require('electron-clipboard-extended')
 const log = console.log
@@ -14,9 +15,12 @@ const log = console.log
 
 const settings = require('electron').remote.require('electron-settings')
 const Mousetrap = require('mousetrap')
-// const slash = require('slash')
 const {getCurrentWindow} = require('electron').remote
-let markdown = require( "markdown" ).markdown;
+const app = remote.app;
+const upath = app.getPath("userData")
+const apath = app.getAppPath()
+// const slash = require('slash')
+// let markdown = require( "markdown" ).markdown;
 
 let history = []
 let hstate = 0
@@ -74,9 +78,14 @@ Mousetrap.bind(['ctrl+p'], function(ev) {
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
   let cfg = settings.get('cfg')
-  let dnames = cfg.map(dict=> { return [dict.dname, dict.idx, dict.active].join('-') })
+  // let dnames = cfg.map(dict=> { return [dict.dname, dict.idx, dict.active].join('-') })
+  // cfg = JSON.parse(JSON.stringify(cfg))
+  // console.log('_________old-CFG:', cfg, 'dnames:', dnames)
+  cfg = getCfg(apath, upath)
   cfg = JSON.parse(JSON.stringify(cfg))
-  console.log('_________F-CFG:', cfg, 'dnames:', dnames)
+  settings.set('cfg', cfg)
+  let dnames = cfg.map(dict=> { return [dict.dname, dict.idx, dict.active].join('-') })
+  console.log('_________new-CFG:', cfg, 'dnames:', dnames)
 })
 
 Mousetrap.bind(['ctrl+r'], function(ev) {
