@@ -1,0 +1,93 @@
+2019/09/26-20:40:57.049033 7fbcba573700 Delete type=3 #1
+2019/09/26-20:40:57.906980 7fbc9bfff700 Level-0 table #5: started
+2019/09/26-20:40:57.999437 7fbc9bfff700 Level-0 table #5: 1924927 bytes OK
+2019/09/26-20:40:58.027887 7fbc9bfff700 Delete type=0 #3
+2019/09/26-20:40:58.251403 7fbc9bfff700 Level-0 table #7: started
+2019/09/26-20:40:58.358131 7fbc9bfff700 Level-0 table #7: 1956415 bytes OK
+2019/09/26-20:40:58.386235 7fbc9bfff700 Delete type=0 #4
+2019/09/26-20:40:58.406326 7fbc9bfff700 Compacting 1@1 + 1@2 files
+2019/09/26-20:40:58.491943 7fbc9bfff700 Generated table #8@1: 7260 keys, 2128881 bytes
+2019/09/26-20:40:58.567253 7fbc9bfff700 Generated table #9@1: 12743 keys, 1751956 bytes
+2019/09/26-20:40:58.567283 7fbc9bfff700 Compacted 1@1 + 1@2 files => 3880837 bytes
+2019/09/26-20:40:58.594411 7fbc9bfff700 compacted to: files[ 0 0 2 0 0 0 0 ]
+2019/09/26-20:40:58.594556 7fbc9bfff700 Delete type=2 #7
+2019/09/26-20:40:58.594915 7fbc9bfff700 Delete type=2 #5
+2019/09/26-20:40:58.620625 7fbc9bfff700 Level-0 table #11: started
+2019/09/26-20:40:58.692689 7fbc9bfff700 Level-0 table #11: 1770366 bytes OK
+2019/09/26-20:40:58.719505 7fbc9bfff700 Delete type=0 #6
+2019/09/26-20:40:58.720552 7fbc9bfff700 Compacting 1@1 + 1@2 files
+2019/09/26-20:40:58.801342 7fbc9bfff700 Generated table #12@1: 8291 keys, 2130655 bytes
+2019/09/26-20:40:58.868293 7fbc9bfff700 Generated table #13@1: 14452 keys, 1390875 bytes
+2019/09/26-20:40:58.868321 7fbc9bfff700 Compacted 1@1 + 1@2 files => 3521530 bytes
+2019/09/26-20:40:58.894405 7fbc9bfff700 compacted to: files[ 0 0 3 0 0 0 0 ]
+2019/09/26-20:40:58.894557 7fbc9bfff700 Delete type=2 #11
+2019/09/26-20:40:58.894871 7fbc9bfff700 Delete type=2 #9
+2019/09/26-20:40:58.974335 7fbc9bfff700 Level-0 table #15: started
+2019/09/26-20:40:59.043880 7fbc9bfff700 Level-0 table #15: 1835841 bytes OK
+2019/09/26-20:40:59.069412 7fbc9bfff700 Delete type=0 #10
+2019/09/26-20:40:59.070361 7fbc9bfff700 Compacting 1@1 + 2@2 files
+2019/09/26-20:40:59.152477 7fbc9bfff700 Generated table #16@1: 8009 keys, 2130538 bytes
+2019/09/26-20:40:59.236132 7fbc9bfff700 Generated table #17@1: 13479 keys, 2143282 bytes
+2019/09/26-20:40:59.294656 7fbc9bfff700 Generated table #18@1: 11255 keys, 1083795 bytes
+2019/09/26-20:40:59.294681 7fbc9bfff700 Compacted 1@1 + 2@2 files => 5357615 bytes
+2019/09/26-20:40:59.319423 7fbc9bfff700 compacted to: files[ 0 0 4 0 0 0 0 ]
+2019/09/26-20:40:59.319574 7fbc9bfff700 Delete type=2 #12
+2019/09/26-20:40:59.319946 7fbc9bfff700 Delete type=2 #13
+2019/09/26-20:40:59.320186 7fbc9bfff700 Delete type=2 #15
+2019/09/26-20:40:59.320438 7fbc9bfff700 Level-0 table #20: started
+2019/09/26-20:40:59.386789 7fbc9bfff700 Level-0 table #20: 1861987 bytes OK
+2019/09/26-20:40:59.419801 7fbc9bfff700 Delete type=0 #14
+2019/09/26-20:40:59.468175 7fbc9bfff700 Compacting 1@1 + 2@2 files
+2019/09/26-20:40:59.553741 7fbc9bfff700 Generated table #21@1: 7643 keys, 2130501 bytes
+2019/09/26-20:40:59.637517 7fbc9bfff700 Generated table #22@1: 18765 keys, 2157939 bytes
+2019/09/26-20:40:59.649845 7fbc9bfff700 Level-0 table #25: started
+2019/09/26-20:40:59.722170 7fbc9bfff700 Level-0 table #25: 1889359 bytes OK
+2019/09/26-20:40:59.752918 7fbc9bfff700 Delete type=0 #19
+2019/09/26-20:40:59.789328 7fbc9bfff700 Generated table #23@1: 8326 keys, 800645 bytes
+2019/09/26-20:40:59.789352 7fbc9bfff700 Compacted 1@1 + 2@2 files => 5089085 bytes
+2019/09/26-20:40:59.819396 7fbc9bfff700 compacted to: files[ 1 0 5 0 0 0 0 ]
+2019/09/26-20:40:59.819557 7fbc9bfff700 Delete type=2 #20
+2019/09/26-20:40:59.819919 7fbc9bfff700 Delete type=2 #17
+2019/09/26-20:40:59.820248 7fbc9bfff700 Delete type=2 #18
+2019/09/26-20:40:59.894399 7fbc9bfff700 Moved #25 to level-1 1889359 bytes OK: files[ 0 1 5 0 0 0 0 ]
+2019/09/26-20:40:59.930561 7fbc9bfff700 Compacting 1@1 + 2@2 files
+2019/09/26-20:41:00.015006 7fbc9bfff700 Generated table #26@1: 8921 keys, 2131880 bytes
+2019/09/26-20:41:00.015031 7fbc9bfff700 Level-0 table #28: started
+2019/09/26-20:41:00.082001 7fbc9bfff700 Level-0 table #28: 1742283 bytes OK
+2019/09/26-20:41:00.111238 7fbc9bfff700 Delete type=0 #24
+2019/09/26-20:41:00.199136 7fbc9bfff700 Generated table #29@1: 22433 keys, 2167206 bytes
+2019/09/26-20:41:00.249446 7fbc9bfff700 Generated table #30@1: 5737 keys, 548376 bytes
+2019/09/26-20:41:00.249468 7fbc9bfff700 Compacted 1@1 + 2@2 files => 4847462 bytes
+2019/09/26-20:41:00.277692 7fbc9bfff700 compacted to: files[ 1 0 6 0 0 0 0 ]
+2019/09/26-20:41:00.277823 7fbc9bfff700 Delete type=2 #25
+2019/09/26-20:41:00.278119 7fbc9bfff700 Delete type=2 #23
+2019/09/26-20:41:00.278296 7fbc9bfff700 Delete type=2 #22
+2019/09/26-20:41:00.311710 7fbc9bfff700 Level-0 table #32: started
+2019/09/26-20:41:00.383202 7fbc9bfff700 Level-0 table #32: 1700645 bytes OK
+2019/09/26-20:41:00.411220 7fbc9bfff700 Delete type=0 #27
+2019/09/26-20:41:00.457332 7fbc9bfff700 Compacting 2@0 + 0@1 files
+2019/09/26-20:41:00.541929 7fbc9bfff700 Generated table #33@0: 8621 keys, 2131943 bytes
+2019/09/26-20:41:00.600512 7fbc9bfff700 Generated table #34@0: 11381 keys, 1310274 bytes
+2019/09/26-20:41:00.600536 7fbc9bfff700 Compacted 2@0 + 0@1 files => 3442217 bytes
+2019/09/26-20:41:00.627715 7fbc9bfff700 compacted to: files[ 0 2 6 0 0 0 0 ]
+2019/09/26-20:41:00.627849 7fbc9bfff700 Delete type=2 #28
+2019/09/26-20:41:00.628149 7fbc9bfff700 Delete type=2 #32
+2019/09/26-20:41:00.631148 7fbc9bfff700 Level-0 table #36: started
+2019/09/26-20:41:00.700995 7fbc9bfff700 Level-0 table #36: 1741150 bytes OK
+2019/09/26-20:41:00.727847 7fbc9bfff700 Delete type=0 #31
+2019/09/26-20:41:00.781864 7fbc9bfff700 Compacting 1@0 + 1@1 files
+2019/09/26-20:41:00.868090 7fbc9bfff700 Generated table #37@0: 11908 keys, 2140058 bytes
+2019/09/26-20:41:00.926682 7fbc9bfff700 Generated table #38@0: 9473 keys, 911389 bytes
+2019/09/26-20:41:00.926705 7fbc9bfff700 Compacted 1@0 + 1@1 files => 3051447 bytes
+2019/09/26-20:41:00.952714 7fbc9bfff700 compacted to: files[ 0 3 6 0 0 0 0 ]
+2019/09/26-20:41:00.952857 7fbc9bfff700 Delete type=2 #36
+2019/09/26-20:41:00.953150 7fbc9bfff700 Delete type=2 #34
+2019/09/26-20:41:00.961637 7fbc9bfff700 Level-0 table #40: started
+2019/09/26-20:41:01.035522 7fbc9bfff700 Level-0 table #40: 1799880 bytes OK
+2019/09/26-20:41:01.061168 7fbc9bfff700 Delete type=0 #35
+2019/09/26-20:41:01.113387 7fbc9bfff700 Compacting 1@0 + 2@1 files
+2019/09/26-20:41:01.202622 7fbc9bfff700 Generated table #41@0: 8479 keys, 2132027 bytes
+2019/09/26-20:41:01.286275 7fbc9bfff700 Generated table #42@0: 17015 keys, 2153756 bytes
+2019/09/26-20:41:01.295355 7fbc9bfff700 Level-0 table #45: started
+2019/09/26-20:41:01.361490 7fbc9bfff700 Level-0 table #45: 1680430 bytes OK
+2019/09/26-20:41:01.386220 7fbc9bfff700 Delete type=0 #39
