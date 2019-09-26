@@ -131,7 +131,7 @@ document.addEventListener('click', (ev) => {
     activateDict(data.disable, false)
   } else if (data.sync) {
     // if (el.textContent != 'clone') return // раскомментарить
-    cloneDict(data.sync)
+    // cloneDict(data.sync)
   } else if (data.section) {
     state.sec = data.section
     navigate(state)
