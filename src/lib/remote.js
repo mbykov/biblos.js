@@ -5,7 +5,7 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../app.config'
 import path from "path"
-import { antrax, checkConnection, readDictionary, getCfgInfos } from 'antrax'
+import { antrax, checkConnection, readDictionary, getCfgInfos, getDescr } from 'antrax'
 // import { antrax, checkConnection, delDictionary } from '/home/michael/a/loigos'
 const fse = require('fs-extra')
 import { navigate } from './nav'
@@ -55,6 +55,14 @@ Mousetrap.bind(['ctrl+g'], function(ev) {
         dict.name = info.name, dict.langs = info.langs, dict.size = info.size
       })
       log('_________+G-cfg:', cfg)
+    })
+})
+
+Mousetrap.bind(['ctrl+e'], function(ev) {
+  let dname = 'lsj'
+  getDescr(dname)
+    .then(descr=> {
+      log('_________________DESCR', descr)
     })
 })
 
