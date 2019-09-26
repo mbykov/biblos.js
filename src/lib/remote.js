@@ -46,16 +46,15 @@ export function initDBs(cfg) {
 Mousetrap.bind(['ctrl+g'], function(ev) {
   let cfg = settings.get('cfg')
   cfg = JSON.parse(JSON.stringify(cfg))
-  let dnames = cfg.map(dict=> { return [dict.dname, dict.idx, dict.active].join('-') })
-  log('_________+G-CFG:', cfg, 'dnames:', dnames)
   getCfgInfos(upath)
     .then(infos=> {
+      log('_________+G-infos:', infos)
       cfg.forEach(dict=> {
         let info = _.find(infos, info=> { return dict.dname == info.dname })
         if (!info) return
         dict.name = info.name, dict.langs = info.langs, dict.size = info.size
       })
-      log('_________+G-2:', cfg)
+      log('_________+G-cfg:', cfg)
     })
 })
 
