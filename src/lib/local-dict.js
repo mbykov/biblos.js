@@ -8,8 +8,8 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../app.config'
 import path from "path";
-// import { updateCurrent, readDictionary, delDictionary } from '/home/michael/a/loigos'
-import { updateCurrent, readDictionary, delDictionary } from 'antrax'
+// import { updateCurrent, readDictionary, delDictionary } from '/home/michael/a/loigos/dist/lib/pouch'
+import { updateCurrent, readDictionary, delDictionary } from 'antrax/dist/lib/pouch'
 import { navigate } from './nav'
 import { initDBs } from './remote'
 import { generateDictChunk } from './generateChunk'

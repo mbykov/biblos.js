@@ -12,8 +12,9 @@ import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
 import { config } from './app.config'
 import { queryDBs, showSegResult, showCognate, createCognateList, showTranslit, closePopups } from "./lib/parse-data"
-import { getCfg } from 'antrax'
-import { initDBs } from './lib/remote'
+import { initCfg, initDBs } from './lib/remote'
+import { getCfg, initialReplication } from 'antrax/dist/lib/pouch'
+// import { getCfg, initialReplication } from '/home/michael/a/loigos'
 
 const log = console.log
 const app = remote.app;
@@ -213,14 +214,22 @@ function initState() {
   }
 
   let cfg = settings.get('cfg')
+
+  initCfg()
+    .then(cfg=> {
+      log('_____initcfg:', cfg)
+    })
+
   // log('____________biblos - old cfg:', cfg)
   if (!cfg) {
-    cfg = getCfg(apath, upath)
+    // cfg = getCfg(apath, upath)
+    cfg = initialReplication(upath)
     settings.set('cfg', cfg)
-  }
-  cfg = JSON.parse(JSON.stringify(cfg))
-  // log('____________biblos - new cfg:', cfg)
-  initDBs(cfg)
+  } else {
+    cfg = JSON.parse(JSON.stringify(cfg))
+    // log('____________biblos - new cfg:', cfg)
+    initDBs(cfg)
+}
 
   let lang = settings.get('lang')
   if (!lang) {

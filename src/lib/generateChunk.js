@@ -7,8 +7,9 @@ let fse = require('fs-extra')
 let path = require('path')
 import {comb, plain, oxia} from 'orthos'
 // import {oxia, comb, plain} from '../../../greek/orthos'
-import { antrax, readDictionary } from 'antrax'
-// import { antrax, readDictionary } from '/home/michael/a/loigos'
+import { antrax } from 'antrax'
+import { readDictionary } from 'antrax/dist/lib/pouch'
+// import { antrax } from '/home/michael/a/loigos'
 let miss = require('mississippi')
 // let parse = require('csv-parse')
 

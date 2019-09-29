@@ -7,7 +7,7 @@ import { q, qs, empty, create, remove, span, p, div } from './utils'
 import Split from 'split.js'
 import { config } from '../app.config'
 import { showText, toggleResults, toggleOneResult, closePopups } from "./parse-data"
-import { getCfg } from 'antrax'
+import { getCfg } from 'antrax/dist/lib/pouch'
 import path from "path";
 const clipboard = require('electron-clipboard-extended')
 const log = console.log
@@ -185,7 +185,7 @@ export function navigate(state, data) {
   state.sid = sid
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
-  else if (sec == 'remote-dicts') requestRemoteDicts(state)
+  // else if (sec == 'remote-dicts') requestRemoteDicts(state)
   else if (sec == 'local-chunk') showLocalChunk(state, data)
   else if (sec == 'local-dict-full') showFullLocalDict(state, data)
   else if (sec == 'local-dict-item') editLocalDictItem(state, data)
