@@ -96,7 +96,7 @@ Mousetrap.bind(['ctrl+c'], function(ev) {
   if (!el) return
   let wf = el.textContent
   if (!wf) return
-  let zerohead = [wf, ' '].join('')
+  let zerohead = [wf, '  '].join('') // wordform + two spaces
   clipboard.writeText(zerohead)
 })
 
@@ -183,9 +183,10 @@ export function navigate(state, data) {
   let sec = state.sec
   let sid = showSection(state)
   state.sid = sid
+  log('NAV-state:', state)
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
-  // else if (sec == 'remote-dicts') requestRemoteDicts(state)
+  else if (sec == 'remote-dicts') requestRemoteDicts(state)
   else if (sec == 'local-chunk') showLocalChunk(state, data)
   else if (sec == 'local-dict-full') showFullLocalDict(state, data)
   else if (sec == 'local-dict-item') editLocalDictItem(state, data)

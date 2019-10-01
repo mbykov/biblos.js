@@ -5,7 +5,8 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../app.config'
 import path from "path"
-import { antrax } from 'antrax'
+import { antrax }  from '/home/michael/a/loigos'
+// import { antrax } from 'antrax'
 import { initialReplication, checkConnection, streamDB }  from '/home/michael/a/loigos/dist/lib/pouch'
 // import { initialReplication, checkConnection, streamDB }  from 'antrax/dist/lib/pouch'
 
@@ -45,6 +46,21 @@ const options = {
   json: true
 }
 
+export function requestRemoteDicts() {
+  log('___requestRemoteDicts')
+  initCfg()
+    .then(cfg=> {
+      log('_________+req-remote-cfg:', cfg)
+      /*
+        сравнить cfg и oldcfg, если новых словарей нет, показать старый, если есть - новый
+       */
+      let oldcfg = settings.get('cfg')
+      showDicts(oldcfg)
+    })
+
+}
+
+
 export function queryRemote(query, compound) {
   return antrax(query, compound)
 }
@@ -52,11 +68,17 @@ export function queryRemote(query, compound) {
 export function initDBs(cfg) {
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  // log('____check conn:', dnames)
+  log('____check conn:', dnames)
   checkConnection(upath, dnames)
 }
 
 Mousetrap.bind(['ctrl+e'], function(ev) {
+  let state = settings.get('state')
+  state.sec = 'remote-dicts'
+  navigate(state)
+})
+
+Mousetrap.bind(['ctrl+_'], function(ev) {
   let dname = 'souda'
   let cfg = settings.get('cfg')
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
@@ -64,35 +86,38 @@ Mousetrap.bind(['ctrl+e'], function(ev) {
   log('_________+E-start', dname, dict.size)
 
   let stream = new MemoryStream()
-  let total = 1
+  let batch_size = 1000
+  let total = 0
   stream.on('data', function(chunk) {
-    let size = chunk.toString().length
-    total += size
-    let chunkdocs = parseFloat(total/273).toFixed(2)
-    let percent = parseFloat(1 - (dict.size - chunkdocs)/dict.size).toFixed(2)*100
-    // log('__dumped :', size, total, chunkdocs, percent)
-    log('__percent :', percent, '%')
-
-    // total всегда 385407 ???????????????????????/
-
-
+    total += batch_size/2
+    let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
+    log('__dumped :', dict.size, total, '%', percent)
   })
 
-  streamDB (upath, dname, stream)
+  streamDB (upath, dname, stream, batch_size)
     .then(function () {
       console.log('Hooray the stream replication is complete!');
-      log('__dumped :', dname, total, dict.size)
+      log('__dumped :', dname, dict.size, total)
     }).catch(function (err) {
       console.log('oh no an error', err.message);
     })
 })
 
 Mousetrap.bind(['ctrl+t'], function(ev) {
-  log('_________getTest start:')
-  initialReplication(apath, upath)
-  // .then(cfg=> {
-  // log('_________+T-initialReplication:', cfg)
-    // })
+  // initial replication test
+  initCfg()
+    .then(cfg=> {
+      cfg = JSON.parse(JSON.stringify(cfg))
+      log('_____initcfg:', cfg)
+      initialReplication(upath, cfg)
+        .then(cfg=>{
+          log('___initial-cfg', cfg)
+          initDBs(cfg)
+          settings.set('cfg', cfg)
+        })
+        .catch(err=>{ log('ERR-initialReplication', err.message) })
+    })
+
 })
 
 Mousetrap.bind(['ctrl+g'], function(ev) {
@@ -334,8 +359,7 @@ export function activateDict(dname, on) {
 //     }
 //     let rdnames = _.filter(dblist, dict=> { return dict[0] != '_' })
 //     let code = config.code
-//     let greeks = ['flex', 'terms', 'wkt', 'lsj', 'dvr', 'souda', '', '', '', '', '']
-//     rdnames = _.intersection(rdnames, greeks)
+//     rdnames = _.intersection(rdnames, greekONLY)
 //     if (!rdnames.length) return []
 
 //     return Promise.all(rdnames.map(function(dname) {

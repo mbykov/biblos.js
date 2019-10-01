@@ -13,8 +13,8 @@ import { mouseMenu } from './lib/context-menu'
 import { config } from './app.config'
 import { queryDBs, showSegResult, showCognate, createCognateList, showTranslit, closePopups } from "./lib/parse-data"
 import { initCfg, initDBs } from './lib/remote'
-import { getCfg, initialReplication } from 'antrax/dist/lib/pouch'
-// import { getCfg, initialReplication } from '/home/michael/a/loigos'
+// import { initialReplication } from 'antrax/dist/lib/pouch'
+import { getCfg, initialReplication } from '/home/michael/a/loigos/dist/lib/pouch'
 
 const log = console.log
 const app = remote.app;
@@ -46,12 +46,13 @@ ipcRenderer.on('lang', function (event, lang) {
 clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
-    if (_.last(txt) == ' ') return // zerotail
+    if (txt.slice(-2) == '  ') return // zerotail
     let clean = cleanStr(txt)
     let pars = sband(clean, config.code)
     if (!pars) return
     state.sec = 'main'
     state.pars = pars
+    log('______________CLIP', state)
     settings.set('state', state)
     navigate(state)
   })
@@ -212,22 +213,30 @@ function initState() {
     state = {sec: config.defstate}
     settings.set('state', state)
   }
+  // state = JSON.parse(JSON.stringify(state))
+  // log('_____init state:', state)
 
   let cfg = settings.get('cfg')
-
-  initCfg()
-    .then(cfg=> {
-      log('_____initcfg:', cfg)
-    })
-
-  // log('____________biblos - old cfg:', cfg)
   if (!cfg) {
-    // cfg = getCfg(apath, upath)
-    cfg = initialReplication(upath)
-    settings.set('cfg', cfg)
+  // if (true) {
+    log('____________biblos start:')
+    initCfg()
+      .then(cfg=> {
+        cfg = JSON.parse(JSON.stringify(cfg))
+        log('_____initcfg:', cfg)
+        initialReplication(upath, cfg)
+          .then(cfg=>{
+            log('___initial-cfg', cfg)
+            initDBs(cfg)
+            settings.set('cfg', cfg)
+          })
+          .catch(err=>{ log('ERR-initialReplication', err.message) })
+      })
+
+
   } else {
     cfg = JSON.parse(JSON.stringify(cfg))
-    // log('____________biblos - new cfg:', cfg)
+    log('____________biblos - init cfg:', cfg)
     initDBs(cfg)
 }
 
