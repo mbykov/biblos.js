@@ -65,7 +65,7 @@ export function queryRemote(query, compound) {
 export function initDBs(cfg) {
   let active = _.filter(cfg, dict=> { return dict.active })
   let dnames = active.map(dict=> { return dict.dname })
-  log('____check conn:', dnames)
+  log('____check-connection:', dnames)
   checkConnection(upath, dnames)
 }
 
@@ -223,40 +223,40 @@ function checkmark() {
 }
 
 export function cloneDict(dname) {
-  progress.classList.remove('is-hidden')
-  let localpath = path.resolve(upath, 'pouch', dname)
-  let remotepath = [config.host, dname].join('/')
-  let localDB = new PouchDB(localpath)
-  let remoteDB = new PouchDB(remotepath)
+  // progress.classList.remove('is-hidden')
+  // let localpath = path.resolve(upath, 'pouch', dname)
+  // let remotepath = [config.host, dname].join('/')
+  // let localDB = new PouchDB(localpath)
+  // let remoteDB = new PouchDB(remotepath)
 
-  remoteDB.replicate.to(localDB, { retry: true, batch_size: 1000 })
-    .on('change', function (info) {
-      console.log('written', info.docs_written)
-    }).on('paused', function (res) {
-      console.log('paused', res)
-    })
-    .on('complete', function (res) {
-      console.log('ok, were done!', res)
-      let cfg = clonedCfg(dname)
-      initDBs(cfg)
-      showDicts(cfg)
-      progress.classList.add('is-hidden')
-    })
-    .on('error', function (err) {
-      console.log('boo, something went wrong!', err)
-    })
+  // remoteDB.replicate.to(localDB, { retry: true, batch_size: 1000 })
+  //   .on('change', function (info) {
+  //     console.log('written', info.docs_written)
+  //   }).on('paused', function (res) {
+  //     console.log('paused', res)
+  //   })
+  //   .on('complete', function (res) {
+  //     console.log('ok, were done!', res)
+  //     let cfg = clonedCfg(dname)
+  //     initDBs(cfg)
+  //     showDicts(cfg)
+  //     progress.classList.add('is-hidden')
+  //   })
+  //   .on('error', function (err) {
+  //     console.log('boo, something went wrong!', err)
+  //   })
 }
 
-function clonedCfg(dname) {
-  let cfg = settings.get('cfg')
-  let dict = _.find(cfg, dict=> { return dict.dname == dname })
-  if (!dict) return cfg
-  dict.active = true
-  dict.sync = true
-  cfg = JSON.parse(JSON.stringify(cfg))
-  settings.set('cfg', cfg)
-  return cfg
-}
+// function clonedCfg(dname) {
+//   let cfg = settings.get('cfg')
+//   let dict = _.find(cfg, dict=> { return dict.dname == dname })
+//   if (!dict) return cfg
+//   dict.active = true
+//   dict.sync = true
+//   cfg = JSON.parse(JSON.stringify(cfg))
+//   settings.set('cfg', cfg)
+//   return cfg
+// }
 
 export function delDict(dname) {
   progress.classList.remove('is-hidden')
@@ -357,23 +357,23 @@ export function activateDict(dname, on) {
 // }
 
 
-Mousetrap.bind(['ctrl+_'], function(ev) {
-  let dname = 'souda'
+Mousetrap.bind(['ctrl+m'], function(ev) {
+  let dname = 'terms'
   let cfg = settings.get('cfg')
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
   if (!dict) return
-  log('_________+E-start', dname, dict.size)
+  log('_________+E-start', dname, dict.size, config.batch_size)
 
   let stream = new MemoryStream()
-  let batch_size = 1000
   let total = 0
+  let step = config.batch_size/2
   stream.on('data', function(chunk) {
-    total += batch_size/2
+    total += step
     let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
     log('__dumped :', dict.size, total, '%', percent)
   })
 
-  streamDB (upath, dname, stream, batch_size)
+  streamDB(upath, dname, stream, config.batch_size)
     .then(function () {
       console.log('Hooray the stream replication is complete!');
       log('__dumped :', dname, dict.size, total)

@@ -28,11 +28,11 @@ import env from "env";
 // Save userData in separate folders for each environment.
 // Thanks to this you can use production and development versions of the app
 // on same machine like those are two separate apps.
-if (env.name !== "production") {
-  const userDataPath = app.getPath("userData");
-  app.setPath("userData", `${userDataPath} (${env.name})`);
-  // app.setPath("userData", `${userDataPath}-devel`);
-}
+// if (env.name !== "production") {
+//   const userDataPath = app.getPath("userData");
+//   app.setPath("userData", `${userDataPath} (${env.name})`);
+//   // app.setPath("userData", `${userDataPath}-devel`);
+// }
 
 app.on("ready", () => {
   // setApplicationMenu();

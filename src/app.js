@@ -218,9 +218,9 @@ function initState() {
   // log('_____init state:', state)
 
   let cfg = settings.get('cfg')
-  if (!cfg) {
-  // if (true) {
-    log('_____initCFG')
+  // if (!cfg) {
+  if (false) {
+    log('_____initCFG_______________________________')
     let rcfg = [{dname: 'terms'}, {dname: 'flex'}, {dname: 'wkt'}, {dname: 'lsj'}, {dname: 'dvr'}, {dname: 'souda'} ]
     initialReplication(upath, rcfg, config.batch_size)
       .then(cfg=>{
@@ -245,7 +245,7 @@ function initState() {
   } else {
     cfg = JSON.parse(JSON.stringify(cfg))
     log('____________biblos - init cfg:', cfg)
-    initDBs(cfg)
+    // initDBs(cfg)
 }
 
   let lang = settings.get('lang')
