@@ -7,8 +7,8 @@ import { config } from '../app.config'
 import path from "path"
 import { antrax }  from '/home/michael/a/loigos'
 // import { antrax } from 'antrax'
-import { initialReplication, checkConnection, streamDB }  from '/home/michael/a/loigos/dist/lib/pouch'
-// import { initialReplication, checkConnection, streamDB }  from 'antrax/dist/lib/pouch'
+import { checkConnection, streamDB }  from '/home/michael/a/loigos/dist/lib/pouch'
+// import { checkConnection, streamDB }  from 'antrax/dist/lib/pouch'
 
 let MemoryStream = require('memorystream');
 
@@ -47,19 +47,16 @@ const options = {
 }
 
 export function requestRemoteDicts() {
-  log('___requestRemoteDicts')
   initCfg()
-    .then(cfg=> {
-      log('_________+req-remote-cfg:', cfg)
-      /*
-        сравнить cfg и oldcfg, если новых словарей нет, показать старый, если есть - новый
-       */
-      let oldcfg = settings.get('cfg')
-      showDicts(oldcfg)
+    .then(rcfg=> {
+      let cfg = settings.get('cfg')
+      cfg = JSON.parse(JSON.stringify(cfg))
+      log('_________+req-remote-cfg:', cfg, 'rem:', rcfg)
+      if (cfg.length == rcfg.length) showDicts(cfg)
+      else addDict(cfg, rcfg)
     })
 
 }
-
 
 export function queryRemote(query, compound) {
   return antrax(query, compound)
@@ -72,57 +69,11 @@ export function initDBs(cfg) {
   checkConnection(upath, dnames)
 }
 
-Mousetrap.bind(['ctrl+e'], function(ev) {
-  let state = settings.get('state')
-  state.sec = 'remote-dicts'
-  navigate(state)
-})
-
-Mousetrap.bind(['ctrl+_'], function(ev) {
-  let dname = 'souda'
-  let cfg = settings.get('cfg')
-  let dict = _.find(cfg, dict=> { return dict.dname == dname })
-  if (!dict) return
-  log('_________+E-start', dname, dict.size)
-
-  let stream = new MemoryStream()
-  let batch_size = 1000
-  let total = 0
-  stream.on('data', function(chunk) {
-    total += batch_size/2
-    let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
-    log('__dumped :', dict.size, total, '%', percent)
-  })
-
-  streamDB (upath, dname, stream, batch_size)
-    .then(function () {
-      console.log('Hooray the stream replication is complete!');
-      log('__dumped :', dname, dict.size, total)
-    }).catch(function (err) {
-      console.log('oh no an error', err.message);
-    })
-})
-
-Mousetrap.bind(['ctrl+t'], function(ev) {
-  // initial replication test
-  initCfg()
-    .then(cfg=> {
-      cfg = JSON.parse(JSON.stringify(cfg))
-      log('_____initcfg:', cfg)
-      initialReplication(upath, cfg)
-        .then(cfg=>{
-          log('___initial-cfg', cfg)
-          initDBs(cfg)
-          settings.set('cfg', cfg)
-        })
-        .catch(err=>{ log('ERR-initialReplication', err.message) })
-    })
-
-})
-
+// +g initCfg test
 Mousetrap.bind(['ctrl+g'], function(ev) {
   initCfg()
     .then(cfg=> {
+      cfg = JSON.parse(JSON.stringify(cfg))
       log('_________+G-cfg:', cfg)
       settings.set('cfg', cfg)
     })
@@ -187,6 +138,7 @@ function remoteCfg(rdnames) {
 }
 
 function showDicts(cfg) {
+  cfg = _.filter(cfg, dict=> { return dict.dname != 'flex' })
   createRemoteTable()
   let otable = q('#table-dicts-remote')
   cfg.forEach(rdb=> {
@@ -404,41 +356,28 @@ export function activateDict(dname, on) {
 //   })
 // }
 
-// export function requestRemoteDicts() {
-//   let cfg = settings.get('cfg')
-//   cfg = JSON.parse(JSON.stringify(cfg))
 
-//   getCfgInfos(upath)
-//     .then(infos=> {
-//       cfg.forEach(dict=> {
-//         let info = _.find(infos, info=> { return dict.dname == info.dname })
-//         if (!info) return
-//         dict.name = info.name, dict.langs = info.langs, dict.size = info.size
-//       })
-//       settings.set('cfg', cfg)
-//       showDicts(cfg)
+Mousetrap.bind(['ctrl+_'], function(ev) {
+  let dname = 'souda'
+  let cfg = settings.get('cfg')
+  let dict = _.find(cfg, dict=> { return dict.dname == dname })
+  if (!dict) return
+  log('_________+E-start', dname, dict.size)
 
-//       let dnames = cfg.map(dict=> { return dict.dname })
-//       request(getopts, function (error, response, body) {
-//         if (error) console.error('soket error:', error)
-//         if (error) return
-//         if (response && response.statusCode != 200)  return
+  let stream = new MemoryStream()
+  let batch_size = 1000
+  let total = 0
+  stream.on('data', function(chunk) {
+    total += batch_size/2
+    let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
+    log('__dumped :', dict.size, total, '%', percent)
+  })
 
-//         let dblist
-//         try {
-//           dblist = JSON.parse(body)
-//         } catch (err) {
-//           console.log('remote dbs list ERR', err)
-//           dblist = []
-//         }
-//         let rdnames = _.filter(dblist, dict=> { return dict[0] != '_' })
-//         let synced = _.intersection(rdnames, dnames)
-//         cfg.forEach(dict=> {
-//           if (!synced.includes(dict.dname)) return
-//           dict.sync = true
-//         })
-//         settings.set('cfg', cfg)
-//         showDicts(cfg)
-//       })
-//     })
-// }
+  streamDB (upath, dname, stream, batch_size)
+    .then(function () {
+      console.log('Hooray the stream replication is complete!');
+      log('__dumped :', dname, dict.size, total)
+    }).catch(function (err) {
+      console.log('oh no an error', err.message);
+    })
+})

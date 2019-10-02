@@ -14,7 +14,8 @@ import { config } from './app.config'
 import { queryDBs, showSegResult, showCognate, createCognateList, showTranslit, closePopups } from "./lib/parse-data"
 import { initCfg, initDBs } from './lib/remote'
 // import { initialReplication } from 'antrax/dist/lib/pouch'
-import { getCfg, initialReplication } from '/home/michael/a/loigos/dist/lib/pouch'
+import { initialReplication } from '/home/michael/a/loigos/dist/lib/pouch'
+const Mousetrap = require('mousetrap')
 
 const log = console.log
 const app = remote.app;
@@ -219,21 +220,28 @@ function initState() {
   let cfg = settings.get('cfg')
   if (!cfg) {
   // if (true) {
-    log('____________biblos start:')
-    initCfg()
-      .then(cfg=> {
-        cfg = JSON.parse(JSON.stringify(cfg))
-        log('_____initcfg:', cfg)
-        initialReplication(upath, cfg)
-          .then(cfg=>{
-            log('___initial-cfg', cfg)
-            initDBs(cfg)
-            settings.set('cfg', cfg)
-          })
-          .catch(err=>{ log('ERR-initialReplication', err.message) })
+    log('_____initCFG')
+    let rcfg = [{dname: 'terms'}, {dname: 'flex'}, {dname: 'wkt'}, {dname: 'lsj'}, {dname: 'dvr'}, {dname: 'souda'} ]
+    initialReplication(upath, rcfg, config.batch_size)
+      .then(cfg=>{
+        log('___initial-cfg', cfg)
+        initDBs(cfg)
+        settings.set('cfg', cfg)
       })
+      .catch(err=>{ log('ERR-initReplication', err.message) })
 
-
+    // initCfg()
+    //   .then(rcfg=> {
+    //     rcfg = JSON.parse(JSON.stringify(rcfg))
+    //     log('_____init-r-cfg:', rcfg)
+    //     initialReplication(upath, rcfg, config.batch_size)
+    //       .then(cfg=>{
+    //         log('___initial-cfg', cfg)
+    //         initDBs(cfg)
+    //         settings.set('cfg', cfg)
+    //       })
+    //       .catch(err=>{ log('ERR-initReplication', err.message) })
+    //   })
   } else {
     cfg = JSON.parse(JSON.stringify(cfg))
     log('____________biblos - init cfg:', cfg)
@@ -245,6 +253,38 @@ function initState() {
     lang = config.deflang
     settings.set('lang', lang)
   }
-  // log('__________biblos-state:', state.sec)
   return state
 }
+
+// initial replication test
+Mousetrap.bind(['ctrl+t'], function(ev) {
+  let rcfg = [{dname: 'terms'}, {dname: 'flex'}, {dname: 'wkt'}, {dname: 'lsj'}, {dname: 'dvr'}, {dname: 'souda'} ]
+  let batch_size = config.batch_size
+  log('___+t: initial-rcfg', batch_size, rcfg)
+  initialReplication(upath, rcfg, batch_size)
+    .then(cfg=>{
+      log('___initial-cfg', cfg)
+      initDBs(cfg)
+      settings.set('cfg', cfg)
+    })
+    .catch(err=>{ log('ERR-initReplication', err.message) })
+
+  // initCfg() // +t
+  //   .then(rcfg=> {
+  //     rcfg = JSON.parse(JSON.stringify(rcfg))
+  //     log('_____init-r-cfg:', rcfg)
+  //     initialReplication(upath, rcfg, config.batch_size) // +t
+  //       .then(cfg=>{
+  //         log('___initial-cfg', cfg)
+  //         initDBs(cfg)
+  //         settings.set('cfg', cfg)
+  //       })
+  //       .catch(err=>{ log('ERR-initReplication', err.message) })
+  //   })
+})
+
+Mousetrap.bind(['ctrl+e'], function(ev) {
+  let state = settings.get('state')
+  state.sec = 'remote-dicts'
+  navigate(state)
+})

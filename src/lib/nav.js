@@ -77,12 +77,7 @@ Mousetrap.bind(['ctrl+p'], function(ev) {
 })
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
-  let cfg = settings.get('cfg')
-  cfg = getCfg(apath, upath)
-  cfg = JSON.parse(JSON.stringify(cfg))
-  settings.set('cfg', cfg)
-  let dnames = cfg.map(dict=> { return [dict.dname, dict.idx, dict.active].join('-') })
-  console.log('_________+F-CFG:', cfg, 'dnames:', dnames)
+  console.log('_________+F: diglossa.js connection')
 })
 
 Mousetrap.bind(['ctrl+r'], function(ev) {
@@ -106,14 +101,14 @@ Mousetrap.bind(['ctrl+z'], function(ev) {
   let cfg = settings.get('cfg')
   cfg = JSON.parse(JSON.stringify(cfg))
   initDBs(cfg) // +z
-  console.log('== INIT STATE == ', cfg)
+  console.log('== checkConnection == ', cfg)
 })
 
 // use with caution !
 Mousetrap.bind(['ctrl+shift+z'], function(ev) {
   let state = {sec: config.defstate}
   settings.set('state', state)
-  let cfg = []
+  let cfg
   settings.set('cfg', cfg)
   console.log('== ZERO STATE CFG == ', cfg)
 })
