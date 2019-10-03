@@ -28,6 +28,7 @@ const apath = app.getAppPath()
 loadSections(config)
 document.onmousedown = mouseMenu
 
+let progress = q('#progress')
 let state = initState()
 navigate(state)
 
@@ -59,8 +60,8 @@ clipboard
   })
   .startWatching()
 
-let progress = q('#progress')
-let message = q('#message')
+// let progress = q('#progress')
+// let message = q('#message')
 
 document.addEventListener('click', (ev) => {
   let el = ev.target
@@ -133,8 +134,9 @@ document.addEventListener('click', (ev) => {
   } else if (data.disable) {
     activateDict(data.disable, false)
   } else if (data.sync) {
-    // if (el.textContent != 'clone') return // раскомментарить
-    // cloneDict(data.sync)
+    if (el.textContent != 'clone') return
+    log('______________CLONE', data.sync)
+    cloneDict(data.sync)
   } else if (data.section) {
     state.sec = data.section
     navigate(state)
@@ -180,6 +182,7 @@ document.addEventListener("wheel", function(ev) {
   scrollPane(ev)
 }, false)
 
+
 function scrollPane(ev) {
   let oclosest = ev.target.closest('#source') || ev.target.closest('#result')  || ev.target.closest('.section')
   if (!oclosest) return
@@ -208,44 +211,39 @@ function cleanStr(row) {
   return clean
 }
 
+
 function initState() {
   let state = settings.get('state')
   if (!state) {
     state = {sec: config.defstate}
     settings.set('state', state)
   }
-  // state = JSON.parse(JSON.stringify(state))
-  // log('_____init state:', state)
 
   let cfg = settings.get('cfg')
-  // if (!cfg) {
-  if (false) {
-    log('_____initCFG_______________________________')
-    let rcfg = [{dname: 'terms'}, {dname: 'flex'}, {dname: 'wkt'}, {dname: 'lsj'}, {dname: 'dvr'}, {dname: 'souda'} ]
-    initialReplication(upath, rcfg, config.batch_size)
-      .then(cfg=>{
-        log('___initial-cfg', cfg)
-        initDBs(cfg)
-        settings.set('cfg', cfg)
+  if (!cfg) {
+    // if (false) {
+    progress.classList.remove('is-hidden')
+    let ocloning = q('#dicts-cloning').classList.remove('is-hidden')
+    let ocloned = q('#dicts-cloned').classList.add('is-hidden')
+    initCfg() // +t
+      .then(rcfg=> {
+        rcfg = JSON.parse(JSON.stringify(rcfg))
+        // log('_____init-r-cfg:', rcfg)
+        initialReplication(upath, rcfg, config.batch_size) // +t
+          .then(cfg=>{
+            // log('___initial-cfg', cfg)
+            initDBs(cfg)
+            settings.set('cfg', cfg)
+            let ocloning = q('#dicts-cloning').classList.add('is-hidden')
+            let ocloned = q('#dicts-cloned').classList.remove('is-hidden')
+            progress.classList.add('is-hidden')
+          })
+          .catch(err=>{ log('ERR-initReplication', err.message) })
       })
-      .catch(err=>{ log('ERR-initReplication', err.message) })
-
-    // initCfg()
-    //   .then(rcfg=> {
-    //     rcfg = JSON.parse(JSON.stringify(rcfg))
-    //     log('_____init-r-cfg:', rcfg)
-    //     initialReplication(upath, rcfg, config.batch_size)
-    //       .then(cfg=>{
-    //         log('___initial-cfg', cfg)
-    //         initDBs(cfg)
-    //         settings.set('cfg', cfg)
-    //       })
-    //       .catch(err=>{ log('ERR-initReplication', err.message) })
-    //   })
   } else {
     cfg = JSON.parse(JSON.stringify(cfg))
-    log('____________biblos - init cfg:', cfg)
-    // initDBs(cfg)
+    // log('____________biblos - init cfg:', cfg)
+    initDBs(cfg)
 }
 
   let lang = settings.get('lang')
@@ -258,17 +256,8 @@ function initState() {
 
 // initial replication test
 Mousetrap.bind(['ctrl+t'], function(ev) {
-  let rcfg = [{dname: 'terms'}, {dname: 'flex'}, {dname: 'wkt'}, {dname: 'lsj'}, {dname: 'dvr'}, {dname: 'souda'} ]
-  let batch_size = config.batch_size
-  log('___+t: initial-rcfg', batch_size, rcfg)
-  initialReplication(upath, rcfg, batch_size)
-    .then(cfg=>{
-      log('___initial-cfg', cfg)
-      initDBs(cfg)
-      settings.set('cfg', cfg)
-    })
-    .catch(err=>{ log('ERR-initReplication', err.message) })
-
+  // let progress = q('#progress')
+  progress.classList.remove('is-hidden')
   // initCfg() // +t
   //   .then(rcfg=> {
   //     rcfg = JSON.parse(JSON.stringify(rcfg))
@@ -278,6 +267,9 @@ Mousetrap.bind(['ctrl+t'], function(ev) {
   //         log('___initial-cfg', cfg)
   //         initDBs(cfg)
   //         settings.set('cfg', cfg)
+  //         let ocloning = q('#dicts-cloning').classList.add('is-hidden')
+  //         let ocloned = q('#dicts-cloned').classList.remove('is-hidden')
+  //         progress.classList.add('is-hidden')
   //       })
   //       .catch(err=>{ log('ERR-initReplication', err.message) })
   //   })

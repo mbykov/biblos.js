@@ -78,6 +78,9 @@ Mousetrap.bind(['ctrl+p'], function(ev) {
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
   console.log('_________+F: diglossa.js connection')
+  let cfg = settings.get('cfg')
+  cfg = JSON.parse(JSON.stringify(cfg))
+  console.log('_________+F: cfg:', cfg)
 })
 
 Mousetrap.bind(['ctrl+r'], function(ev) {
@@ -178,7 +181,7 @@ export function navigate(state, data) {
   let sec = state.sec
   let sid = showSection(state)
   state.sid = sid
-  log('NAV-state:', state)
+  // log('NAV-state:', state)
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
   else if (sec == 'remote-dicts') requestRemoteDicts(state)
@@ -186,8 +189,8 @@ export function navigate(state, data) {
   else if (sec == 'local-dict-full') showFullLocalDict(state, data)
   else if (sec == 'local-dict-item') editLocalDictItem(state, data)
 
-  let progress = q('#progress')
-  progress.classList.add('is-hidden')
+  // let progress = q('#progress')
+  // progress.classList.add('is-hidden')
 
   settings.set('state', state)
 }

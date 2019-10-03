@@ -99,7 +99,6 @@ function remoteCfg(rdnames) {
   return Promise.all(rdnames.map(function(dname) {
     let dbpath = [config.host, dname].join('/')
     let pouch = new PouchDB(dbpath, {skip_setup: true})
-    // pouch.installSizeWrapper()
     return Promise.all([
       pouch.info()
         .then(info=> {
@@ -122,7 +121,6 @@ function remoteCfg(rdnames) {
   }))
     .then(infodescrs=> {
       let infos = []
-      // log('--cfg-infos-infodescrs--', infodescrs)
       rdnames.forEach((dname, idx)=> {
         let infodescr = infodescrs[idx]
         if (!infodescr) return
@@ -166,8 +164,12 @@ function showDicts(cfg) {
       let check = checkmark()
       osync.appendChild(check)
     } else {
-      osync.dataset.sync = rdb.dname
-      let synctxt = (rdb.dname == config.ldname) ? '---' : '---'
+      let synctxt = '---'
+      if (rdb.dname != config.ldname) {
+        osync.dataset.sync = rdb.dname
+        synctxt = 'clone'
+        osync.classList.add('link')
+      }
       osync.textContent = synctxt
     }
     otr.appendChild(osync)
@@ -222,30 +224,6 @@ function checkmark() {
   return check
 }
 
-export function cloneDict(dname) {
-  // progress.classList.remove('is-hidden')
-  // let localpath = path.resolve(upath, 'pouch', dname)
-  // let remotepath = [config.host, dname].join('/')
-  // let localDB = new PouchDB(localpath)
-  // let remoteDB = new PouchDB(remotepath)
-
-  // remoteDB.replicate.to(localDB, { retry: true, batch_size: 1000 })
-  //   .on('change', function (info) {
-  //     console.log('written', info.docs_written)
-  //   }).on('paused', function (res) {
-  //     console.log('paused', res)
-  //   })
-  //   .on('complete', function (res) {
-  //     console.log('ok, were done!', res)
-  //     let cfg = clonedCfg(dname)
-  //     initDBs(cfg)
-  //     showDicts(cfg)
-  //     progress.classList.add('is-hidden')
-  //   })
-  //   .on('error', function (err) {
-  //     console.log('boo, something went wrong!', err)
-  //   })
-}
 
 // function clonedCfg(dname) {
 //   let cfg = settings.get('cfg')
@@ -259,7 +237,7 @@ export function cloneDict(dname) {
 // }
 
 export function delDict(dname) {
-  progress.classList.remove('is-hidden')
+  // progress.classList.remove('is-hidden')
 }
 
 export function moveDict(dname, shift) {
@@ -296,65 +274,38 @@ export function activateDict(dname, on) {
   showDicts(cfg)
 }
 
-// function remoteCfg_() {
-//   request(getopts, function (error, response, body) {
-//     if (error) console.error('soket error:', error)
-//     if (error) return
-//     if (response && response.statusCode != 200)  return []
+export function cloneDict(dname) {
+  progress.classList.remove('is-hidden')
+  log('________start-stream-cloning', dname)
+  let cfg = settings.get('cfg')
+  let dict = _.find(cfg, dict=> { return dict.dname == dname })
+  if (!dict) return
+  log('_________+E-start', dname, dict.size, config.batch_size)
 
-//     let dblist = []
-//     try {
-//       dblist = JSON.parse(body)
-//     } catch (err) {
-//       console.log('ERR remote dbs list:', err)
-//       return
-//     }
-//     let rdnames = _.filter(dblist, dict=> { return dict[0] != '_' })
-//     let code = config.code
-//     rdnames = _.intersection(rdnames, greekONLY)
-//     if (!rdnames.length) return []
+  let stream = new MemoryStream()
+  let total = 0
+  let step = config.batch_size/2
+  let counter = q('#cloning-progress-counter')
+  stream.on('data', function(chunk) {
+    total += step
+    let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
+    log('__dumped :', dict.size, total, '%', percent)
+    counter.textContent = 'cloning ' + dict.name + ' dictionary: ' + percent + '%'
+    if (percent > 100) counter.textContent = ''
+  })
 
-//     return Promise.all(rdnames.map(function(dname) {
-//       let dbpath = [config.host, dname].join('/')
-//       // log('___dbpath', dbpath)
-//       let pouch = new PouchDB(dbpath, {skip_setup: true})
-//       return Promise.all([
-//         pouch.info()
-//           .then(info=> {
-//             info.dname = dname
-//             return info
-//           })
-//           .catch(err=> {
-//             if (err.reason == 'missing') return
-//             log('catch info ERR', err)
-//           }),
-//         pouch.get('description')
-//           .then(descr=> {
-//             return descr
-//           })
-//           .catch(err=> {
-//             if (err.reason == 'missing') return
-//             log('catch descr ERR', err)
-//           })
-//       ])
-//     }))
-//       .then(infodescrs=> {
-//         let infos = []
-//         // log('--cfg-infos-infodescrs--', infodescrs)
-//         rdnames.forEach((dname, idx)=> {
-//           let infodescr = infodescrs[idx]
-//           if (!infodescr) return
-//           let info = infodescr[0]
-//           let descr = infodescr[1]
-//           if (!info || !descr) return
-//           let dbinfo = { dname: dname, name: descr.name, size: info.doc_count, langs: descr.langs, source: descr.source } //
-//           infos.push(dbinfo)
-//         })
-//         // log('--cfg-infos-infos--', infos)
-//         return infos
-//       })
-//   })
-// }
+  streamDB(upath, dname, stream, config.batch_size)
+    .then(function () {
+      console.log('Hooray the stream replication is complete!');
+      log('__dumped :', dname, dict.size, total)
+      dict.active = true, dict.sync = true
+      log('__dumped cfg:', cfg)
+      showDicts(cfg)
+      progress.classList.add('is-hidden')
+    }).catch(function (err) {
+      console.log('oh no an error', err.message);
+    })
+}
 
 
 Mousetrap.bind(['ctrl+m'], function(ev) {

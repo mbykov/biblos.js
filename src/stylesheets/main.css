@@ -334,6 +334,7 @@ div.qtext > p.hidden {
 
 .red {
     color: red;
+    font-weight: bold;
 }
 
 #transcript {

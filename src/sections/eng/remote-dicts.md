@@ -15,6 +15,10 @@
 
 <p>&nbsp;</p>
 
+<div id="cloning-progress-counter">counter</div>
+
+<p>&nbsp;</p>
+
 <div class="section-descr">
     <p><img src="../resources/check.png" class="dict-check">means remote dict already cloned and synchronized. <b>Click</b> <img src="../resources/check.png" class="dict-check">to activate / deactivate dictionary</p>
     <p>recommended sequence of dictionaries: Terms, Wiktionary, other (LSJ, etc) </p>

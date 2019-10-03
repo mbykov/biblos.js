@@ -1,11 +1,17 @@
 <img src="../resources/icons/128x128.png" id="bookImg">
 
-<!-- <div id="text"> -->
+<div id="dicts-cloning" class="red is-hidden">
+    Cloning default dictionaries from server. Be patient
+</div>
 
-After first installation Biblos.js has several dictionaries. They are already synchronized with server.
+<div id="dicts-cloned" class="is-hidden">
+    After first installation Biblos.js has bare minimum of dictionaries, <b>Wiktionary</b> <!-- (based on <span class="external">https://en.wiktionary.org/wiki/Category:Ancient_Greek_language</span>) -->, <b>Terms</b>, and hidden but absolutely necessary <b>Flex</b>. They are already synchronized with server.
+</div>
 
-<a href="#" data-section="remote-dicts">Clone</a> copy additional dictionaries from server, create your own local dictionary or import dictionary from CSV files.
-or <a href="#" data-section="csv">import</a> dictionary from CSV files.
+&nbsp;
+
+<a href="#" data-section="remote-dicts">Clone</a> copy additional dictionaries from server, or create your own local dictionary.
+<!-- or <a href="#" data-section="csv">import</a> dictionary from CSV files. -->
 
 <a href="#" data-section="arrange-dicts">Arrage, activate, delete</a> them as you like.
 
