@@ -50,10 +50,9 @@ export function requestRemoteDicts() {
   initCfg()
     .then(rcfg=> {
       let cfg = settings.get('cfg')
-      cfg = JSON.parse(JSON.stringify(cfg))
-      log('_________+req-remote-cfg:', cfg, 'rem:', rcfg)
-      if (cfg.length == rcfg.length) showDicts(cfg)
-      else addDict(cfg, rcfg)
+      // cfg = JSON.parse(JSON.stringify(cfg))
+      // log('_________+req-remote-cfg:', cfg, 'rem:', rcfg)
+      showDicts(cfg)
     })
 
 }
@@ -267,8 +266,6 @@ export function activateDict(dname, on) {
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
   if (!dict) return
   dict.active = (on) ? true : false
-  let active = _.filter(cfg, dict=> { return dict.active })
-  let dnames = active.map(dict=> { return dict.dname })
   settings.set('cfg', cfg)
   initDBs(cfg)
   showDicts(cfg)
@@ -276,11 +273,10 @@ export function activateDict(dname, on) {
 
 export function cloneDict(dname) {
   progress.classList.remove('is-hidden')
-  log('________start-stream-cloning', dname)
   let cfg = settings.get('cfg')
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
   if (!dict) return
-  log('_________+E-start', dname, dict.size, config.batch_size)
+  // log('_________+E-start', dname, dict.size, config.batch_size)
 
   let stream = new MemoryStream()
   let total = 0
@@ -289,7 +285,7 @@ export function cloneDict(dname) {
   stream.on('data', function(chunk) {
     total += step
     let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
-    log('__dumped :', dict.size, total, '%', percent)
+    // log('__dumped :', dict.size, total, '%', percent)
     counter.textContent = 'cloning ' + dict.name + ' dictionary: ' + percent + '%'
     if (percent > 100) counter.textContent = ''
   })
@@ -297,38 +293,13 @@ export function cloneDict(dname) {
   streamDB(upath, dname, stream, config.batch_size)
     .then(function () {
       console.log('Hooray the stream replication is complete!');
-      log('__dumped :', dname, dict.size, total)
       dict.active = true, dict.sync = true
-      log('__dumped cfg:', cfg)
+      cfg = JSON.parse(JSON.stringify(cfg))
+      // log('__dumped cfg:', dname, dict.size, total, cfg)
+      settings.set('cfg', cfg)
       showDicts(cfg)
       progress.classList.add('is-hidden')
     }).catch(function (err) {
       console.log('oh no an error', err.message);
     })
 }
-
-
-Mousetrap.bind(['ctrl+m'], function(ev) {
-  let dname = 'terms'
-  let cfg = settings.get('cfg')
-  let dict = _.find(cfg, dict=> { return dict.dname == dname })
-  if (!dict) return
-  log('_________+E-start', dname, dict.size, config.batch_size)
-
-  let stream = new MemoryStream()
-  let total = 0
-  let step = config.batch_size/2
-  stream.on('data', function(chunk) {
-    total += step
-    let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
-    log('__dumped :', dict.size, total, '%', percent)
-  })
-
-  streamDB(upath, dname, stream, config.batch_size)
-    .then(function () {
-      console.log('Hooray the stream replication is complete!');
-      log('__dumped :', dname, dict.size, total)
-    }).catch(function (err) {
-      console.log('oh no an error', err.message);
-    })
-})

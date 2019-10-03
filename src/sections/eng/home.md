@@ -13,7 +13,7 @@
 <a href="#" data-section="remote-dicts">Clone</a> copy additional dictionaries from server, or create your own local dictionary.
 <!-- or <a href="#" data-section="csv">import</a> dictionary from CSV files. -->
 
-<a href="#" data-section="arrange-dicts">Arrage, activate, delete</a> them as you like.
+<a href="#" data-section="arrange-dicts">Arrage and activate</a> them as you like.
 
 &nbsp;
 
