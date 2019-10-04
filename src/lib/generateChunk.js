@@ -10,6 +10,7 @@ import {comb, plain, oxia} from 'orthos'
 import { antrax } from 'antrax'
 import { readDictionary } from 'antrax/dist/lib/pouch'
 // import { antrax } from '/home/michael/a/loigos'
+// import { readDictionary } from '/home/michael/a/loigos/dist/lib/pouch'
 let miss = require('mississippi')
 // let parse = require('csv-parse')
 
@@ -44,9 +45,7 @@ export function generateDictChunk (upath, dname, pars, finish) {
 function createChunk (upath, dname, freqs, done) {
   readDictionary(upath, dname)
     .then(rdocs=> {
-      // let rdocs = _.compact(res.rows.map(row => { return row.doc }))
       let docs = _.flatten(_.compact(rdocs.map(rdoc => { return rdoc.docs })))
-      // let rdicts = docs.map(doc=> { return doc.rdict })
 
       miss.pipe(
         fromFreq(freqs),
@@ -111,7 +110,6 @@ function groupResult (upath, docs, done) {
       let already = _.find(docs, doc=> { return chdict.rdict == doc.rdict })
       if (already) chdict.trns = already.trns
     })
-
     done(chdicts)
     cb(null, null)
   })

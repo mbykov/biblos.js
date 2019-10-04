@@ -94,9 +94,11 @@ export function showLocalChunk (state, dicts) {
 
   let newdocs = filled.map(newdoc=> { return {_id: newdoc.plain || newdoc.term, docs: [newdoc] } })
   okmerge.addEventListener('click', (ev) => {
-    updateCurrent (upath, newdocs)
+    log('updateCurrent newdocs', newdocs)
+    let dname = 'local'
+    updateCurrent (upath, dname, newdocs)
       .then(res=> {
-        // log('MERGE-DICT', res)
+        log('MERGE-DICT', res)
         let cfg = settings.get('cfg')
         // cfg = JSON.parse(JSON.stringify(cfg))
         let locdict = _.find(cfg, dict=> { return dict.dname == config.ldname })

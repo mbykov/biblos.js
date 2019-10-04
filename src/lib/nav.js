@@ -25,7 +25,7 @@ const apath = app.getAppPath()
 let history = []
 let hstate = 0
 let split
-// let state
+let progress = q('#progress')
 
 // window.onbeforeunload = function () { }
 
@@ -87,15 +87,6 @@ Mousetrap.bind(['ctrl+r'], function(ev) {
   let current = history[hstate]
   history = [current]
   hstate = 0
-})
-
-Mousetrap.bind(['ctrl+c'], function(ev) {
-  let el = q('.active-form:hover')
-  if (!el) return
-  let wf = el.textContent
-  if (!wf) return
-  let zerohead = [wf, '  '].join('') // wordform + two spaces
-  clipboard.writeText(zerohead)
 })
 
 Mousetrap.bind(['ctrl+z'], function(ev) {
@@ -189,8 +180,7 @@ export function navigate(state, data) {
   else if (sec == 'local-dict-full') showFullLocalDict(state, data)
   else if (sec == 'local-dict-item') editLocalDictItem(state, data)
 
-  // let progress = q('#progress')
-  // progress.classList.add('is-hidden')
+  progress.classList.add('is-hidden')
 
   settings.set('state', state)
 }

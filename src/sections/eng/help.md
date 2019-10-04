@@ -10,7 +10,9 @@ just copy **Crtl+C** text everywhere on a desktop, then move mouse over a word
 
 &nbsp;
 
-**Ctrl+C** - to copy wordform with space after it (not statring analysis)
+**Ctrl+C** - to copy wordform, the same as select and copy, start analysis as usual
+
+**Ctrl+Shift+C** - to copy wordform, but not statring analysis
 
 **Ctrl+mouse** - allows you to move mouse freely
 

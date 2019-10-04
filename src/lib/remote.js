@@ -5,10 +5,10 @@ import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, inse
 const settings = require('electron').remote.require('electron-settings')
 import { config } from '../app.config'
 import path from "path"
-import { antrax }  from '/home/michael/a/loigos'
-// import { antrax } from 'antrax'
-import { checkConnection, streamDB }  from '/home/michael/a/loigos/dist/lib/pouch'
-// import { checkConnection, streamDB }  from 'antrax/dist/lib/pouch'
+import { antrax } from 'antrax'
+// import { antrax }  from '/home/michael/a/loigos'
+// import { checkConnection, streamDB }  from '/home/michael/a/loigos/dist/lib/pouch'
+import { checkConnection, streamDB }  from 'antrax/dist/lib/pouch'
 
 let MemoryStream = require('memorystream');
 

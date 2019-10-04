@@ -13,8 +13,8 @@ import { mouseMenu } from './lib/context-menu'
 import { config } from './app.config'
 import { queryDBs, showSegResult, showCognate, createCognateList, showTranslit, closePopups } from "./lib/parse-data"
 import { initCfg, initDBs } from './lib/remote'
-// import { initialReplication } from 'antrax/dist/lib/pouch'
-import { initialReplication } from '/home/michael/a/loigos/dist/lib/pouch'
+import { initialReplication } from 'antrax/dist/lib/pouch'
+// import { initialReplication } from '/home/michael/a/loigos/dist/lib/pouch'
 const Mousetrap = require('mousetrap')
 
 const log = console.log
@@ -25,14 +25,18 @@ const axios = require('axios')
 const upath = app.getPath("userData")
 const apath = app.getAppPath()
 
+
 loadSections(config)
 document.onmousedown = mouseMenu
 
+let skip = false
 let progress = q('#progress')
 let state = initState()
-navigate(state)
+// navigate(state)
 
 ipcRenderer.on('section', function (event, section) {
+  log('_______________ipc-section', section)
+  let state = settings.get('state')
   state.sec = section
   navigate(state)
 })
@@ -48,15 +52,15 @@ ipcRenderer.on('lang', function (event, lang) {
 clipboard
   .on('text-changed', () => {
     let txt = clipboard.readText()
-    if (txt.slice(-2) == '  ') return // zerotail
+    if (skip) return
     let clean = cleanStr(txt)
     let pars = sband(clean, config.code)
     if (!pars) return
     state.sec = 'main'
     state.pars = pars
-    log('______________CLIP', state)
     settings.set('state', state)
     navigate(state)
+    skip = false
   })
   .startWatching()
 
@@ -211,7 +215,6 @@ function cleanStr(row) {
   return clean
 }
 
-
 function initState() {
   let state = settings.get('state')
   if (!state) {
@@ -221,29 +224,27 @@ function initState() {
 
   let cfg = settings.get('cfg')
   if (!cfg) {
-    // if (false) {
     progress.classList.remove('is-hidden')
     let ocloning = q('#dicts-cloning').classList.remove('is-hidden')
     let ocloned = q('#dicts-cloned').classList.add('is-hidden')
     initCfg() // +t
       .then(rcfg=> {
         rcfg = JSON.parse(JSON.stringify(rcfg))
-        // log('_____init-r-cfg:', rcfg)
         initialReplication(upath, rcfg, config.batch_size) // +t
           .then(cfg=>{
-            // log('___initial-cfg', cfg)
             initDBs(cfg)
             settings.set('cfg', cfg)
             let ocloning = q('#dicts-cloning').classList.add('is-hidden')
             let ocloned = q('#dicts-cloned').classList.remove('is-hidden')
-            progress.classList.add('is-hidden')
+            // progress.classList.add('is-hidden')
+            navigate(state)
           })
           .catch(err=>{ log('ERR-initReplication', err.message) })
       })
   } else {
     cfg = JSON.parse(JSON.stringify(cfg))
-    // log('____________biblos - init cfg:', cfg)
     initDBs(cfg)
+    navigate(state)
 }
 
   let lang = settings.get('lang')
@@ -254,29 +255,30 @@ function initState() {
   return state
 }
 
-// initial replication test
-Mousetrap.bind(['ctrl+t'], function(ev) {
-  // let progress = q('#progress')
-  progress.classList.remove('is-hidden')
-  // initCfg() // +t
-  //   .then(rcfg=> {
-  //     rcfg = JSON.parse(JSON.stringify(rcfg))
-  //     log('_____init-r-cfg:', rcfg)
-  //     initialReplication(upath, rcfg, config.batch_size) // +t
-  //       .then(cfg=>{
-  //         log('___initial-cfg', cfg)
-  //         initDBs(cfg)
-  //         settings.set('cfg', cfg)
-  //         let ocloning = q('#dicts-cloning').classList.add('is-hidden')
-  //         let ocloned = q('#dicts-cloned').classList.remove('is-hidden')
-  //         progress.classList.add('is-hidden')
-  //       })
-  //       .catch(err=>{ log('ERR-initReplication', err.message) })
-  //   })
+
+Mousetrap.bind(['ctrl+shift+c'], function(ev) {
+  let el = q('.active-form:hover')
+  if (!el) return
+  let wf = el.textContent
+  if (!wf) return
+  skip = true
+  clipboard.writeText(wf)
 })
 
-Mousetrap.bind(['ctrl+e'], function(ev) {
-  let state = settings.get('state')
-  state.sec = 'remote-dicts'
-  navigate(state)
+Mousetrap.bind(['ctrl+c'], function(ev) {
+  let el = q('.active-form:hover')
+  if (!el) return
+  let wf = el.textContent
+  if (!wf) return
+  clipboard.writeText(wf)
 })
+
+// Mousetrap.bind(['ctrl+t'], function(ev) {
+//   progress.classList.remove('is-hidden')
+// })
+
+// Mousetrap.bind(['ctrl+e'], function(ev) {
+//   let state = settings.get('state')
+//   state.sec = 'remote-dicts'
+//   navigate(state)
+// })
