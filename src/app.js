@@ -221,6 +221,7 @@ function initState() {
     state = {sec: config.defstate}
     settings.set('state', state)
   }
+  navigate(state)
 
   let cfg = settings.get('cfg')
   if (!cfg) {
@@ -236,8 +237,9 @@ function initState() {
             settings.set('cfg', cfg)
             let ocloning = q('#dicts-cloning').classList.add('is-hidden')
             let ocloned = q('#dicts-cloned').classList.remove('is-hidden')
-            // progress.classList.add('is-hidden')
-            navigate(state)
+            progress.classList.add('is-hidden')
+            remote.getCurrentWindow().reload()
+            // navigate(state)
           })
           .catch(err=>{ log('ERR-initReplication', err.message) })
       })

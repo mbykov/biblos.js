@@ -1,5 +1,5 @@
 {
-  "version": "0.9.151",
+  "version": "0.9.152",
   "name": "biblos.js",
   "productName": "Biblos.js",
   "description": "Biblos.js, a.k.a Morpheus for Ancient Greek based on CouchDB && Electron.js",
@@ -49,8 +49,20 @@
     "linux": {
       "category": "Educational software",
       "target": [
-        "deb"
-      ],
+     "target": [
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "rpm",
+          "arch": [
+            "x64"
+          ]
+        }
+        ],
       "icon": "resources/icons"
     },
     "publish": "github"
