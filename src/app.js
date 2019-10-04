@@ -60,7 +60,6 @@ clipboard
     state.pars = pars
     settings.set('state', state)
     navigate(state)
-    skip = false
   })
   .startWatching()
 
@@ -222,6 +221,8 @@ function initState() {
     settings.set('state', state)
   }
   navigate(state)
+  state = JSON.parse(JSON.stringify(state))
+  log('___________________INIT STATE', state)
 
   let cfg = settings.get('cfg')
   if (!cfg) {
@@ -246,7 +247,7 @@ function initState() {
   } else {
     cfg = JSON.parse(JSON.stringify(cfg))
     initDBs(cfg)
-    navigate(state)
+    // navigate(state)
 }
 
   let lang = settings.get('lang')
@@ -265,6 +266,7 @@ Mousetrap.bind(['ctrl+shift+c'], function(ev) {
   if (!wf) return
   skip = true
   clipboard.writeText(wf)
+  skip = false
 })
 
 Mousetrap.bind(['ctrl+c'], function(ev) {
