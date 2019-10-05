@@ -4,13 +4,21 @@
     Cloning default dictionaries from server. Be patient
 </div>
 
-<div id="dicts-cloned" class="is-hidden">
-    After first installation Biblos.js has bare minimum of dictionaries, <b>Wiktionary</b> <!-- (based on <span class="external">https://en.wiktionary.org/wiki/Category:Ancient_Greek_language</span>) -->, <b>Terms</b>, and hidden but absolutely necessary <b>Flex</b>. They are already synchronized with server.
-</div>
-
 &nbsp;
 
-<a href="#" data-section="remote-dicts">Clone</a> copy additional dictionaries from server, or create your own local dictionary. <!-- or <a href="#" data-section="csv">import</a> dictionary from CSV files. --> <a href="#" data-section="arrange-dicts">Arrage and activate / deactivate</a> them as you like.
+<div id="clone-progress">
+    <p id="clone-flex"></p>
+    <p id="clone-terms"></p>
+    <p id="clone-wkt"></p>
+</div>
+
+
+<div id="dicts-cloned" class="is-hidden">
+    After first installation Biblos.js has bare minimum of dictionaries, <b>Wiktionary</b> <!-- (based on <span class="external">https://en.wiktionary.org/wiki/Category:Ancient_Greek_language</span>) -->, <b>Terms</b>, and hidden but absolutely necessary <b>Flex</b>. They are already synchronized with server.
+    &nbsp;
+    <a href="#" data-section="remote-dicts">Clone</a> (copy) additional dictionaries from server. <!-- or <a href="#" data-section="csv">import</a> dictionary from CSV files. --> <a href="#" data-section="arrange-dicts">Arrage and activate / deactivate</a> them as you like.
+</div>
+
 
 &nbsp;
 

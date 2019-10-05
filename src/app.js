@@ -6,15 +6,13 @@ import env from "env";
 // import sband from "../../../sband"
 import sband from "speckled-band"
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
-import { cloneDict, moveDict, activateDict } from './lib/remote'
+// import { cloneDict, moveDict, activateDict } from './lib/remote'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
 import { config } from './app.config'
 import { queryDBs, showSegResult, showCognate, createCognateList, showTranslit, closePopups } from "./lib/parse-data"
-import { initCfg, initDBs } from './lib/remote'
-import { initialReplication } from 'antrax/dist/lib/pouch'
-// import { initialReplication } from '/home/michael/a/loigos/dist/lib/pouch'
+import { initState } from './lib/remote'
 const Mousetrap = require('mousetrap')
 
 const log = console.log
@@ -31,11 +29,10 @@ document.onmousedown = mouseMenu
 
 let skip = false
 let progress = q('#progress')
+// let message = q('#message')
 let state = initState()
-// navigate(state)
 
 ipcRenderer.on('section', function (event, section) {
-  log('_______________ipc-section', section)
   let state = settings.get('state')
   state.sec = section
   navigate(state)
@@ -46,7 +43,6 @@ ipcRenderer.on('lang', function (event, lang) {
   ipcRenderer.send('lang', lang)
   let state = settings.get('state')
   navigate(state)
-  // remote.getCurrentWindow().reload()
 })
 
 clipboard
@@ -62,9 +58,6 @@ clipboard
     navigate(state)
   })
   .startWatching()
-
-// let progress = q('#progress')
-// let message = q('#message')
 
 document.addEventListener('click', (ev) => {
   let el = ev.target
@@ -214,51 +207,6 @@ function cleanStr(row) {
   return clean
 }
 
-function initState() {
-  let state = settings.get('state')
-  if (!state) {
-    state = {sec: config.defstate}
-    settings.set('state', state)
-  }
-  navigate(state)
-  state = JSON.parse(JSON.stringify(state))
-  log('___________________INIT STATE', state)
-
-  let cfg = settings.get('cfg')
-  if (!cfg) {
-    progress.classList.remove('is-hidden')
-    let ocloning = q('#dicts-cloning').classList.remove('is-hidden')
-    let ocloned = q('#dicts-cloned').classList.add('is-hidden')
-    initCfg() // +t
-      .then(rcfg=> {
-        rcfg = JSON.parse(JSON.stringify(rcfg))
-        initialReplication(upath, rcfg, config.batch_size) // +t
-          .then(cfg=>{
-            initDBs(cfg)
-            settings.set('cfg', cfg)
-            let ocloning = q('#dicts-cloning').classList.add('is-hidden')
-            let ocloned = q('#dicts-cloned').classList.remove('is-hidden')
-            progress.classList.add('is-hidden')
-            remote.getCurrentWindow().reload()
-            // navigate(state)
-          })
-          .catch(err=>{ log('ERR-initReplication', err.message) })
-      })
-  } else {
-    cfg = JSON.parse(JSON.stringify(cfg))
-    initDBs(cfg)
-    // navigate(state)
-}
-
-  let lang = settings.get('lang')
-  if (!lang) {
-    lang = config.deflang
-    settings.set('lang', lang)
-  }
-  return state
-}
-
-
 Mousetrap.bind(['ctrl+shift+c'], function(ev) {
   let el = q('.active-form:hover')
   if (!el) return
@@ -276,13 +224,3 @@ Mousetrap.bind(['ctrl+c'], function(ev) {
   if (!wf) return
   clipboard.writeText(wf)
 })
-
-// Mousetrap.bind(['ctrl+t'], function(ev) {
-//   progress.classList.remove('is-hidden')
-// })
-
-// Mousetrap.bind(['ctrl+e'], function(ev) {
-//   let state = settings.get('state')
-//   state.sec = 'remote-dicts'
-//   navigate(state)
-// })

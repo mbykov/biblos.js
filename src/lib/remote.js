@@ -1,5 +1,5 @@
 import _ from "lodash"
-import { ipcRenderer } from "electron";
+import { remote, ipcRenderer } from "electron";
 const { app } = require('electron').remote
 import { q, qs, empty, create, remove, span, p, div, getCoords, placePopup, insertAfter } from '../lib/utils'
 const settings = require('electron').remote.require('electron-settings')
@@ -27,19 +27,6 @@ const rp = require('request-promise')
 let PouchDB = require('pouchdb')
 
 let progress = q('#progress')
-
-// const getopts = {
-//   "url": [config.host, '_all_dbs'].join('/')
-// }
-
-// const postopts = {
-//   "method": "POST",
-//   "url": [config.host, '_dbs_info'].join('/'),
-//   "json": true,
-//   "headers": {
-//     "Content-type": "application/json"
-//   }
-// }
 
 const options = {
   "uri": [config.host, '_all_dbs'].join('/'),
@@ -223,18 +210,6 @@ function checkmark() {
   return check
 }
 
-
-// function clonedCfg(dname) {
-//   let cfg = settings.get('cfg')
-//   let dict = _.find(cfg, dict=> { return dict.dname == dname })
-//   if (!dict) return cfg
-//   dict.active = true
-//   dict.sync = true
-//   cfg = JSON.parse(JSON.stringify(cfg))
-//   settings.set('cfg', cfg)
-//   return cfg
-// }
-
 export function delDict(dname) {
   // progress.classList.remove('is-hidden')
 }
@@ -271,7 +246,7 @@ export function activateDict(dname, on) {
   showDicts(cfg)
 }
 
-export function cloneDict(dname) {
+function cloneDict_old(dname) {
   progress.classList.remove('is-hidden')
   let cfg = settings.get('cfg')
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
@@ -302,4 +277,130 @@ export function cloneDict(dname) {
     }).catch(function (err) {
       console.log('oh no an error', err.message);
     })
+}
+
+function cloneDict(dname) {
+  progress.classList.remove('is-hidden')
+  let cfg = settings.get('cfg')
+  let dict = _.find(cfg, dict=> { return dict.dname == dname })
+  if (!dict) return
+  // log('_________+E-start', dname, dict.size, config.batch_size)
+
+  let stream = new MemoryStream()
+  let total = 0
+  let step = config.batch_size/2
+  let counter = q('#cloning-progress-counter')
+  stream.on('data', function(chunk) {
+    total += step
+    let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
+    // log('__dumped :', dict.size, total, '%', percent)
+    counter.textContent = 'cloning ' + dict.name + ' dictionary: ' + percent + '%'
+    if (percent > 100) counter.textContent = ''
+  })
+
+  streamDB(upath, dname, stream, config.batch_size)
+    .then(function () {
+      console.log('Hooray the stream replication is complete!');
+      dict.active = true, dict.sync = true
+      cfg = JSON.parse(JSON.stringify(cfg))
+      // log('__dumped cfg:', dname, dict.size, total, cfg)
+      settings.set('cfg', cfg)
+      showDicts(cfg)
+      progress.classList.add('is-hidden')
+    }).catch(function (err) {
+      console.log('oh no an error', err.message);
+    })
+}
+
+function streamDict(cfg, dname) {
+  let dict = _.find(cfg, dict=> { return dict.dname == dname })
+  if (!dict) return Promise.resolve([])
+  let stream = new MemoryStream()
+  let countname = ['#clone-', dname].join('')
+  let counter = q(countname)
+  log('_____counter', counter)
+  let total = 0
+  let step = config.batch_size/2
+  stream.on('data', function(chunk) {
+    total += step
+    let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
+    // log('__dumped :', dict.size, total, '%', percent)
+    counter.innerHTML = 'cloning <b>' + dict.name + '</b> dictionary: ' + percent + '%'
+    if (percent > 100) counter.textContent = ''
+  })
+  return streamDB(upath, dname, stream, config.batch_size)
+    .then(function () {
+      console.log('Hooray the stream replication is complete!')
+      return dname
+    }).catch(function (err) {
+      console.log('oh no an error', err.message);
+    })
+}
+
+export function initState() {
+  let state = settings.get('state')
+  if (!state) {
+    state = {sec: config.defstate}
+    settings.set('state', state)
+  }
+  navigate(state)
+  state = JSON.parse(JSON.stringify(state))
+
+  let cfg = settings.get('cfg')
+  if (!cfg) {
+    log('___________________INIT ')
+    progress.classList.remove('is-hidden')
+    let ocloning = q('#dicts-cloning').classList.remove('is-hidden')
+    let ocloned = q('#dicts-cloned').classList.add('is-hidden')
+    initCfg() // +t
+      .then(rcfg=> {
+        rcfg = JSON.parse(JSON.stringify(rcfg))
+        log('___________________RCFG', rcfg)
+        Promise.all([
+          streamDict(rcfg, 'terms')
+            .then(res=> {
+              return 'terms'
+            }),
+          streamDict(rcfg, 'flex')
+            .then(res=> {
+              return 'flex'
+            }),
+          streamDict(rcfg, 'wkt')
+            .then(res=> {
+              return 'wkt'
+            })
+        ])
+          .then(res=>{
+            let cfg = initialCfg(rcfg, res)
+            log('___________ ALL DICTS DONE', res, cfg)
+            settings.set('cfg', cfg)
+            initDBs(cfg)
+            let ocloning = q('#dicts-cloning').classList.add('is-hidden')
+            let ocloned = q('#dicts-cloned').classList.remove('is-hidden')
+            progress.classList.add('is-hidden')
+            remote.getCurrentWindow().reload()
+          })
+          .catch(err=>{ log('ERR-initReplication', err.message) })
+      })
+  } else {
+    cfg = JSON.parse(JSON.stringify(cfg))
+    initDBs(cfg)
+  }
+
+  let lang = settings.get('lang')
+  if (!lang) {
+    lang = config.deflang
+    settings.set('lang', lang)
+  }
+  return state
+}
+
+function initialCfg(cfg, installed) {
+  cfg.forEach((dict, idx)=> {
+    if (installed.includes(dict.dname)) dict.active = true, dict.sync = true, dict.idx = idx
+    else dict.idx = 100 + idx
+  })
+  cfg = _.sortBy(cfg, 'idx')
+  cfg.forEach((dict, idx)=> { dict.idx = idx})
+  return cfg
 }

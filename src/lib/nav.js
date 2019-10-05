@@ -172,7 +172,7 @@ export function navigate(state, data) {
   let sec = state.sec
   let sid = showSection(state)
   state.sid = sid
-  // log('NAV-state:', state)
+  // log('NAVIGATE:', state.sec)
 
   if (sec == 'main') twoPanes(state), showText(state.pars)
   else if (sec == 'remote-dicts') requestRemoteDicts(state)
