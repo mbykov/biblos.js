@@ -15,7 +15,7 @@
 
 <p>&nbsp;</p>
 
-<div id="cloning-progress-counter"></div>
+<div id="remote-progress-counter"></div>
 
 <p>&nbsp;</p>
 

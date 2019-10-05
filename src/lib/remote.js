@@ -37,7 +37,14 @@ export function requestRemoteDicts() {
   initCfg()
     .then(rcfg=> {
       let cfg = settings.get('cfg')
-      // cfg = JSON.parse(JSON.stringify(cfg))
+      if (!cfg) cfg = rcfg
+      if (cfg.length != rcfg.length) {
+        cfg = JSON.parse(JSON.stringify(cfg))
+        let newdict = _.difference(rcfg.map(dict=> { return dict.dname}), cfg.map(dict=> { return dict.dname}))
+        log('________NDICT', newdict)
+        cfg.push(newdict)
+        settings.set('cfg', cfg)
+      }
       // log('_________+req-remote-cfg:', cfg, 'rem:', rcfg)
       showDicts(cfg)
     })
@@ -246,91 +253,29 @@ export function activateDict(dname, on) {
   showDicts(cfg)
 }
 
-function cloneDict_old(dname) {
-  progress.classList.remove('is-hidden')
-  let cfg = settings.get('cfg')
-  let dict = _.find(cfg, dict=> { return dict.dname == dname })
-  if (!dict) return
-  // log('_________+E-start', dname, dict.size, config.batch_size)
-
-  let stream = new MemoryStream()
-  let total = 0
-  let step = config.batch_size/2
-  let counter = q('#cloning-progress-counter')
-  stream.on('data', function(chunk) {
-    total += step
-    let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
-    // log('__dumped :', dict.size, total, '%', percent)
-    counter.textContent = 'cloning ' + dict.name + ' dictionary: ' + percent + '%'
-    if (percent > 100) counter.textContent = ''
-  })
-
-  streamDB(upath, dname, stream, config.batch_size)
-    .then(function () {
-      console.log('Hooray the stream replication is complete!');
-      dict.active = true, dict.sync = true
-      cfg = JSON.parse(JSON.stringify(cfg))
-      // log('__dumped cfg:', dname, dict.size, total, cfg)
-      settings.set('cfg', cfg)
-      showDicts(cfg)
-      progress.classList.add('is-hidden')
-    }).catch(function (err) {
-      console.log('oh no an error', err.message);
-    })
-}
-
-function cloneDict(dname) {
-  progress.classList.remove('is-hidden')
-  let cfg = settings.get('cfg')
-  let dict = _.find(cfg, dict=> { return dict.dname == dname })
-  if (!dict) return
-  // log('_________+E-start', dname, dict.size, config.batch_size)
-
-  let stream = new MemoryStream()
-  let total = 0
-  let step = config.batch_size/2
-  let counter = q('#cloning-progress-counter')
-  stream.on('data', function(chunk) {
-    total += step
-    let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
-    // log('__dumped :', dict.size, total, '%', percent)
-    counter.textContent = 'cloning ' + dict.name + ' dictionary: ' + percent + '%'
-    if (percent > 100) counter.textContent = ''
-  })
-
-  streamDB(upath, dname, stream, config.batch_size)
-    .then(function () {
-      console.log('Hooray the stream replication is complete!');
-      dict.active = true, dict.sync = true
-      cfg = JSON.parse(JSON.stringify(cfg))
-      // log('__dumped cfg:', dname, dict.size, total, cfg)
-      settings.set('cfg', cfg)
-      showDicts(cfg)
-      progress.classList.add('is-hidden')
-    }).catch(function (err) {
-      console.log('oh no an error', err.message);
-    })
-}
-
 function streamDict(cfg, dname) {
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
   if (!dict) return Promise.resolve([])
   let stream = new MemoryStream()
-  let countname = ['#clone-', dname].join('')
-  let counter = q(countname)
-  log('_____counter', counter)
+  let sec = settings.get('state').sec
+  let ocounters
+  if (sec == 'remote-dicts') ocounters = q('#remote-progress-counter')
+  else ocounters = q('#init-progress-counter')
+  let ocounter = create('div', 'counter')
+  ocounters.appendChild(ocounter)
+
   let total = 0
   let step = config.batch_size/2
   stream.on('data', function(chunk) {
     total += step
     let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
     // log('__dumped :', dict.size, total, '%', percent)
-    counter.innerHTML = 'cloning <b>' + dict.name + '</b> dictionary: ' + percent + '%'
-    if (percent > 100) counter.textContent = ''
+    ocounter.innerHTML = 'cloning <b>' + dict.name + '</b> dictionary: ' + percent + '%'
+    if (percent > 100) ocounter.textContent = ''
   })
   return streamDB(upath, dname, stream, config.batch_size)
     .then(function () {
-      console.log('Hooray the stream replication is complete!')
+      // console.log('Hooray the stream replication is complete!')
       return dname
     }).catch(function (err) {
       console.log('oh no an error', err.message);
@@ -348,14 +293,12 @@ export function initState() {
 
   let cfg = settings.get('cfg')
   if (!cfg) {
-    log('___________________INIT ')
     progress.classList.remove('is-hidden')
     let ocloning = q('#dicts-cloning').classList.remove('is-hidden')
     let ocloned = q('#dicts-cloned').classList.add('is-hidden')
     initCfg() // +t
       .then(rcfg=> {
         rcfg = JSON.parse(JSON.stringify(rcfg))
-        log('___________________RCFG', rcfg)
         Promise.all([
           streamDict(rcfg, 'terms')
             .then(res=> {
@@ -372,7 +315,7 @@ export function initState() {
         ])
           .then(res=>{
             let cfg = initialCfg(rcfg, res)
-            log('___________ ALL DICTS DONE', res, cfg)
+            // log('___________ ALL DICTS DONE', res, cfg)
             settings.set('cfg', cfg)
             initDBs(cfg)
             let ocloning = q('#dicts-cloning').classList.add('is-hidden')
@@ -404,3 +347,28 @@ function initialCfg(cfg, installed) {
   cfg.forEach((dict, idx)=> { dict.idx = idx})
   return cfg
 }
+
+// remote-table events:
+document.addEventListener('click', (ev) => {
+  let el = ev.target
+  let data = el.dataset
+  if (!data) return
+  if (data.dname) {
+    moveDict(data.dname, ev.ctrlKey)
+  } else if (data.activate) {
+    if (el.textContent != 'activate') return
+    activateDict(data.activate, true)
+  } else if (data.disable) {
+    activateDict(data.disable, false)
+  } else if (data.sync) {
+    if (el.textContent != 'clone') return
+    let cfg = settings.get('cfg')
+    cfg = JSON.parse(JSON.stringify(cfg))
+    streamDict(cfg, data.sync)
+      .then(dname=> {
+        cfg = initialCfg(cfg, [dname])
+        settings.set('cfg', cfg)
+        showDicts(cfg)
+      })
+  }
+})

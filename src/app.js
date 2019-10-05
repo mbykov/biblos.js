@@ -6,7 +6,6 @@ import env from "env";
 // import sband from "../../../sband"
 import sband from "speckled-band"
 import { q, qs, empty, create, remove, span, p, div, getInnermostHovered } from './lib/utils'
-// import { cloneDict, moveDict, activateDict } from './lib/remote'
 import { loadSections } from './lib/load-sections'
 import { navigate } from './lib/nav'
 import { mouseMenu } from './lib/context-menu'
@@ -113,7 +112,6 @@ document.addEventListener('click', (ev) => {
   }
 })
 
-// remote-table events:
 document.addEventListener('click', (ev) => {
   let el = ev.target
   let data = el.dataset
@@ -122,17 +120,6 @@ document.addEventListener('click', (ev) => {
     let over = q("#new-version")
     over.classList.add('is-hidden')
     shell.openExternal(data.href)
-  } else if (data.dname) {
-    moveDict(data.dname, ev.shiftKey)
-  } else if (data.activate) {
-    if (el.textContent != 'activate') return
-    activateDict(data.activate, true)
-  } else if (data.disable) {
-    activateDict(data.disable, false)
-  } else if (data.sync) {
-    if (el.textContent != 'clone') return
-    log('______________CLONE', data.sync)
-    cloneDict(data.sync)
   } else if (data.section) {
     state.sec = data.section
     navigate(state)

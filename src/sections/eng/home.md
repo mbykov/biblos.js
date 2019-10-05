@@ -6,10 +6,10 @@
 
 &nbsp;
 
-<div id="clone-progress">
-    <p id="clone-flex"></p>
-    <p id="clone-terms"></p>
-    <p id="clone-wkt"></p>
+<div id="init-progress-counter">
+    <!-- <p id="clone-flex"></p> -->
+    <!-- <p id="clone-terms"></p> -->
+    <!-- <p id="clone-wkt"></p> -->
 </div>
 
 
