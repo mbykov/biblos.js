@@ -23,11 +23,13 @@ install:
   - ps: Install-Product node 10 x64
   # - choco install yarn --ignore-dependencies
   - git reset --hard HEAD
-  - yarn
+  # - yarn
+  - npm install
   - node --version
 
 build_script:
   #- yarn test
-  - yarn run release
+  # - yarn run release
+  - npm run release
 
 test: off

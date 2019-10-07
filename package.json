@@ -1,5 +1,5 @@
 {
-  "version": "0.9.157",
+  "version": "0.9.158",
   "name": "biblos.js",
   "productName": "Biblos.js",
   "description": "Biblos.js, a.k.a Morpheus for Ancient Greek based on CouchDB && Electron.js",
@@ -14,10 +14,8 @@
       "app/**/*",
       "src/**/*",
       "resources/**/*",
-      "dumps/**/*",
       "package.json"
     ],
-    "asarUnpack": "pouch/**/*",
     "directories": {
       "buildResources": "resources"
     },
