@@ -22,11 +22,13 @@ const apath = app.getAppPath()
 const code = config.code
 const greekONLY = ['flex', 'terms', 'wkt', 'lsj', 'dvr', 'souda', '', '', '', '', '']
 
+
 const request = require('request')
 const rp = require('request-promise')
 let PouchDB = require('pouchdb')
 
 let progress = q('#progress')
+let streams = []
 
 const options = {
   "uri": [config.host, '_all_dbs'].join('/'),
@@ -324,8 +326,10 @@ export function initState() {
             // log('___________ ALL DICTS DONE', res, cfg)
             settings.set('cfg', cfg)
             // remote.getCurrentWindow().reload()
-            app.relaunch()
-            app.exit(0)
+            remote.getCurrentWebContents().reload()
+            // remote.getCurrentWindow().reloadIgnoringCache()
+            // app.relaunch()
+            // app.exit(0)
             let defaultdicts = q('#default-dicts').classList.add('is-hidden')
             initDBs(cfg)
             progress.classList.add('is-hidden')
@@ -364,6 +368,9 @@ document.addEventListener('click', (ev) => {
     activateDict(data.disable, false)
   } else if (data.sync) {
     if (el.textContent != 'clone') return
+    let dname = data.sync
+    if (streams.includes(dname)) return
+    streams.push(dname)
     let cfg = settings.get('cfg')
     cfg = JSON.parse(JSON.stringify(cfg))
     streamDict(cfg, data.sync)
@@ -376,8 +383,10 @@ document.addEventListener('click', (ev) => {
   else if (data.cleanup) {
     let cfg
     settings.set('cfg', cfg)
-    app.relaunch()
-    app.exit(0)
+    // remote.getCurrentWindow().reload()
+    remote.getCurrentWebContents().reload()
+    // remote.getCurrentWindow().reloadIgnoringCache()
+    // app.relaunch()
+    // app.exit(0)
   }
-
 })
