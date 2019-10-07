@@ -116,9 +116,10 @@ export function queryDBs(el, compound) {
   str = enclitic(comb(str))
   queryRemote(str, compound)
     .then(res => {
-      // closePopups() // - can NOT be closed here!!
+      // closePopups() // - can NOT be closed here!!, res
       progress.classList.add('is-hidden')
       if (!res) return noResult()
+      else if (!res.chains.length && !res.terms.length) return noResult()
       if (compound) showCompound(el, res)
       else showResult(el, res)
     }).catch(function (err) {
@@ -137,9 +138,8 @@ export function showSegResult(el) {
 }
 
 function noResult() {
-  log('NO RESULT')
   let ores = q('#result')
-  ores.textContent = 'no resul, try Shift-click'
+  ores.textContent = 'no result. Try Click, or Ctrl-click. Or create your own Local dictionary'
 }
 
 function showResult(el, res) {

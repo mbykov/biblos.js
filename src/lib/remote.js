@@ -7,8 +7,8 @@ import { config } from '../app.config'
 import path from "path"
 import { antrax } from 'antrax'
 // import { antrax }  from '/home/michael/a/loigos'
-// import { checkConnection, streamDB }  from '/home/michael/a/loigos/dist/lib/pouch'
-import { checkConnection, streamDB }  from 'antrax/dist/lib/pouch'
+import { checkConnection, ensureDBdir, streamDB }  from 'antrax/dist/lib/pouch'
+// import { checkConnection, ensureDBdir, streamDB }  from '/home/michael/a/loigos/dist/lib/pouch'
 
 let MemoryStream = require('memorystream');
 
@@ -41,7 +41,7 @@ export function requestRemoteDicts() {
       if (cfg.length != rcfg.length) {
         cfg = JSON.parse(JSON.stringify(cfg))
         let newdict = _.difference(rcfg.map(dict=> { return dict.dname}), cfg.map(dict=> { return dict.dname}))
-        log('________NDICT', newdict)
+        // log('________NDICT', newdict)
         cfg.push(newdict)
         settings.set('cfg', cfg)
       }
@@ -56,11 +56,9 @@ export function queryRemote(query, compound) {
 }
 
 export function initDBs(cfg) {
-  // log('____check-conn-cfg:', cfg)
   let actives = _.filter(cfg, dict=> { return dict.active })
-  // log('____check-conn-act:', actives)
   let dnames = actives.map(dict=> { return dict.dname })
-  log('____check-connection:', dnames)
+  // log('____check-connection:', dnames)
   checkConnection(upath, dnames)
 }
 
@@ -286,7 +284,7 @@ function streamDict(cfg, dname) {
 
 export function initState() {
   let state = settings.get('state')
-  if (!state) {
+  if (!state || (state && state.sec != 'main')) {
     state = {sec: config.defstate}
     settings.set('state', state)
   }
@@ -305,6 +303,7 @@ export function initState() {
     let defaultdicts = q('#default-dicts').classList.remove('is-hidden')
     initCfg() // +t
       .then(rcfg=> {
+        ensureDBdir(upath)
         rcfg = JSON.parse(JSON.stringify(rcfg))
         Promise.all([
           streamDict(rcfg, 'terms')
@@ -374,4 +373,11 @@ document.addEventListener('click', (ev) => {
         showDicts(cfg)
       })
   }
+  else if (data.cleanup) {
+    let cfg
+    settings.set('cfg', cfg)
+    app.relaunch()
+    app.exit(0)
+  }
+
 })
