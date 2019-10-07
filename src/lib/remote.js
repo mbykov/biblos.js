@@ -64,17 +64,17 @@ export function initDBs(cfg) {
   checkConnection(upath, dnames)
 }
 
-// +g initCfg test
-Mousetrap.bind(['ctrl+g'], function(ev) {
-  initCfg()
-    .then(cfg=> {
-      cfg = JSON.parse(JSON.stringify(cfg))
-      log('_________+G-cfg:', cfg)
-      settings.set('cfg', cfg)
-    })
-})
+// +g initCfg only for test
+// Mousetrap.bind(['ctrl+g'], function(ev) {
+//   initCfg()
+//     .then(cfg=> {
+//       cfg = JSON.parse(JSON.stringify(cfg))
+//       log('_________+G-cfg:', cfg)
+//       settings.set('cfg', cfg)
+//     })
+// })
 
-export function initCfg() {
+function initCfg() {
   return rp(options)
     .then(function (rdnames) {
       rdnames = _.filter(rdnames, dict=> { return dict[0] != '_' })
@@ -332,6 +332,9 @@ export function initState() {
             // app.exit(0)
             let defaultdicts = q('#default-dicts').classList.add('is-hidden')
             initDBs(cfg)
+            // process.nextTick(()=>{
+              // initDBs(cfg)
+            // })
             progress.classList.add('is-hidden')
           })
           .catch(err=>{ log('ERR-initReplication', err.message) })
@@ -383,9 +386,11 @@ document.addEventListener('click', (ev) => {
   else if (data.cleanup) {
     let cfg
     settings.set('cfg', cfg)
-    // remote.getCurrentWindow().reload()
     remote.getCurrentWebContents().reload()
-    // remote.getCurrentWindow().reloadIgnoringCache()
+    initState()
+    // remote.getCurrentWindow().reload()
+    // remote.getCurrentWebContents().reload()
+    // remote.getCurrentWebContents().reloadIgnoringCache()
     // app.relaunch()
     // app.exit(0)
   }

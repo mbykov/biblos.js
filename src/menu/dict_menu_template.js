@@ -3,7 +3,7 @@ import { i18n as t } from "../locales/i18n";
 
 export function dictMenuTemplate() {
   let menu =  {
-    label: t("dictionary"),
+    label: t("dictionaries"),
     submenu: [
       // { label: t("Arrange local dicts"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'arrange-dicts') } },
       { label: t("Arrange and clone dicts from server"), click: () => { BrowserWindow.getFocusedWindow().webContents.send('section', 'remote-dicts') } },

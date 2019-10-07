@@ -20,6 +20,7 @@
   "Morpheus": "морфей",
   "Diglossa": "диглосса",
   "dictionary": "словарь",
+  "dictionaries": "словари",
   "home": "начало",
   "install": "установка",
   "cleanup": "очистить",

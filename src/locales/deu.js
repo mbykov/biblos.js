@@ -23,6 +23,7 @@
   "morpheus": "Morpheus",
   "home": "Startseite",
   "dictionary": "Wörterbuch",
+  "dictionaries": "Wörterbucher",
   "active": "Active",
   "install": "installieren",
   "cleanup": "entfernen",
