@@ -326,14 +326,16 @@ export function initState() {
             // log('___________ ALL DICTS DONE', res, cfg)
             settings.set('cfg', cfg)
             // remote.getCurrentWindow().reload()
-            remote.getCurrentWebContents().reload()
+            // remote.getCurrentWebContents().reload()
             // remote.getCurrentWindow().reloadIgnoringCache()
-            // app.relaunch()
-            // app.exit(0)
+            app.relaunch()
+            app.exit(0)
             let defaultdicts = q('#default-dicts').classList.add('is-hidden')
             initDBs(cfg)
-            // process.nextTick(()=>{
-              // initDBs(cfg)
+            // nextTik - не годится здесь, просто initDB - виснет в Win, relaunch - уныло...
+            // process.nextTick(function() {
+            //   log('_________________NEXT TIK', cfg)
+            //   initDBs(cfg)
             // })
             progress.classList.add('is-hidden')
           })
