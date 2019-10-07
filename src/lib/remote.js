@@ -293,11 +293,16 @@ export function initState() {
   navigate(state)
   state = JSON.parse(JSON.stringify(state))
 
+  let lang = settings.get('lang')
+  if (!lang) {
+    lang = config.deflang
+    settings.set('lang', lang)
+  }
+
   let cfg = settings.get('cfg')
   if (!cfg) {
     progress.classList.remove('is-hidden')
-    let ocloning = q('#dicts-cloning').classList.remove('is-hidden')
-    let ocloned = q('#dicts-cloned').classList.add('is-hidden')
+    let defaultdicts = q('#default-dicts').classList.remove('is-hidden')
     initCfg() // +t
       .then(rcfg=> {
         rcfg = JSON.parse(JSON.stringify(rcfg))
@@ -319,11 +324,10 @@ export function initState() {
             let cfg = initialCfg(rcfg, res)
             // log('___________ ALL DICTS DONE', res, cfg)
             settings.set('cfg', cfg)
-            initDBs(cfg)
-            let ocloning = q('#dicts-cloning').classList.add('is-hidden')
-            let ocloned = q('#dicts-cloned').classList.remove('is-hidden')
-            progress.classList.add('is-hidden')
             remote.getCurrentWindow().reload()
+            let defaultdicts = q('#default-dicts').classList.add('is-hidden')
+            initDBs(cfg)
+            progress.classList.add('is-hidden')
           })
           .catch(err=>{ log('ERR-initReplication', err.message) })
       })
@@ -332,11 +336,6 @@ export function initState() {
     initDBs(cfg)
   }
 
-  let lang = settings.get('lang')
-  if (!lang) {
-    lang = config.deflang
-    settings.set('lang', lang)
-  }
   return state
 }
 

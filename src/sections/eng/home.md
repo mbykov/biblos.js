@@ -1,28 +1,12 @@
 <img src="../resources/icons/128x128.png" id="bookImg">
 
-<div id="dicts-cloning" class="red is-hidden">
-    Cloning default dictionaries from server. Be patient
-</div>
-
-&nbsp;
-
-<div id="init-progress-counter">
-    <!-- <p id="clone-flex"></p> -->
-    <!-- <p id="clone-terms"></p> -->
-    <!-- <p id="clone-wkt"></p> -->
-</div>
-
-
-<div id="dicts-cloned" class="is-hidden">
-    After first installation Biblos.js has bare minimum of dictionaries, <b>Wiktionary</b> <!-- (based on <span class="external">https://en.wiktionary.org/wiki/Category:Ancient_Greek_language</span>) -->, <b>Terms</b>, and hidden but absolutely necessary <b>Flex</b>. They are already synchronized with server.
+After first installation Biblos.js has bare minimum of dictionaries, <b>Wiktionary</b> <!-- (based on <span class="external">https://en.wiktionary.org/wiki/Category:Ancient_Greek_language</span>) -->, <b>Terms</b>, and hidden but absolutely necessary <b>Flex</b>. They are already synchronized with server.
     &nbsp;
-    <a href="#" data-section="remote-dicts">Clone</a> (copy) additional dictionaries from server. <!-- or <a href="#" data-section="csv">import</a> dictionary from CSV files. --> <a href="#" data-section="arrange-dicts">Arrage and activate / deactivate</a> them as you like.
-</div>
-
+    <a href="#" data-section="remote-dicts">Clone</a> (copy) additional dictionaries from server. <!-- or <a href="#" data-section="csv">import</a> dictionary from CSV files. --> <a href="#" data-section="remote-dicts">Arrage and activate / deactivate</a> them as you like.
 
 &nbsp;
 
-Just copy some Greek text from anywhere on your desktop with **Ctrl-C**; then move the mouse over text to see the readings:
+Then just copy some Greek text from anywhere on your desktop with **Ctrl-C**; then move the mouse over text to see the readings:
 
 &nbsp;
 
