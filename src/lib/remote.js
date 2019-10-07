@@ -56,8 +56,10 @@ export function queryRemote(query, compound) {
 }
 
 export function initDBs(cfg) {
-  let active = _.filter(cfg, dict=> { return dict.active })
-  let dnames = active.map(dict=> { return dict.dname })
+  // log('____check-conn-cfg:', cfg)
+  let actives = _.filter(cfg, dict=> { return dict.active })
+  // log('____check-conn-act:', actives)
+  let dnames = actives.map(dict=> { return dict.dname })
   log('____check-connection:', dnames)
   checkConnection(upath, dnames)
 }
