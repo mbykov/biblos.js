@@ -35,6 +35,13 @@ const options = {
   json: true
 }
 
+export function initDBs(cfg) {
+  let actives = _.filter(cfg, dict=> { return dict.active })
+  let dnames = actives.map(dict=> { return dict.dname })
+  // log('____check-connection:', dnames)
+  checkConnection(upath, dnames)
+}
+
 export function requestRemoteDicts() {
   initCfg()
     .then(rcfg=> {
@@ -43,8 +50,7 @@ export function requestRemoteDicts() {
       if (cfg.length != rcfg.length) {
         cfg = JSON.parse(JSON.stringify(cfg))
         let newdict = _.difference(rcfg.map(dict=> { return dict.dname}), cfg.map(dict=> { return dict.dname}))
-        // log('________NDICT', newdict)
-        cfg.push(newdict)
+        cfg.push(...newdict)
         settings.set('cfg', cfg)
       }
       // log('_________+req-remote-cfg:', cfg, 'rem:', rcfg)
@@ -56,23 +62,6 @@ export function requestRemoteDicts() {
 export function queryRemote(query, compound) {
   return antrax(query, compound)
 }
-
-export function initDBs(cfg) {
-  let actives = _.filter(cfg, dict=> { return dict.active })
-  let dnames = actives.map(dict=> { return dict.dname })
-  // log('____check-connection:', dnames)
-  checkConnection(upath, dnames)
-}
-
-// +g initCfg only for test
-// Mousetrap.bind(['ctrl+g'], function(ev) {
-//   initCfg()
-//     .then(cfg=> {
-//       cfg = JSON.parse(JSON.stringify(cfg))
-//       log('_________+G-cfg:', cfg)
-//       settings.set('cfg', cfg)
-//     })
-// })
 
 function initCfg() {
   return rp(options)
@@ -325,18 +314,7 @@ export function initState() {
             let cfg = initialCfg(rcfg, res)
             // log('___________ ALL DICTS DONE', res, cfg)
             settings.set('cfg', cfg)
-            // remote.getCurrentWindow().reload()
-            // remote.getCurrentWebContents().reload()
-            // remote.getCurrentWindow().reloadIgnoringCache()
-            // app.relaunch()
-            // app.exit(0)
             let defaultdicts = q('#default-dicts').classList.add('is-hidden')
-            // initDBs(cfg)
-            // nextTik - не годится здесь, просто initDB - виснет в Win, relaunch - уныло...
-            // process.nextTick(function() {
-            //   log('_________________NEXT TIK', cfg)
-            //   initDBs(cfg)
-            // })
             progress.classList.add('is-hidden')
           })
           .catch(err=>{ log('ERR-initReplication', err.message) })

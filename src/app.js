@@ -22,7 +22,6 @@ const axios = require('axios')
 const upath = app.getPath("userData")
 const apath = app.getAppPath()
 
-
 loadSections(config)
 document.onmousedown = mouseMenu
 
@@ -146,12 +145,11 @@ document.addEventListener("mouseover", function(ev) {
 
 
 ipcRenderer.on('version', function (event, oldver) {
-  axios.get('https://api.github.com/repos/mbykov/biblos.js/releases/latest')
+  axios.get(config.version)
     .then(function (response) {
       if (!response || !response.data) return
       let newver = response.data.name
-      // if (oldver && newver && newver > oldver) {
-      if (true) {
+      if (oldver && newver && newver > oldver) {
         let over = q("#new-version")
         let verTxt = ['new version available:', newver].join(' ')
         over.textContent = verTxt
@@ -183,7 +181,6 @@ function scrollPane(ev) {
   }
   if (!opane) return
   let delta = (ev.deltaY > 0) ? 32 : -32
-  // let opane = q('.section:not(.is-hidden)')
   opane.scrollTop += delta
 }
 
