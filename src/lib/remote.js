@@ -328,10 +328,10 @@ export function initState() {
             // remote.getCurrentWindow().reload()
             // remote.getCurrentWebContents().reload()
             // remote.getCurrentWindow().reloadIgnoringCache()
-            app.relaunch()
-            app.exit(0)
+            // app.relaunch()
+            // app.exit(0)
             let defaultdicts = q('#default-dicts').classList.add('is-hidden')
-            initDBs(cfg)
+            // initDBs(cfg)
             // nextTik - не годится здесь, просто initDB - виснет в Win, relaunch - уныло...
             // process.nextTick(function() {
             //   log('_________________NEXT TIK', cfg)
