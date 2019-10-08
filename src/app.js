@@ -114,13 +114,14 @@ document.addEventListener('click', (ev) => {
 
 document.addEventListener('click', (ev) => {
   let el = ev.target
+  if (el.id == 'new-version') {
+    let oversion = q("#new-version")
+    oversion.classList.add('is-hidden')
+    shell.openExternal(config.version)
+  }
   let data = el.dataset
   if (!data) return
-  if (data.href) {
-    let over = q("#new-version")
-    over.classList.add('is-hidden')
-    shell.openExternal(data.href)
-  } else if (data.section) {
+  if (data.section) {
     state.sec = data.section
     navigate(state)
   }
@@ -149,7 +150,8 @@ ipcRenderer.on('version', function (event, oldver) {
     .then(function (response) {
       if (!response || !response.data) return
       let newver = response.data.name
-      if (oldver && newver && newver > oldver) {
+      // if (oldver && newver && newver > oldver) {
+      if (true) {
         let over = q("#new-version")
         let verTxt = ['new version available:', newver].join(' ')
         over.textContent = verTxt

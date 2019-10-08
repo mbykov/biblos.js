@@ -98,7 +98,12 @@ a {
     left: 0;
     right: 0;
     padding-left: 10px;
+    z-index: 100;
+}
+
+#new-version {
     cursor: pointer;
+    color: green;
 }
 
 #arrows {
