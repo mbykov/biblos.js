@@ -66,7 +66,8 @@ export function queryRemote(query, compound) {
 function initCfg() {
   return rp(options)
     .then(function (rdnames) {
-      rdnames = _.filter(rdnames, dict=> { return dict[0] != '_' })
+      rdnames = _.filter(rdnames, dname=> { return dname[0] != '_' })
+      rdnames = _.filter(rdnames, dname=> { return dname.split('-')[0] == config.code })
       rdnames = _.intersection(rdnames, greekONLY)
       return remoteCfg(rdnames)
         .then(cfg=>{
@@ -263,7 +264,16 @@ function streamDict(cfg, dname) {
     // log('__dumped :', dict.size, total, '%', percent)
     ocounter.innerHTML = 'cloning <b>' + dict.name + '</b> dictionary: ' + percent + '%'
     if (percent > 100) ocounter.textContent = ''
-  })
+  }).on('error', function (err) {
+    log('____stream error', err)
+  }).on('change', function (change) {
+    log('____stream change', dname, change)
+    }).on('paused', function (info) {
+      log('____stream paused', dname, info)
+    }).on('active', function (info) {
+      log('____stream active', dname, info)
+    })
+
   return streamDB(upath, dname, stream, config.batch_size)
     .then(function () {
       // console.log('Hooray the stream replication is complete!')
