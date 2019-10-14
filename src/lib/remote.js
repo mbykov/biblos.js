@@ -7,7 +7,7 @@ import { config } from '../app.config'
 import path from "path"
 import { antrax } from 'antrax'
 // import { antrax }  from '/home/michael/a/loigos'
-import { checkConnection, ensureDBdir, streamDB }  from 'antrax/dist/lib/pouch'
+import { checkConnection, ensureDBdir, emptyDBdir, streamDB }  from 'antrax/dist/lib/pouch'
 // import { checkConnection, ensureDBdir, streamDB }  from '/home/michael/a/loigos/dist/lib/pouch'
 
 let MemoryStream = require('memorystream');
@@ -46,11 +46,15 @@ export function requestRemoteDicts() {
   initCfg()
     .then(rcfg=> {
       let cfg = settings.get('cfg')
+      cfg = JSON.parse(JSON.stringify(cfg))
       if (!cfg) cfg = rcfg
+
       if (cfg.length != rcfg.length) {
-        cfg = JSON.parse(JSON.stringify(cfg))
-        let newdict = _.difference(rcfg.map(dict=> { return dict.dname}), cfg.map(dict=> { return dict.dname}))
-        cfg.push(...newdict)
+        let newdicts = _.filter(rcfg, rdict=> { return !cfg.map(dict=> { return dict.dname}).includes(rdict.dname) })
+        newdicts.forEach((dict, idx)=> { dict.idx = 100 + idx })
+        cfg.push(...newdicts)
+        cfg = _.sortBy(cfg, 'idx')
+        cfg.forEach((dict, idx)=> { dict.idx = idx})
         settings.set('cfg', cfg)
       }
       // log('_________+req-remote-cfg:', cfg, 'rem:', rcfg)
@@ -68,7 +72,7 @@ function initCfg() {
     .then(function (rdnames) {
       rdnames = _.filter(rdnames, dname=> { return dname[0] != '_' })
       rdnames = _.filter(rdnames, dname=> { return dname.split('-')[0] == config.code })
-      rdnames = _.intersection(rdnames, greekONLY)
+      // rdnames = _.intersection(rdnames, greekONLY)
       return remoteCfg(rdnames)
         .then(cfg=>{
           return cfg
@@ -112,7 +116,8 @@ function remoteCfg(rdnames) {
         let info = infodescr[0]
         let descr = infodescr[1]
         if (!info || !descr) return
-        let dbinfo = { dname: dname, name: descr.name, size: info.doc_count, langs: descr.langs, source: descr.source }
+        let shortname = dname.split('-')[1]
+        let dbinfo = { dname: shortname, name: descr.name, size: info.doc_count, langs: descr.langs, source: descr.source }
         infos.push(dbinfo)
       })
       // log('--cfg-infos--', infos)
@@ -368,7 +373,9 @@ document.addEventListener('click', (ev) => {
     cfg = JSON.parse(JSON.stringify(cfg))
     streamDict(cfg, data.sync)
       .then(dname=> {
-        cfg = initialCfg(cfg, [dname])
+        let installed = _.find(cfg, dict=> { return dict.dname == dname })
+        if (!installed) return
+        installed.active = true, installed.sync = true
         settings.set('cfg', cfg)
         showDicts(cfg)
       })
@@ -377,6 +384,7 @@ document.addEventListener('click', (ev) => {
     let cfg
     settings.set('cfg', cfg)
     remote.getCurrentWebContents().reload()
+    emptyDBdir(upath)
     initState()
     // remote.getCurrentWindow().reload()
     // remote.getCurrentWebContents().reload()

@@ -78,13 +78,20 @@ Mousetrap.bind(['ctrl+p'], function(ev) {
 
 Mousetrap.bind(['ctrl+f'], function(ev) {
   console.log('_________+F: future diglossa.js connection')
+  let cfg = settings.get('cfg')
+  if (!cfg) return
+  cfg = JSON.parse(JSON.stringify(cfg))
+  console.log('_________+F: cfg:', cfg)
 })
 
 Mousetrap.bind(['ctrl+g'], function(ev) {
   let cfg = settings.get('cfg')
   if (!cfg) return
   cfg = JSON.parse(JSON.stringify(cfg))
-  console.log('_________+F: cfg:', cfg)
+  cfg = _.filter(cfg, dict=> { return dict.dname != 'souda'})
+  cfg.forEach((dict, idx)=> { dict.idx = idx})
+  console.log('_________+G: cfg:', cfg)
+  settings.set('cfg', cfg)
 })
 
 Mousetrap.bind(['ctrl+r'], function(ev) {
