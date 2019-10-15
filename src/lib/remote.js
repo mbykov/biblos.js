@@ -8,9 +8,9 @@ import path from "path"
 import { antrax } from 'antrax'
 // import { antrax }  from '/home/michael/a/loigos'
 import { checkConnection, ensureDBdir, emptyDBdir, streamDB }  from 'antrax/dist/lib/pouch'
-// import { checkConnection, ensureDBdir, streamDB }  from '/home/michael/a/loigos/dist/lib/pouch'
+// import { checkConnection, ensureDBdir, emptyDBdir, streamDB }  from '/home/michael/a/loigos/dist/lib/pouch'
 
-let MemoryStream = require('memorystream');
+// let MemoryStream = require('memorystream');
 
 const log = console.log
 const fse = require('fs-extra')
@@ -253,7 +253,6 @@ export function activateDict(dname, on) {
 function streamDict(cfg, dname) {
   let dict = _.find(cfg, dict=> { return dict.dname == dname })
   if (!dict) return Promise.resolve([])
-  let stream = new MemoryStream()
   let sec = settings.get('state').sec
   let ocounters
   if (sec == 'remote-dicts') ocounters = q('#remote-progress-counter')
@@ -261,30 +260,13 @@ function streamDict(cfg, dname) {
   let ocounter = create('div', 'counter')
   ocounters.appendChild(ocounter)
 
-  let total = 0
   let step = config.batch_size/2
-  stream.on('data', function(chunk) {
-    total += step
-    let percent = Math.round(parseFloat(1 - (dict.size - total)/dict.size).toFixed(2)*100)
-    // log('__dumped :', dict.size, total, '%', percent)
-    ocounter.innerHTML = 'cloning <b>' + dict.name + '</b> dictionary: ' + percent + '%'
-    if (percent > 100) ocounter.textContent = ''
-  }).on('error', function (err) {
-    log('____stream error', err)
-  }).on('change', function (change) {
-    log('____stream change', dname, change)
-    }).on('paused', function (info) {
-      log('____stream paused', dname, info)
-    }).on('active', function (info) {
-      log('____stream active', dname, info)
-    })
-
-  return streamDB(upath, dname, stream, config.batch_size)
+  return streamDB(upath, dict, step, ocounter)
     .then(function () {
       // console.log('Hooray the stream replication is complete!')
       return dname
     }).catch(function (err) {
-      console.log('oh no an error', err.message);
+      console.log('oh no:', err.message);
     })
 }
 
@@ -372,8 +354,9 @@ document.addEventListener('click', (ev) => {
     let cfg = settings.get('cfg')
     cfg = JSON.parse(JSON.stringify(cfg))
     streamDict(cfg, data.sync)
-      .then(dname=> {
-        let installed = _.find(cfg, dict=> { return dict.dname == dname })
+      .then(res=> {
+        if (!res) return
+        let installed = _.find(cfg, dict=> { return dict.dname == data.sync })
         if (!installed) return
         installed.active = true, installed.sync = true
         settings.set('cfg', cfg)

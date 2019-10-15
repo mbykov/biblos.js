@@ -7,7 +7,7 @@
     <br>  <b>clone</b> before <b>activate</b>.
     Cloning and synchronization can take some time, it is slow process.
     <!-- But you can work with selected dictionary just after click, before a process will be fully finished. -->
-    (<b>tip</b>: start from shorter dictionaries to estimate a full synchronization time. <b>tip</b>: if it freezes for a while, just wait a bit. But if you see an error in Tools/Console, reload app with Ctrl-Shift-R and start replication again)
+    (<b>tip</b>: start from shorter dictionaries to estimate a full synchronization time. <b>tip</b>: if it freezes for a while, just wait a bit. But if you get an error, reload app with Ctrl-Shift-R and start replication again)
 </div>
 
 <!-- <div id="before-remote-table" class="error-message">if no remote dictionaries table appears, check an internet connection or just reload a page:  </div> -->

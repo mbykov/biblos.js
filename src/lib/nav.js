@@ -88,7 +88,7 @@ Mousetrap.bind(['ctrl+g'], function(ev) {
   let cfg = settings.get('cfg')
   if (!cfg) return
   cfg = JSON.parse(JSON.stringify(cfg))
-  cfg = _.filter(cfg, dict=> { return dict.dname != 'souda'})
+  cfg = _.filter(cfg, dict=> { return dict.dname != 'lsj'})
   cfg.forEach((dict, idx)=> { dict.idx = idx})
   console.log('_________+G: cfg:', cfg)
   settings.set('cfg', cfg)
