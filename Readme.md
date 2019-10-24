@@ -49,7 +49,7 @@ Why is the influence of modern theory (grammar) on the meaning of the text invis
 
 &nbsp;
 
-Read more: <span class="external">http://ru.diglossa.org/blog</span> (only Russian)
+Read more: <span class="external">http://diglossa.org/philosophy</span>
 
 &nbsp;
 

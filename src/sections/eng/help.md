@@ -2,7 +2,7 @@
 
 just copy **Crtl+C** text everywhere on a desktop, then move mouse over a word
 
-**Ctrl-H** - home page (Library)
+**Ctrl-H** - home page
 
 **Ctrl-Shift-R** - reload application
 
