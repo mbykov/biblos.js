@@ -109,7 +109,7 @@
     "babel-plugin-transform-object-rest-spread": "^6.26.0",
     "chai": "^4.2.0",
     "css-loader": "^2.1.1",
-    "electron": "4.1.1",
+    "electron": "9.1.0",
     "electron-builder": "^20.39.0",
     "electron-mocha": "^6.0.4",
     "friendly-errors-webpack-plugin": "^1.7.0",
